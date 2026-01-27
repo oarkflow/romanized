@@ -1,20 +1,15 @@
 import { NepaliInputBase } from './nepali-input-base'
 import type { NepaliInputOptions } from './nepali-input-base'
+import type { NepaliIMEState } from './nepali-ime-core'
 
 /**
  * Nepali input component for single-line text input
- * Extends the base class with input-specific behavior
+ * DOM adapter for input elements using the headless core
  */
 export class NepaliInput extends NepaliInputBase<HTMLInputElement> {
-	// Input elements don't handle Enter - it submits forms
-	protected shouldHandleEnter(): boolean {
-		return false
-	}
-
-	protected render() {
-		const output = this.buildOutput()
-		this.element.value = output
-		this.options.onInput(output)
+	protected updateCursor(_state: NepaliIMEState): void {
+		// Input elements don't need special cursor handling
+		// Browser handles it automatically
 	}
 }
 

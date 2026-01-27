@@ -1,25 +1,18 @@
 import { NepaliInputBase } from './nepali-input-base'
 import type { NepaliInputOptions } from './nepali-input-base'
+import type { NepaliIMEState } from './nepali-ime-core'
 
 export type NepaliTextareaOptions = NepaliInputOptions
 
 /**
  * Nepali textarea component for multi-line text input
- * Extends the base class with textarea-specific behavior (handles Enter for newlines)
+ * DOM adapter for textarea elements using the headless core
  */
 export class NepaliTextarea extends NepaliInputBase<HTMLTextAreaElement> {
-	// Textarea elements handle Enter for newlines
-	protected shouldHandleEnter(): boolean {
-		return true
-	}
-
-	protected render() {
-		const output = this.buildOutput()
-		const cursorPos = output.length
-
-		this.element.value = output
-		this.element.selectionStart = this.element.selectionEnd = cursorPos
-		this.options.onInput(output)
+	protected updateCursor(state: NepaliIMEState): void {
+		// Position cursor at end of output
+		this.element.selectionStart = state.cursorPosition
+		this.element.selectionEnd = state.cursorPosition
 	}
 }
 

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nepali Converter Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 900px;
+      width: 100%;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #667eea;
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    .converter {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .converter {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .section {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .badge {
+      background: #667eea;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 0.5rem;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 1rem;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .output-display {
+      width: 100%;
+      min-height: 200px;
+      padding: 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 0.5rem;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 1rem;
+      background: #f8f9fa;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-y: auto;
+    }
+
+    .output-display:empty::before {
+      content: 'देवनागरी परिणाम यहाँ देखिन्छ';
+      color: #999;
+    }
+
+    .controls {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: #e0e0e0;
+      color: #333;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #d0d0d0;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .stats {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      color: #666;
+    }
+
+    .toggle-container {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .toggle-label {
+      font-weight: 500;
+      color: #333;
+    }
+
+    input[type="checkbox"] {
+      width: 1.25rem;
+      height: 1.25rem;
+      cursor: pointer;
+    }
+
+    .success-message {
+      color: #10b981;
+      font-weight: 500;
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1>🇳🇵 Nepali Text Converter</h1>
+    <p class="subtitle">Convert romanized Nepali to Devanagari script with real-time preview</p>
+
+    <div class="converter">
+      <div class="section">
+        <label>
+          Input
+          <span class="badge">Romanized</span>
+        </label>
+        <textarea
+          id="input"
+          placeholder="Type in romanized Nepali...&#10;&#10;Example:&#10;Namaste! Ma Sujit hu.&#10;Tapai lai kasto chha?"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+        ></textarea>
+        <div id="input-stats" class="stats">0 characters</div>
+      </div>
+
+      <div class="section">
+        <label>
+          Output
+          <span class="badge">Devanagari</span>
+        </label>
+        <div id="output" class="output-display" lang="ne"></div>
+        <div class="controls">
+          <button id="copy-btn" class="btn-primary" disabled>📋 Copy Text</button>
+          <button id="clear-btn" class="btn-secondary">🗑️ Clear</button>
+        </div>
+        <div id="output-stats" class="stats">0 characters</div>
+      </div>
+    </div>
+
+    <div class="toggle-container">
+      <input type="checkbox" id="digit-toggle" checked />
+      <label for="digit-toggle" class="toggle-label">
+        Use Nepali digits (०-९ instead of 0-9)
+      </label>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createNepaliConverter } from './src/index.ts'
+
+    const converter = createNepaliConverter(
+      '#input',
+      '#output',
+      '#copy-btn',
+      {
+        useDevanagariDigits: true,
+        debounceMs: 300,
+        onInput: (input, output) => {
+          // Update stats
+          document.getElementById('input-stats').textContent =
+            `${input.length} characters`
+          document.getElementById('output-stats').textContent =
+            `${output.length} characters`
+
+          // Enable/disable copy button
+          document.getElementById('copy-btn').disabled = !output
+        }
+      }
+    )
+
+    // Clear button
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      converter.clear()
+    })
+
+    // Digit toggle
+    document.getElementById('digit-toggle').addEventListener('change', (e) => {
+      converter.getCore().setUseDevanagariDigits(e.target.checked)
+      // Re-trigger conversion by setting input again
+      const currentInput = document.getElementById('input').value
+      if (currentInput) {
+        converter.getCore().setInput(currentInput)
+      }
+    })
+
+    // Sample text button (optional enhancement)
+    const sampleBtn = document.createElement('button')
+    sampleBtn.textContent = '📝 Load Sample'
+    sampleBtn.className = 'btn-secondary'
+    sampleBtn.onclick = () => {
+      const sample = `Namaste! Mero naam Sujit ho.
+Ma Nepal bata hu.
+Tapai lai kasto chha?
+Ma aaja khushi chu.
+
+K tapai Nepali bolnuhunchha?`
+      converter.setInput(sample)
+    }
+    document.querySelector('.controls').appendChild(sampleBtn)
+  </script>
+</body>
+</html>

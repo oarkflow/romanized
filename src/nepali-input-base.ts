@@ -1,4 +1,5 @@
-import { transliterate } from './transliterate'
+import { NepaliIMECore } from './nepali-ime-core'
+import type { NepaliIMEState } from './nepali-ime-core'
 
 export interface NepaliInputOptions {
 	useDevanagariDigits?: boolean
@@ -7,24 +8,14 @@ export interface NepaliInputOptions {
 	onChange?: (value: string) => void
 }
 
-interface ImeState {
-	romanBuffer: string[]
-	currentWord: string
-}
-
-const digitMap: Record<string, string> = {
-	'0': '०', '1': '१', '2': '२', '3': '३', '4': '४',
-	'5': '५', '6': '६', '7': '७', '8': '८', '9': '९',
-}
-
 /**
  * Base class for Nepali input components
- * Provides shared IME logic for both input and textarea elements
+ * DOM adapter that wraps the headless NepaliIMECore
  */
 export abstract class NepaliInputBase<T extends HTMLInputElement | HTMLTextAreaElement> {
 	protected element: T
 	protected options: Required<NepaliInputOptions>
-	protected state: ImeState
+	protected core: NepaliIMECore
 	protected enabled: boolean = true
 
 	constructor(element: T, options: NepaliInputOptions = {}) {
@@ -35,10 +26,12 @@ export abstract class NepaliInputBase<T extends HTMLInputElement | HTMLTextAreaE
 			onInput: options.onInput ?? (() => { }),
 			onChange: options.onChange ?? (() => { }),
 		}
-		this.state = {
-			romanBuffer: [],
-			currentWord: '',
-		}
+
+		// Initialize headless core
+		this.core = new NepaliIMECore({
+			useDevanagariDigits: this.options.useDevanagariDigits,
+			onStateChange: (state) => this.onCoreStateChange(state)
+		})
 
 		this.init()
 	}
@@ -52,111 +45,44 @@ export abstract class NepaliInputBase<T extends HTMLInputElement | HTMLTextAreaE
 		this.element.setAttribute('spellcheck', 'false')
 
 		// Bind event handlers
-		this.element.addEventListener('keydown', this.handleKeydown)
-		this.element.addEventListener('paste', this.handlePaste)
+		this.element.addEventListener('keydown', this.handleKeydown as EventListener)
+		this.element.addEventListener('paste', this.handlePaste as EventListener)
 		this.element.addEventListener('blur', this.handleBlur)
 	}
+
+	protected onCoreStateChange(state: NepaliIMEState) {
+		// Update DOM element with new output
+		this.element.value = state.output
+		this.updateCursor(state)
+		this.options.onInput(state.output)
+	}
+
+	protected abstract updateCursor(state: NepaliIMEState): void
 
 	protected handleKeydown = (e: KeyboardEvent) => {
 		if (!this.enabled || !this.options.autoConvert) return
 
 		const key = e.key
 
-		// Allow control key combinations (except Backspace/Delete with Ctrl)
-		if (e.ctrlKey || e.metaKey || e.altKey) {
-			// But allow Ctrl+A followed by Backspace/Delete to work
-			if (key !== 'Backspace' && key !== 'Delete') {
-				return
-			}
-		}
-
-		// Allow navigation and system keys - don't intercept them
-		const navigationKeys = [
-			'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
-			'Home', 'End', 'PageUp', 'PageDown',
-			'Tab', 'Escape', 'Insert',
-			'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
-			'CapsLock', 'NumLock', 'ScrollLock', 'Pause', 'PrintScreen',
-			'ContextMenu', 'Meta', 'Control', 'Alt', 'Shift'
-		]
-
-		if (navigationKeys.includes(key)) {
-			return
-		}
-
-		// Check if there's a text selection
+		// Check if there's a text selection before delegating to core
 		const hasSelection = this.element.selectionStart !== this.element.selectionEnd
 
-		// Handle backspace and delete
-		if (key === 'Backspace' || key === 'Delete') {
+		// If there's a selection and user presses Backspace/Delete, clear everything
+		if (hasSelection && (key === 'Backspace' || key === 'Delete')) {
 			e.preventDefault()
-
-			// If there's a selection, clear everything and start fresh
-			if (hasSelection) {
-				this.state.romanBuffer = []
-				this.state.currentWord = ''
-				this.element.value = ''
-				this.options.onInput('')
-				return
-			}
-
-			// No selection - remove last character from buffer
-			if (this.state.currentWord.length > 0) {
-				this.state.currentWord = this.state.currentWord.slice(0, -1)
-			} else if (this.state.romanBuffer.length > 0) {
-				const lastSegment = this.state.romanBuffer.pop()!
-				if (lastSegment.length > 1) {
-					this.state.romanBuffer.push(lastSegment.slice(0, -1))
-				}
-			}
-			this.render()
+			this.core.clear()
 			return
 		}
 
-		// Handle digits
-		if (/^[0-9]$/.test(key)) {
-			e.preventDefault()
-			this.commitCurrentWord()
-			const digit = this.options.useDevanagariDigits ? digitMap[key] : key
-			this.state.romanBuffer.push(digit)
-			this.render()
-			return
-		}
+		// Delegate to headless core
+		const handled = this.core.handleKey(key, {
+			ctrl: e.ctrlKey,
+			alt: e.altKey,
+			meta: e.metaKey
+		})
 
-		// Handle punctuation
-		if (this.isPunctuation(key)) {
+		if (handled) {
 			e.preventDefault()
-			this.commitCurrentWord()
-			const punct = (key === '.' || key === '|') ? '।' : key
-			this.state.romanBuffer.push(punct)
-			this.render()
-			return
-		}
-
-		// Handle space
-		if (key === ' ') {
-			e.preventDefault()
-			this.commitCurrentWord()
-			this.state.romanBuffer.push(' ')
-			this.render()
-			return
-		}
-
-		// Handle enter - subclasses can override
-		if (key === 'Enter' && this.shouldHandleEnter()) {
-			e.preventDefault()
-			this.commitCurrentWord()
-			this.state.romanBuffer.push('\n')
-			this.render()
-			return
-		}
-
-		// Handle letter input
-		if (/^[a-zA-Z~^`]$/.test(key)) {
-			e.preventDefault()
-			this.state.currentWord += key
-			this.render()
-			return
 		}
 	}
 
@@ -165,81 +91,13 @@ export abstract class NepaliInputBase<T extends HTMLInputElement | HTMLTextAreaE
 
 		e.preventDefault()
 		const text = e.clipboardData?.getData('text/plain') || ''
-
-		// Convert pasted text
-		const converted = transliterate(text, {
-			useDevanagariDigits: this.options.useDevanagariDigits
-		})
-
-		// Insert at cursor or replace selection
-		const start = this.element.selectionStart || 0
-		const end = this.element.selectionEnd || 0
-		const currentValue = this.element.value
-
-		this.element.value = currentValue.substring(0, start) + converted + currentValue.substring(end)
-		this.element.selectionStart = this.element.selectionEnd = start + converted.length
-
-		this.options.onInput(this.element.value)
-		this.options.onChange(this.element.value)
+		this.core.insertText(text)
+		this.options.onChange(this.core.getValue())
 	}
 
 	protected handleBlur = () => {
-		// Commit any pending word on blur
-		if (this.state.currentWord) {
-			this.commitCurrentWord()
-			this.render()
-		}
-	}
-
-	protected commitCurrentWord() {
-		if (this.state.currentWord) {
-			this.state.romanBuffer.push(this.state.currentWord)
-			this.state.currentWord = ''
-		}
-	}
-
-	protected isPunctuation(key: string): boolean {
-		return key === '.' || key === '|' || key === '!' || key === '?' || key === ',' || key === ';' || key === ':'
-	}
-
-	protected convertSegment(segment: string): string {
-		// Whitespace/punctuation - keep as is
-		if (/^[\s।॥!?,;:\n]+$/.test(segment)) {
-			return segment
-		}
-		// Already Nepali digits - keep as is
-		if (/^[०-९]+$/.test(segment)) {
-			return segment
-		}
-		// Romanized word - convert it
-		return transliterate(segment, { useDevanagariDigits: this.options.useDevanagariDigits })
-	}
-
-	protected buildOutput(): string {
-		let output = ''
-
-		// Convert all completed segments
-		for (const segment of this.state.romanBuffer) {
-			output += this.convertSegment(segment)
-		}
-
-		// Add current word being typed
-		if (this.state.currentWord) {
-			output += transliterate(this.state.currentWord, {
-				useDevanagariDigits: this.options.useDevanagariDigits
-			})
-		}
-
-		return output
-	}
-
-	// Abstract method - subclasses must implement cursor behavior
-	protected abstract shouldHandleEnter(): boolean
-	protected abstract render(): void
-
-	// Public methods
-	public enable() {
-		this.enabled = true
+		// Notify onChange on blur
+		this.options.onChange(this.core.getValue())
 	}
 
 	public disable() {
@@ -251,28 +109,31 @@ export abstract class NepaliInputBase<T extends HTMLInputElement | HTMLTextAreaE
 	}
 
 	public setValue(value: string) {
-		this.element.value = value
-		this.state.romanBuffer = []
-		this.state.currentWord = ''
+		this.core.setValue(value)
 	}
 
 	public getValue(): string {
-		return this.element.value
+		return this.core.getValue()
 	}
 
 	public clear() {
-		this.element.value = ''
-		this.state.romanBuffer = []
-		this.state.currentWord = ''
+		this.core.clear()
 	}
 
 	public setOptions(options: Partial<NepaliInputOptions>) {
 		this.options = { ...this.options, ...options }
+		if (options.useDevanagariDigits !== undefined) {
+			this.core.setUseDevanagariDigits(options.useDevanagariDigits)
+		}
+	}
+
+	public getCore(): NepaliIMECore {
+		return this.core
 	}
 
 	public destroy() {
-		this.element.removeEventListener('keydown', this.handleKeydown)
-		this.element.removeEventListener('paste', this.handlePaste)
+		this.element.removeEventListener('keydown', this.handleKeydown as EventListener)
+		this.element.removeEventListener('paste', this.handlePaste as EventListener)
 		this.element.removeEventListener('blur', this.handleBlur)
 	}
 }
