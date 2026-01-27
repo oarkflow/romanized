@@ -1,0 +1,56 @@
+{
+	"name": "@verishore/nepali-angular",
+	"version": "1.0.0",
+	"description": "Angular components for Nepali input with instant romanized-to-Devanagari transliteration",
+	"type": "module",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsc && vite build",
+		"dev": "vite build --watch",
+		"type-check": "tsc --noEmit"
+	},
+	"keywords": [
+		"nepali",
+		"devanagari",
+		"transliteration",
+		"angular",
+		"input",
+		"component"
+	],
+	"author": "Verishore",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/verishore/nepali-input.git",
+		"directory": "packages/nepali-angular"
+	},
+	"peerDependencies": {
+		"@angular/core": ">=14.0.0",
+		"@angular/forms": ">=14.0.0"
+	},
+	"dependencies": {
+		"@verishore/nepali-input": "workspace:*"
+	},
+	"devDependencies": {
+		"@angular/core": "^19.1.5",
+		"@angular/forms": "^19.1.5",
+		"rxjs": "^7.8.1",
+		"typescript": "~5.9.3",
+		"vite": "^7.2.4",
+		"vite-plugin-dts": "^4.3.0",
+		"zone.js": "^0.15.0"
+	}
+}

@@ -1,8 +1,21 @@
-# 🇳🇵 Romanized Nepali Transliterator
+# 🇳🇵 Nepali Input Monorepo
 
-**Bidirectional transliteration between Latin script and Devanagari (नेपाली)**
+**Framework-agnostic Nepali input components with instant romanized-to-Devanagari transliteration**
 
-Type in romanized Nepali and instantly see polished देवनागरी script — or paste Nepali text to get its romanized form. Built with TypeScript, Vite, and comprehensive phonetic rules.
+A collection of headless and framework-specific packages for adding Nepali (देवनागरी) input to your applications. Type in romanized Nepali and see instant Devanagari script, or convert existing text bidirectionally.
+
+---
+
+## 📦 Packages
+
+### Core Package
+- **[@verishore/nepali-input](./packages/nepali-input)** - Headless core library with DOM adapters ✅
+
+### Framework Wrappers
+- **[@verishore/nepali-react](./packages/nepali-react)** - React components ✅
+- **@verishore/nepali-vue** - Vue 3 components (Coming soon)
+- **@verishore/nepali-svelte** - Svelte components (Coming soon)
+- **@verishore/nepali-angular** - Angular components (Coming soon)
 
 ---
 
@@ -42,12 +55,91 @@ Type in romanized Nepali and instantly see polished देवनागरी scr
 
 ## 🚀 Getting Started
 
+### For End Users (Using Packages)
+
+**Install the package for your framework:**
+
+```bash
+# Core package (vanilla JS)
+npm install @verishore/nepali-input
+
+# React
+npm install @verishore/nepali-react
+
+# Vue (coming soon)
+npm install @verishore/nepali-vue
+```
+
+**Quick example:**
+
+```javascript
+// Vanilla JS
+import { createNepaliInput } from '@verishore/nepali-input'
+createNepaliInput('#my-input', { useDevanagariDigits: true })
+
+// React
+import { NepaliInput } from '@verishore/nepali-react'
+<NepaliInput onChange={(value) => console.log(value)} />
+```
+
+### For Contributors (Development)
+
 ### Prerequisites
 
-- **Node.js** 18+ (for development)
-- **pnpm** 10+ (package manager)
+- **Node.js** 18+
+- **pnpm** 10+
 
-### Installation
+### Installation & Development
+
+```bash
+# Clone repository
+git clone https://github.com/verishore/nepali-input.git
+cd nepali-input
+
+# Install dependencies
+pnpm install
+
+# Build all packages
+pnpm run build
+
+# Run demo
+pnpm run dev
+# Opens at http://localhost:5173
+```
+
+### Workspace Structure
+
+```
+nepali-input/
+├── packages/
+│   ├── nepali-input/      # Core headless library ✅
+│   └── nepali-react/      # React components ✅
+├── demo/                  # Demo application ✅
+├── pnpm-workspace.yaml
+└── package.json
+```
+
+---
+
+## 🎯 Component Types
+
+### IME Components (Instant Character Conversion)
+- **NepaliInput**: Single-line input with instant conversion as you type
+- **NepaliTextarea**: Multi-line textarea with instant conversion
+
+### Converter Component (Block Text Conversion)
+- **NepaliConverter**: Input/Output pair with copy button for converting paragraphs
+
+---
+
+## 📖 Documentation
+
+- [Core Package (@verishore/nepali-input)](./packages/nepali-input/README.md)
+- [React Package (@verishore/nepali-react)](./packages/nepali-react/README.md)
+- [Framework Integration Examples](./FRAMEWORK_INTEGRATION.md)
+- [Components Guide](./COMPONENTS.md)
+
+---
 
 ```bash
 # Clone the repository
@@ -78,6 +170,124 @@ pnpm run build
 3. **Options:**
    - Toggle Nepali/Latin digits (०-९ vs 0-9)
    - Use sample phrases for quick testing
+
+---
+
+## 📚 Typing the Nepali Alphabet
+
+### Swar Barna (Vowels / स्वर बर्ण)
+
+Type the complete vowel alphabet:
+
+```
+Type: a aa i ee u oo e ai o au ri
+Get:  अ आ इ ई उ ऊ ए ऐ ओ औ ऋ
+```
+
+**Individual vowels with examples:**
+```
+a    → अ     (ama → अम)
+aa   → आ     (aama → आमा)
+i    → इ     (iman → इमान)
+ee   → ई     (eesh → ईश)
+u    → उ     (umar → उमर)
+oo   → ऊ     (oon → ऊन)
+e    → ए     (ek → एक)
+ai   → ऐ     (aila → ऐला)
+o    → ओ     (om → ओम)
+au   → औ     (aushadi → औषधि)
+ri   → ऋ     (ritu → ऋतु)
+```
+
+### Byanjan Barna (Consonants / व्यञ्जन बर्ण)
+
+Type the complete consonant alphabet:
+
+```
+Type: ka kha ga gha nga
+Get:  क ख ग घ ङ
+
+Type: cha chha ja jha nya
+Get:  च छ ज झ ञ
+
+Type: Ta Tha Da Dha Na
+Get:  ट ठ ड ढ ण
+
+Type: ta tha da dha na
+Get:  त थ द ध न
+
+Type: pa pha ba bha ma
+Get:  प फ ब भ म
+
+Type: ya ra la va
+Get:  य र ल व
+
+Type: sha Sha sa ha
+Get:  श ष स ह
+```
+
+**Complete consonant groups:**
+
+**Ka-varga (क-वर्ग):**
+```
+ka   → क     (kamal → कमल)
+kha  → ख     (khat → खत)
+ga   → ग     (gau → गाउ)
+gha  → घ     (ghar → घर)
+nga  → ङ     (anga → अङ्ग)
+```
+
+**Cha-varga (च-वर्ग):**
+```
+cha  → च     (chaya → छाया)
+chha → छ     (chhaata → छाता)
+ja   → ज     (jal → जल)
+jha  → झ     (jhola → झोला)
+nya  → ञ     (nyan → ञान)
+```
+
+**Ta-varga (ट-वर्ग - Retroflex):**
+```
+Ta   → ट     (Topi → टोपी)
+Tha  → ठ     (Thulo → ठुलो)
+Da   → ड     (Danda → डन्ड)
+Dha  → ढ     (Dhoka → ढोका)
+Na   → ण     (viNa → विण)
+```
+
+**Ta-varga (त-वर्ग - Dental):**
+```
+ta   → त     (tara → तारा)
+tha  → थ     (thaha → थाहा)
+da   → द     (dal → दाल)
+dha  → ध     (dhan → धन)
+na   → न     (naam → नाम)
+```
+
+**Pa-varga (प-वर्ग):**
+```
+pa   → प     (pani → पानी)
+pha  → फ     (phool → फूल)
+ba   → ब     (baal → बाल)
+bha  → भ     (bhat → भात)
+ma   → म     (maan → मान)
+```
+
+**Ya-varga (य-वर्ग):**
+```
+ya   → य     (yatra → यात्रा)
+ra   → र     (rang → रङ्ग)
+la   → ल     (lahar → लहर)
+va   → व     (vayu → वायु)
+```
+
+**Sha-varga (श-वर्ग):**
+```
+sha  → श     (shanti → शान्ति)
+Sha  → ष     (viSha → विष)
+sa   → स     (satya → सत्य)
+ha   → ह     (hawa → हावा)
+```
 
 ---
 

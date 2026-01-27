@@ -1,7 +1,5 @@
 import './style.css'
-import { createNepaliInput } from './nepali-input'
-import { createNepaliTextarea } from './nepali-textarea'
-import { createNepaliConverter } from './nepali-converter'
+import { createNepaliInput, createNepaliTextarea, createNepaliConverter } from '@verishore/nepali-input'
 
 const app = document.querySelector<HTMLDivElement>('#app')
 

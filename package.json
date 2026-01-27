@@ -1,15 +1,18 @@
 {
-  "name": "romanized",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "typescript": "~5.9.3",
-    "vite": "^7.2.4"
-  }
+	"name": "@verishore/nepali-monorepo",
+	"private": true,
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "pnpm --filter demo dev",
+		"build": "pnpm -r --filter './packages/*' build",
+		"build:demo": "pnpm --filter demo build",
+		"preview": "pnpm --filter demo preview",
+		"clean": "pnpm -r exec rm -rf dist node_modules",
+		"publish:all": "pnpm -r --filter './packages/*' publish --access public"
+	},
+	"devDependencies": {
+		"typescript": "~5.9.3",
+		"vite": "^7.2.4"
+	}
 }

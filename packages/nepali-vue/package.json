@@ -1,0 +1,55 @@
+{
+	"name": "@verishore/nepali-vue",
+	"version": "1.0.0",
+	"description": "Vue 3 components for Nepali input with instant romanized-to-Devanagari transliteration",
+	"type": "module",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"scripts": {
+		"build": "vue-tsc --noEmit && vite build",
+		"dev": "vite build --watch",
+		"type-check": "vue-tsc --noEmit"
+	},
+	"keywords": [
+		"nepali",
+		"devanagari",
+		"transliteration",
+		"vue",
+		"vue3",
+		"input",
+		"component"
+	],
+	"author": "Verishore",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/verishore/nepali-input.git",
+		"directory": "packages/nepali-vue"
+	},
+	"peerDependencies": {
+		"vue": ">=3.0.0"
+	},
+	"dependencies": {
+		"@verishore/nepali-input": "workspace:*"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "^5.2.1",
+		"typescript": "~5.9.3",
+		"vite": "^7.2.4",
+		"vite-plugin-dts": "^4.3.0",
+		"vue": "^3.5.13",
+		"vue-tsc": "^2.1.10"
+	}
+}
