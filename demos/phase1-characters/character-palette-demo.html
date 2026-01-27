@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Character Palette - Nepali Input</title>
+	<style>
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+		
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			min-height: 100vh;
+			padding: 2rem;
+		}
+		
+		.container {
+			max-width: 1400px;
+			margin: 0 auto;
+		}
+		
+		header {
+			text-align: center;
+			color: white;
+			margin-bottom: 2rem;
+		}
+		
+		h1 {
+			font-size: 2.5rem;
+			margin-bottom: 0.5rem;
+			text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+		}
+		
+		.subtitle {
+			font-size: 1.1rem;
+			opacity: 0.9;
+		}
+		
+		.palette-container {
+			background: white;
+			border-radius: 12px;
+			padding: 2rem;
+			box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+		}
+		
+		.search-bar {
+			margin-bottom: 2rem;
+		}
+		
+		.search-input {
+			width: 100%;
+			padding: 1rem;
+			font-size: 1.1rem;
+			border: 2px solid #e0e0e0;
+			border-radius: 8px;
+			transition: border-color 0.2s;
+		}
+		
+		.search-input:focus {
+			outline: none;
+			border-color: #667eea;
+		}
+		
+		.tabs {
+			display: flex;
+			gap: 0.5rem;
+			margin-bottom: 2rem;
+			overflow-x: auto;
+			padding-bottom: 0.5rem;
+		}
+		
+		.tab {
+			padding: 0.75rem 1.5rem;
+			background: #f3f4f6;
+			border: none;
+			border-radius: 8px;
+			cursor: pointer;
+			font-size: 0.95rem;
+			font-weight: 600;
+			color: #6b7280;
+			transition: all 0.2s;
+			white-space: nowrap;
+		}
+		
+		.tab:hover {
+			background: #e5e7eb;
+			color: #374151;
+		}
+		
+		.tab.active {
+			background: #667eea;
+			color: white;
+		}
+		
+		.char-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+			gap: 0.75rem;
+			margin-bottom: 2rem;
+		}
+		
+		.char-card {
+			background: #f9fafb;
+			border: 2px solid #e5e7eb;
+			border-radius: 8px;
+			padding: 1rem;
+			text-align: center;
+			cursor: pointer;
+			transition: all 0.2s;
+			position: relative;
+		}
+		
+		.char-card:hover {
+			background: #667eea;
+			border-color: #667eea;
+			color: white;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+		}
+		
+		.char-card.selected {
+			background: #10b981;
+			border-color: #10b981;
+			color: white;
+		}
+		
+		.char-main {
+			font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+			font-size: 2.5rem;
+			margin-bottom: 0.5rem;
+		}
+		
+		.char-name {
+			font-size: 0.85rem;
+			font-weight: 600;
+			opacity: 0.7;
+		}
+		
+		.char-rom {
+			font-size: 0.75rem;
+			margin-top: 0.25rem;
+			font-family: monospace;
+			opacity: 0.6;
+		}
+		
+		.output-panel {
+			background: #f9fafb;
+			border: 2px solid #e5e7eb;
+			border-radius: 8px;
+			padding: 1.5rem;
+			margin-top: 2rem;
+		}
+		
+		.output-label {
+			font-weight: 600;
+			color: #374151;
+			margin-bottom: 0.75rem;
+		}
+		
+		.output-text {
+			font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+			font-size: 2rem;
+			line-height: 1.8;
+			color: #1f2937;
+			min-height: 60px;
+			word-wrap: break-word;
+		}
+		
+		.stats {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			gap: 1rem;
+			margin-bottom: 2rem;
+		}
+		
+		.stat-card {
+			background: #f9fafb;
+			padding: 1rem;
+			border-radius: 8px;
+			text-align: center;
+		}
+		
+		.stat-value {
+			font-size: 2rem;
+			font-weight: bold;
+			color: #667eea;
+		}
+		
+		.stat-label {
+			font-size: 0.875rem;
+			color: #6b7280;
+			margin-top: 0.25rem;
+		}
+		
+		.controls {
+			display: flex;
+			gap: 0.75rem;
+			flex-wrap: wrap;
+		}
+		
+		button {
+			background: #667eea;
+			color: white;
+			border: none;
+			padding: 0.75rem 1.5rem;
+			border-radius: 8px;
+			font-size: 0.95rem;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.2s;
+		}
+		
+		button:hover {
+			background: #5568d3;
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+		}
+		
+		button.secondary {
+			background: #6b7280;
+		}
+		
+		button.secondary:hover {
+			background: #4b5563;
+		}
+		
+		.empty-state {
+			text-align: center;
+			padding: 3rem;
+			color: #9ca3af;
+		}
+		
+		.empty-state-icon {
+			font-size: 3rem;
+			margin-bottom: 1rem;
+		}
+		
+		@media (max-width: 768px) {
+			body {
+				padding: 1rem;
+			}
+			
+			h1 {
+				font-size: 2rem;
+			}
+			
+			.palette-container {
+				padding: 1.5rem;
+			}
+			
+			.char-grid {
+				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+			}
+			
+			.char-main {
+				font-size: 2rem;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<header>
+			<h1>🎨 Devanagari Character Palette</h1>
+			<p class="subtitle">Click any character to insert • Search by name or romanization</p>
+		</header>
+		
+		<div class="palette-container">
+			<div class="search-bar">
+				<input 
+					type="text" 
+					class="search-input" 
+					id="searchInput" 
+					placeholder="Search characters by name or romanization (e.g., 'ka', 'namaste', 'nukta')..."
+				/>
+			</div>
+			
+			<div class="stats" id="stats"></div>
+			
+			<div class="tabs" id="tabs"></div>
+			
+			<div class="char-grid" id="charGrid"></div>
+			
+			<div class="output-panel">
+				<div class="output-label">Composed Text:</div>
+				<div class="output-text" id="outputText"></div>
+				<div class="controls" style="margin-top: 1rem;">
+					<button id="copyBtn">📋 Copy Text</button>
+					<button id="clearBtn" class="secondary">🗑️ Clear</button>
+					<button id="clearRecentBtn" class="secondary">Clear Recent</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script type="module">
+		import { CharacterPaletteManager, CHARACTER_CATEGORIES } from '../packages/nepali-input/dist/index.js'
+		
+		const searchInput = document.getElementById('searchInput')
+		const tabsContainer = document.getElementById('tabs')
+		const charGrid = document.getElementById('charGrid')
+		const outputText = document.getElementById('outputText')
+		const copyBtn = document.getElementById('copyBtn')
+		const clearBtn = document.getElementById('clearBtn')
+		const clearRecentBtn = document.getElementById('clearRecentBtn')
+		const statsContainer = document.getElementById('stats')
+		
+		let composedText = ''
+		let activeCategory = 'recent'
+		let selectedChar = null
+		
+		// Initialize palette manager
+		const palette = new CharacterPaletteManager({
+			showRomanization: true,
+			showUnicode: false,
+			maxRecent: 30,
+			onSelect: (char) => {
+				composedText += char.char
+				updateOutput()
+				updateStats()
+				
+				// Visual feedback
+				selectedChar = char.char
+				renderCharacters()
+				setTimeout(() => {
+					selectedChar = null
+					renderCharacters()
+				}, 300)
+			}
+		})
+		
+		// Create tabs
+		function createTabs() {
+			tabsContainer.innerHTML = ''
+			
+			// Recent tab
+			const recentTab = document.createElement('button')
+			recentTab.className = 'tab'
+			recentTab.textContent = '⏱️ Recent'
+			recentTab.addEventListener('click', () => {
+				activeCategory = 'recent'
+				updateTabs()
+				renderCharacters()
+			})
+			tabsContainer.appendChild(recentTab)
+			
+			// Category tabs
+			CHARACTER_CATEGORIES.forEach(cat => {
+				const tab = document.createElement('button')
+				tab.className = 'tab'
+				tab.textContent = cat.name
+				tab.addEventListener('click', () => {
+					activeCategory = cat.id
+					searchInput.value = ''
+					updateTabs()
+					renderCharacters()
+				})
+				tabsContainer.appendChild(tab)
+			})
+			
+			updateTabs()
+		}
+		
+		function updateTabs() {
+			const tabs = tabsContainer.querySelectorAll('.tab')
+			tabs.forEach((tab, i) => {
+				const isRecent = i === 0 && activeCategory === 'recent'
+				const isCat = i > 0 && CHARACTER_CATEGORIES[i - 1].id === activeCategory
+				tab.classList.toggle('active', isRecent || isCat)
+			})
+		}
+		
+		function renderCharacters() {
+			charGrid.innerHTML = ''
+			
+			const query = searchInput.value.trim()
+			let characters = []
+			
+			if (query) {
+				// Search mode
+				characters = palette.search(query)
+				if (characters.length === 0) {
+					showEmptyState('No characters found')
+					return
+				}
+			} else if (activeCategory === 'recent') {
+				// Recent mode
+				characters = palette.getRecentCharacters()
+				if (characters.length === 0) {
+					showEmptyState('No recent characters yet')
+					return
+				}
+			} else {
+				// Category mode
+				characters = palette.getCategoryCharacters(activeCategory)
+			}
+			
+			// Render character cards
+			characters.forEach(char => {
+				const card = document.createElement('div')
+				card.className = 'char-card'
+				if (char.char === selectedChar) {
+					card.classList.add('selected')
+				}
+				
+				card.innerHTML = `
+					<div class="char-main">${char.char}</div>
+					<div class="char-name">${char.name}</div>
+					${char.romanization ? `<div class="char-rom">${char.romanization}</div>` : ''}
+				`
+				
+				card.addEventListener('click', () => {
+					palette.selectCharacter(char)
+				})
+				
+				charGrid.appendChild(card)
+			})
+		}
+		
+		function showEmptyState(message) {
+			charGrid.innerHTML = `
+				<div class="empty-state" style="grid-column: 1 / -1;">
+					<div class="empty-state-icon">🔍</div>
+					<div>${message}</div>
+				</div>
+			`
+		}
+		
+		function updateOutput() {
+			outputText.textContent = composedText || '(Click characters to compose text)'
+		}
+		
+		function updateStats() {
+			const recent = palette.getRecentCharacters().length
+			const allChars = CHARACTER_CATEGORIES.reduce((sum, cat) => sum + cat.characters.length, 0)
+			
+			statsContainer.innerHTML = `
+				<div class="stat-card">
+					<div class="stat-value">${composedText.length}</div>
+					<div class="stat-label">Characters Composed</div>
+				</div>
+				<div class="stat-card">
+					<div class="stat-value">${recent}</div>
+					<div class="stat-label">Recent Characters</div>
+				</div>
+				<div class="stat-card">
+					<div class="stat-value">${allChars}</div>
+					<div class="stat-label">Total Available</div>
+				</div>
+				<div class="stat-card">
+					<div class="stat-value">${CHARACTER_CATEGORIES.length}</div>
+					<div class="stat-label">Categories</div>
+				</div>
+			`
+		}
+		
+		// Event listeners
+		searchInput.addEventListener('input', () => {
+			renderCharacters()
+		})
+		
+		copyBtn.addEventListener('click', async () => {
+			try {
+				await navigator.clipboard.writeText(composedText)
+				copyBtn.textContent = '✅ Copied!'
+				setTimeout(() => {
+					copyBtn.textContent = '📋 Copy Text'
+				}, 2000)
+			} catch (err) {
+				alert('Failed to copy text')
+			}
+		})
+		
+		clearBtn.addEventListener('click', () => {
+			if (confirm('Clear all composed text?')) {
+				composedText = ''
+				updateOutput()
+				updateStats()
+			}
+		})
+		
+		clearRecentBtn.addEventListener('click', () => {
+			if (confirm('Clear recent characters history?')) {
+				palette.clearRecent()
+				if (activeCategory === 'recent') {
+					renderCharacters()
+				}
+				updateStats()
+			}
+		})
+		
+		// Initialize
+		createTabs()
+		renderCharacters()
+		updateOutput()
+		updateStats()
+	</script>
+</body>
+</html>

@@ -1,8 +1,11 @@
 import { transliterate } from './transliterate'
+import { HistoryManager } from './history'
 
 export interface NepaliIMEOptions {
 	useDevanagariDigits?: boolean
 	onStateChange?: (state: NepaliIMEState) => void
+	enableHistory?: boolean
+	maxHistory?: number
 }
 
 export interface NepaliIMEState {
@@ -25,11 +28,14 @@ const digitMap: Record<string, string> = {
 export class NepaliIMECore {
 	private state: NepaliIMEState
 	private options: Required<NepaliIMEOptions>
+	private history: HistoryManager | null
 
 	constructor(options: NepaliIMEOptions = {}) {
 		this.options = {
 			useDevanagariDigits: options.useDevanagariDigits ?? true,
 			onStateChange: options.onStateChange ?? (() => { }),
+			enableHistory: options.enableHistory ?? true,
+			maxHistory: options.maxHistory ?? 100,
 		}
 		this.state = {
 			romanBuffer: [],
@@ -37,6 +43,9 @@ export class NepaliIMECore {
 			output: '',
 			cursorPosition: 0,
 		}
+		this.history = this.options.enableHistory
+			? new HistoryManager({ maxHistory: this.options.maxHistory })
+			: null
 	}
 
 	/**
@@ -50,7 +59,19 @@ export class NepaliIMECore {
 	 * Handle keyboard input
 	 * Returns true if the event was handled, false otherwise
 	 */
-	public handleKey(key: string, modifiers: { ctrl?: boolean; alt?: boolean; meta?: boolean } = {}): boolean {
+	public handleKey(key: string, modifiers: { ctrl?: boolean; alt?: boolean; meta?: boolean; shift?: boolean } = {}): boolean {
+		// Handle undo/redo
+		if (modifiers.ctrl || modifiers.meta) {
+			if (key === 'z' && !(modifiers.alt || modifiers.ctrl && modifiers.meta)) {
+				this.undo()
+				return true
+			}
+			if ((key === 'y' || (key === 'z' && modifiers.shift)) && !(modifiers.alt)) {
+				this.redo()
+				return true
+			}
+		}
+
 		// Allow modifier key combinations (except Backspace/Delete)
 		if (modifiers.ctrl || modifiers.meta || modifiers.alt) {
 			if (key !== 'Backspace' && key !== 'Delete') {
@@ -76,6 +97,7 @@ export class NepaliIMECore {
 		if (key === 'Backspace' || key === 'Delete') {
 			this.deleteCharacter()
 			this.updateOutput()
+			this.pushHistory()
 			return true
 		}
 
@@ -117,6 +139,7 @@ export class NepaliIMECore {
 		if (/^[a-zA-Z~^`]$/.test(key)) {
 			this.state.currentWord += key
 			this.updateOutput()
+			this.pushHistory()
 			return true
 		}
 
@@ -135,6 +158,7 @@ export class NepaliIMECore {
 		this.commitCurrentWord()
 		this.state.romanBuffer.push(converted)
 		this.updateOutput()
+		this.pushHistory()
 	}
 
 	/**
@@ -234,5 +258,64 @@ export class NepaliIMECore {
 
 		// Notify listeners
 		this.options.onStateChange(this.getState())
+	}
+
+	private pushHistory(): void {
+		if (this.history) {
+			this.history.push(this.state.output, this.state.cursorPosition)
+		}
+	}
+
+	/**
+	 * Undo last change
+	 */
+	public undo(): boolean {
+		if (!this.history || !this.history.canUndo()) {
+			return false
+		}
+
+		const state = this.history.undo()
+		if (state) {
+			this.setValue(state.value)
+			return true
+		}
+		return false
+	}
+
+	/**
+	 * Redo last undone change
+	 */
+	public redo(): boolean {
+		if (!this.history || !this.history.canRedo()) {
+			return false
+		}
+
+		const state = this.history.redo()
+		if (state) {
+			this.setValue(state.value)
+			return true
+		}
+		return false
+	}
+
+	/**
+	 * Check if undo is available
+	 */
+	public canUndo(): boolean {
+		return this.history?.canUndo() ?? false
+	}
+
+	/**
+	 * Check if redo is available
+	 */
+	public canRedo(): boolean {
+		return this.history?.canRedo() ?? false
+	}
+
+	/**
+	 * Clear undo/redo history
+	 */
+	public clearHistory(): void {
+		this.history?.clear()
 	}
 }

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>IAST Transliteration Demo - Nepali Input</title>
+	<style>
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+		
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			min-height: 100vh;
+			padding: 2rem;
+		}
+		
+		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+		}
+		
+		header {
+			text-align: center;
+			color: white;
+			margin-bottom: 3rem;
+		}
+		
+		h1 {
+			font-size: 2.5rem;
+			margin-bottom: 0.5rem;
+			text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+		}
+		
+		.subtitle {
+			font-size: 1.2rem;
+			opacity: 0.9;
+		}
+		
+		.card {
+			background: white;
+			border-radius: 12px;
+			padding: 2rem;
+			margin-bottom: 2rem;
+			box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+		}
+		
+		.info-box {
+			background: #f0f4ff;
+			border-left: 4px solid #667eea;
+			padding: 1.5rem;
+			margin-bottom: 2rem;
+			border-radius: 4px;
+		}
+		
+		.info-box h3 {
+			color: #667eea;
+			margin-bottom: 0.5rem;
+		}
+		
+		.info-box p {
+			color: #555;
+			line-height: 1.6;
+		}
+		
+		.info-box ul {
+			margin-left: 2rem;
+			margin-top: 0.5rem;
+		}
+		
+		.info-box li {
+			margin-bottom: 0.25rem;
+		}
+		
+		.demo-section {
+			margin-bottom: 2rem;
+		}
+		
+		.demo-section h3 {
+			margin-bottom: 1rem;
+			color: #333;
+		}
+		
+		.input-group {
+			margin-bottom: 1.5rem;
+		}
+		
+		label {
+			display: block;
+			margin-bottom: 0.5rem;
+			font-weight: 600;
+			color: #555;
+		}
+		
+		input[type="text"], textarea {
+			width: 100%;
+			padding: 0.75rem;
+			border: 2px solid #e0e0e0;
+			border-radius: 6px;
+			font-size: 1rem;
+			font-family: inherit;
+			transition: border-color 0.2s;
+		}
+		
+		input[type="text"]:focus, textarea:focus {
+			outline: none;
+			border-color: #667eea;
+		}
+		
+		textarea {
+			min-height: 120px;
+			resize: vertical;
+			font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+			font-size: 1.25rem;
+			line-height: 1.8;
+		}
+		
+		.output-box {
+			background: #f9fafb;
+			border: 2px solid #e0e0e0;
+			border-radius: 6px;
+			padding: 1rem;
+			min-height: 100px;
+			font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+			font-size: 1.5rem;
+			line-height: 2;
+			color: #1f2937;
+		}
+		
+		.examples-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: 1rem;
+			margin-top: 1rem;
+		}
+		
+		.example-card {
+			background: #f9fafb;
+			border: 1px solid #e0e0e0;
+			border-radius: 6px;
+			padding: 1rem;
+			cursor: pointer;
+			transition: all 0.2s;
+		}
+		
+		.example-card:hover {
+			background: #667eea;
+			color: white;
+			border-color: #667eea;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+		}
+		
+		.example-card .iast {
+			font-family: monospace;
+			font-size: 1rem;
+			margin-bottom: 0.5rem;
+		}
+		
+		.example-card .devanagari {
+			font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+			font-size: 1.5rem;
+			font-weight: bold;
+		}
+		
+		.char-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 1rem;
+		}
+		
+		.char-table th,
+		.char-table td {
+			padding: 0.75rem;
+			text-align: left;
+			border-bottom: 1px solid #e0e0e0;
+		}
+		
+		.char-table th {
+			background: #f9fafb;
+			font-weight: 600;
+			color: #667eea;
+		}
+		
+		.char-table .iast-col {
+			font-family: monospace;
+			color: #059669;
+			font-weight: bold;
+		}
+		
+		.char-table .deva-col {
+			font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+			font-size: 1.5rem;
+			color: #dc2626;
+		}
+		
+		.controls {
+			display: flex;
+			gap: 1rem;
+			margin-top: 1rem;
+			flex-wrap: wrap;
+		}
+		
+		button {
+			background: #667eea;
+			color: white;
+			border: none;
+			padding: 0.75rem 1.5rem;
+			border-radius: 6px;
+			font-size: 1rem;
+			cursor: pointer;
+			transition: all 0.2s;
+			font-weight: 600;
+		}
+		
+		button:hover {
+			background: #5568d3;
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+		}
+		
+		button:active {
+			transform: translateY(0);
+		}
+		
+		button.secondary {
+			background: #6b7280;
+		}
+		
+		button.secondary:hover {
+			background: #4b5563;
+		}
+		
+		.badge {
+			display: inline-block;
+			background: #667eea;
+			color: white;
+			padding: 0.25rem 0.75rem;
+			border-radius: 12px;
+			font-size: 0.875rem;
+			font-weight: 600;
+			margin-left: 0.5rem;
+		}
+		
+		@media (max-width: 768px) {
+			body {
+				padding: 1rem;
+			}
+			
+			h1 {
+				font-size: 2rem;
+			}
+			
+			.card {
+				padding: 1.5rem;
+			}
+			
+			.examples-grid {
+				grid-template-columns: 1fr;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<header>
+			<h1>🕉️ IAST Transliteration</h1>
+			<p class="subtitle">International Alphabet of Sanskrit Transliteration</p>
+		</header>
+		
+		<div class="card">
+			<div class="info-box">
+				<h3>What is IAST? <span class="badge">Academic Standard</span></h3>
+				<p>
+					IAST (International Alphabet of Sanskrit Transliteration) is the academic standard for 
+					romanizing Sanskrit and other Indic languages using diacritical marks. It provides precise, 
+					unambiguous representation of Devanagari characters.
+				</p>
+				<ul>
+					<li><strong>Diacritics:</strong> ā ī ū ṛ ṝ ḷ ḹ ṅ ñ ṭ ḍ ṇ ś ṣ ṃ ḥ</li>
+					<li><strong>ASCII Alternatives:</strong> aa, ii, uu, .r, .rr, .l, .ll, .n, ~n, .t, .d, .s, s., .m, .h</li>
+					<li><strong>Use Cases:</strong> Academic papers, scholarly editions, linguistic analysis</li>
+				</ul>
+			</div>
+			
+			<div class="demo-section">
+				<h3>Interactive Converter</h3>
+				
+				<div class="input-group">
+					<label for="iastInput">
+						Enter IAST Text 
+						<span style="color: #888; font-weight: normal;">(Use diacritics or ASCII alternatives)</span>
+					</label>
+					<input 
+						type="text" 
+						id="iastInput" 
+						placeholder="Type: namaste, dhanyavād, or namaḥ..."
+						autocomplete="off"
+					/>
+				</div>
+				
+				<div class="input-group">
+					<label for="devanagariOutput">Devanagari Output</label>
+					<div id="devanagariOutput" class="output-box"></div>
+				</div>
+				
+				<div class="controls">
+					<button id="clearBtn">Clear</button>
+					<button id="reverseBtn" class="secondary">Reverse (Devanagari → IAST)</button>
+				</div>
+			</div>
+		</div>
+		
+		<div class="card">
+			<h3>Common Examples <span style="color: #888; font-weight: normal;">(Click to try)</span></h3>
+			<div class="examples-grid" id="examplesGrid"></div>
+		</div>
+		
+		<div class="card">
+			<h3>Character Reference</h3>
+			<table class="char-table">
+				<thead>
+					<tr>
+						<th>IAST</th>
+						<th>ASCII Alt</th>
+						<th>Devanagari</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody id="charTableBody"></tbody>
+			</table>
+		</div>
+	</div>
+	
+	<script type="module">
+		import { iastToDevanagari, devanagariToIAST, IAST_TO_DEVANAGARI } from '../packages/nepali-input/dist/index.js'
+		
+		const iastInput = document.getElementById('iastInput')
+		const devanagariOutput = document.getElementById('devanagariOutput')
+		const clearBtn = document.getElementById('clearBtn')
+		const reverseBtn = document.getElementById('reverseBtn')
+		const examplesGrid = document.getElementById('examplesGrid')
+		const charTableBody = document.getElementById('charTableBody')
+		
+		// Common examples
+		const examples = [
+			{ iast: 'namaste', deva: 'नमस्ते', desc: 'Hello/Greetings' },
+			{ iast: 'namaḥ', deva: 'नमः', desc: 'Salutations' },
+			{ iast: 'dhanyavāda', deva: 'धन्यवाद', desc: 'Thank you' },
+			{ iast: 'śānti', deva: 'शान्ति', desc: 'Peace' },
+			{ iast: 'yogaḥ', deva: 'योगः', desc: 'Yoga' },
+			{ iast: 'mantraḥ', deva: 'मन्त्रः', desc: 'Mantra' },
+			{ iast: 'kṛṣṇa', deva: 'कृष्ण', desc: 'Krishna' },
+			{ iast: 'brahmā', deva: 'ब्रह्मा', desc: 'Brahma' },
+			{ iast: 'gaṇeśa', deva: 'गणेश', desc: 'Ganesha' },
+			{ iast: 'saṃskṛtam', deva: 'संस्कृतम्', desc: 'Sanskrit' },
+			{ iast: 'bhagavān', deva: 'भगवान्', desc: 'God/Lord' },
+			{ iast: 'dharmaḥ', deva: 'धर्मः', desc: 'Dharma' },
+		]
+		
+		// Character reference data
+		const charReference = [
+			{ iast: 'ā', ascii: 'aa', deva: 'आ/ा', desc: 'Long a' },
+			{ iast: 'ī', ascii: 'ii', deva: 'ई/ी', desc: 'Long i' },
+			{ iast: 'ū', ascii: 'uu', deva: 'ऊ/ू', desc: 'Long u' },
+			{ iast: 'ṛ', ascii: '.r', deva: 'ऋ/ृ', desc: 'Vocalic r' },
+			{ iast: 'ṝ', ascii: '.rr', deva: 'ॠ/ॄ', desc: 'Long vocalic r' },
+			{ iast: 'ḷ', ascii: '.l', deva: 'ऌ/ॢ', desc: 'Vocalic l' },
+			{ iast: 'ḹ', ascii: '.ll', deva: 'ॡ/ॣ', desc: 'Long vocalic l' },
+			{ iast: 'ṅ', ascii: '.n', deva: 'ङ', desc: 'Velar nasal' },
+			{ iast: 'ñ', ascii: '~n', deva: 'ञ', desc: 'Palatal nasal' },
+			{ iast: 'ṭ', ascii: '.t', deva: 'ट', desc: 'Retroflex t' },
+			{ iast: 'ḍ', ascii: '.d', deva: 'ड', desc: 'Retroflex d' },
+			{ iast: 'ṇ', ascii: '.n', deva: 'ण', desc: 'Retroflex n' },
+			{ iast: 'ś', ascii: '.s', deva: 'श', desc: 'Palatal s' },
+			{ iast: 'ṣ', ascii: 's.', deva: 'ष', desc: 'Retroflex s' },
+			{ iast: 'ṃ', ascii: '.m', deva: 'ं', desc: 'Anusvara' },
+			{ iast: 'ḥ', ascii: '.h', deva: 'ः', desc: 'Visarga' },
+		]
+		
+		// Render examples
+		examples.forEach(ex => {
+			const card = document.createElement('div')
+			card.className = 'example-card'
+			card.innerHTML = `
+				<div class="iast">${ex.iast}</div>
+				<div class="devanagari">${ex.deva}</div>
+				<div style="margin-top: 0.5rem; font-size: 0.875rem; color: #666;">${ex.desc}</div>
+			`
+			card.addEventListener('click', () => {
+				iastInput.value = ex.iast
+				updateOutput()
+			})
+			examplesGrid.appendChild(card)
+		})
+		
+		// Render character table
+		charReference.forEach(char => {
+			const row = document.createElement('tr')
+			row.innerHTML = `
+				<td class="iast-col">${char.iast}</td>
+				<td style="font-family: monospace; color: #6b7280;">${char.ascii}</td>
+				<td class="deva-col">${char.deva}</td>
+				<td>${char.desc}</td>
+			`
+			charTableBody.appendChild(row)
+		})
+		
+		// Update output
+		function updateOutput() {
+			const input = iastInput.value
+			const output = iastToDevanagari(input)
+			devanagariOutput.textContent = output || '(Empty)'
+		}
+		
+		// Event listeners
+		iastInput.addEventListener('input', updateOutput)
+		
+		clearBtn.addEventListener('click', () => {
+			iastInput.value = ''
+			devanagariOutput.textContent = ''
+			iastInput.focus()
+		})
+		
+		reverseBtn.addEventListener('click', () => {
+			const devaText = prompt('Enter Devanagari text to convert to IAST:')
+			if (devaText) {
+				const iastText = devanagariToIAST(devaText)
+				alert(`IAST: ${iastText}`)
+				iastInput.value = iastText
+				updateOutput()
+			}
+		})
+		
+		// Initialize
+		iastInput.focus()
+	</script>
+</body>
+</html>

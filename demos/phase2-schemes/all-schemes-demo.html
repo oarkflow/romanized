@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Phase 2: All Transliteration Schemes</title>
+	<style>
+		* { box-sizing: border-box; margin: 0; padding: 0; }
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			min-height: 100vh;
+			padding: 2rem;
+		}
+		.container { max-width: 1600px; margin: 0 auto; }
+		header { text-align: center; color: white; margin-bottom: 2rem; }
+		h1 { font-size: 2.5rem; margin-bottom: 0.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+		.card { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+		.scheme-selector { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+		.scheme-btn { padding: 1rem 1.5rem; background: #f3f4f6; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: 600; }
+		.scheme-btn:hover { background: #e5e7eb; }
+		.scheme-btn.active { background: #667eea; color: white; border-color: #667eea; }
+		.converter { background: #f9fafb; border-radius: 8px; padding: 2rem; }
+		.input-area { margin-bottom: 1.5rem; }
+		label { display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem; }
+		textarea { width: 100%; min-height: 120px; padding: 1rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; font-family: monospace; }
+		textarea:focus { outline: none; border-color: #667eea; }
+		.output-area { background: white; border: 2px solid #e5e7eb; border-radius: 8px; padding: 1.5rem; min-height: 120px; font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif; font-size: 1.5rem; line-height: 2; }
+		.examples-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-top: 1rem; }
+		.example-card { background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 8px; padding: 1rem; cursor: pointer; transition: all 0.2s; }
+		.example-card:hover { background: #667eea; color: white; border-color: #667eea; transform: translateY(-2px); }
+		.example-title { font-weight: 600; margin-bottom: 0.5rem; }
+		.example-input { font-family: monospace; color: #6b7280; font-size: 0.95rem; }
+		.example-card:hover .example-input { color: rgba(255,255,255,0.9); }
+		.scheme-info { background: #f0f4ff; border-left: 4px solid #667eea; padding: 1.5rem; border-radius: 4px; margin-bottom: 2rem; }
+		.scheme-info h3 { color: #667eea; margin-bottom: 0.5rem; }
+		.scheme-info ul { margin-left: 2rem; margin-top: 0.5rem; }
+		.comparison-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+		.comparison-table th, .comparison-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
+		.comparison-table th { background: #f9fafb; font-weight: 600; color: #667eea; }
+		.comparison-table .devanagari { font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif; font-size: 1.5rem; }
+		.comparison-table .scheme-col { font-family: monospace; font-weight: bold; }
+		button { background: #667eea; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: all 0.2s; font-weight: 600; }
+		button:hover { background: #5568d3; transform: translateY(-1px); }
+	</style>
+</head>
+<body>
+	<div class="container">
+		<header>
+			<h1>🔤 Phase 2: All Transliteration Schemes</h1>
+			<p style="color: white; opacity: 0.9; margin-top: 0.5rem;">Complete implementation of IAST, ISO 15919, Harvard-Kyoto, Velthuis, and SLP1</p>
+		</header>
+		
+		<div class="card">
+			<h2 style="margin-bottom: 1rem;">Select Transliteration Scheme</h2>
+			<div class="scheme-selector" id="schemeSelector"></div>
+			
+			<div id="schemeInfo" class="scheme-info"></div>
+			
+			<div class="converter">
+				<div class="input-area">
+					<label for="input">Input Text (Romanized)</label>
+					<textarea id="input" placeholder="Type here using the selected scheme..."></textarea>
+				</div>
+				
+				<div class="input-area">
+					<label for="output">Output (Devanagari)</label>
+					<div id="output" class="output-area">(Type above to see output)</div>
+				</div>
+				
+				<div style="display: flex; gap: 1rem;">
+					<button id="copyBtn">📋 Copy Output</button>
+					<button id="clearBtn" style="background: #6b7280;">🗑️ Clear</button>
+				</div>
+			</div>
+		</div>
+		
+		<div class="card">
+			<h3 style="margin-bottom: 1rem;">Example Texts <span style="color: #888; font-weight: normal;">(Click to try)</span></h3>
+			<div class="examples-grid" id="examples"></div>
+		</div>
+		
+		<div class="card">
+			<h3 style="margin-bottom: 1rem;">Character Comparison Across Schemes</h3>
+			<table class="comparison-table" id="comparisonTable"></table>
+		</div>
+	</div>
+	
+	<script type="module">
+		import { 
+			iastToDevanagari,
+			iso15919ToDevanagari,
+			harvardKyotoToDevanagari,
+			velthuisToDevanagari,
+			slp1ToDevanagari,
+			SCHEMES,
+		} from '../../packages/nepali-input/dist/index.js'
+		
+		const schemes = {
+			iast: {
+				convert: iastToDevanagari,
+				examples: [
+					{ title: 'Greeting', text: 'namaḥ' },
+					{ title: 'Sanskrit Word', text: 'saṃskṛtam' },
+					{ title: 'Peace', text: 'śānti' },
+					{ title: 'Yoga', text: 'yogaḥ' },
+					{ title: 'Dharma', text: 'dharmaḥ' },
+					{ title: 'Krishna', text: 'kṛṣṇa' },
+				],
+			},
+			iso15919: {
+				convert: iso15919ToDevanagari,
+				examples: [
+					{ title: 'Greeting', text: 'namaḥ' },
+					{ title: 'Sanskrit Word', text: 'saṁskr̥tam' },
+					{ title: 'Peace', text: 'śānti' },
+					{ title: 'Yoga', text: 'yogaḥ' },
+					{ title: 'Dharma', text: 'dharmaḥ' },
+					{ title: 'Krishna', text: 'kr̥ṣṇa' },
+				],
+			},
+			'harvard-kyoto': {
+				convert: harvardKyotoToDevanagari,
+				examples: [
+					{ title: 'Greeting', text: 'namaH' },
+					{ title: 'Sanskrit Word', text: 'saMskRtam' },
+					{ title: 'Peace', text: 'zAnti' },
+					{ title: 'Yoga', text: 'yogaH' },
+					{ title: 'Dharma', text: 'dharmaH' },
+					{ title: 'Krishna', text: 'kRSNa' },
+				],
+			},
+			velthuis: {
+				convert: velthuisToDevanagari,
+				examples: [
+					{ title: 'Greeting', text: 'nama.h' },
+					{ title: 'Sanskrit Word', text: 'sa.msk.rtam' },
+					{ title: 'Peace', text: '"s"anti' },
+					{ title: 'Yoga', text: 'yoga.h' },
+					{ title: 'Dharma', text: 'dharma.h' },
+					{ title: 'Krishna', text: 'k.r.s.na' },
+				],
+			},
+			slp1: {
+				convert: slp1ToDevanagari,
+				examples: [
+					{ title: 'Greeting', text: 'namaH' },
+					{ title: 'Sanskrit Word', text: 'saMskftam' },
+					{ title: 'Peace', text: 'SAnti' },
+					{ title: 'Yoga', text: 'yogaH' },
+					{ title: 'Dharma', text: 'DarmaH' },
+					{ title: 'Krishna', text: 'kfzRa' },
+				],
+			},
+		}
+		
+		let currentScheme = 'iast'
+		
+		const schemesInfo = SCHEMES.filter(s => s.id !== 'default')
+		
+		// Create scheme selector
+		const selector = document.getElementById('schemeSelector')
+		schemesInfo.forEach(scheme => {
+			const btn = document.createElement('button')
+			btn.className = 'scheme-btn'
+			btn.textContent = scheme.name
+			btn.dataset.scheme = scheme.id
+			if (scheme.id === currentScheme) btn.classList.add('active')
+			btn.addEventListener('click', () => switchScheme(scheme.id))
+			selector.appendChild(btn)
+		})
+		
+		function switchScheme(schemeId) {
+			currentScheme = schemeId
+			document.querySelectorAll('.scheme-btn').forEach(btn => {
+				btn.classList.toggle('active', btn.dataset.scheme === schemeId)
+			})
+			updateSchemeInfo()
+			updateExamples()
+			updateOutput()
+		}
+		
+		function updateSchemeInfo() {
+			const info = schemesInfo.find(s => s.id === currentScheme)
+			const infoDiv = document.getElementById('schemeInfo')
+			infoDiv.innerHTML = `
+				<h3>${info.name}</h3>
+				<p>${info.description}</p>
+				<ul>
+					<li><strong>Unicode Support:</strong> ${info.supportsUnicode ? 'Yes' : 'No'}</li>
+					<li><strong>ASCII Support:</strong> ${info.supportsAscii ? 'Yes' : 'No'}</li>
+					<li><strong>Case Sensitive:</strong> ${info.caseSensitive ? 'Yes' : 'No'}</li>
+					<li><strong>Common Use:</strong> ${info.commonUse}</li>
+				</ul>
+			`
+		}
+		
+		function updateExamples() {
+			const examplesDiv = document.getElementById('examples')
+			examplesDiv.innerHTML = ''
+			const examplesList = schemes[currentScheme].examples
+			
+			examplesList.forEach(ex => {
+				const card = document.createElement('div')
+				card.className = 'example-card'
+				card.innerHTML = `
+					<div class="example-title">${ex.title}</div>
+					<div class="example-input">${ex.text}</div>
+				`
+				card.addEventListener('click', () => {
+					document.getElementById('input').value = ex.text
+					updateOutput()
+				})
+				examplesDiv.appendChild(card)
+			})
+		}
+		
+		function updateOutput() {
+			const input = document.getElementById('input').value
+			const output = document.getElementById('output')
+			if (!input) {
+				output.textContent = '(Type above to see output)'
+				return
+			}
+			const converted = schemes[currentScheme].convert(input)
+			output.textContent = converted
+		}
+		
+		// Create comparison table
+		const comparisonData = [
+			{ char: 'आ', iast: 'ā', iso: 'ā', hk: 'A', velthuis: '"a', slp1: 'A', name: 'Long a' },
+			{ char: 'ॠ', iast: 'ṝ', iso: 'r̥̄', hk: 'RR', velthuis: '.rr', slp1: 'F', name: 'Long vocalic r' },
+			{ char: 'ऌ', iast: 'ḷ', iso: 'l̥', hk: 'lR', velthuis: '.l', slp1: 'x', name: 'Vocalic l' },
+			{ char: 'ङ', iast: 'ṅ', iso: 'ṅ', hk: 'G', velthuis: '"n', slp1: 'N', name: 'Velar nasal' },
+			{ char: 'ञ', iast: 'ñ', iso: 'ñ', hk: 'J', velthuis: '~n', slp1: 'Y', name: 'Palatal nasal' },
+			{ char: 'ट', iast: 'ṭ', iso: 'ṭ', hk: 'T', velthuis: '.t', slp1: 'w', name: 'Retroflex t' },
+			{ char: 'ड', iast: 'ḍ', iso: 'ḍ', hk: 'D', velthuis: '.d', slp1: 'q', name: 'Retroflex d' },
+			{ char: 'ण', iast: 'ṇ', iso: 'ṇ', hk: 'N', velthuis: '.n', slp1: 'R', name: 'Retroflex n' },
+			{ char: 'श', iast: 'ś', iso: 'ś', hk: 'z', velthuis: '"s', slp1: 'S', name: 'Palatal s' },
+			{ char: 'ष', iast: 'ṣ', iso: 'ṣ', hk: 'S', velthuis: '.s', slp1: 'z', name: 'Retroflex s' },
+			{ char: 'ं', iast: 'ṃ', iso: 'ṁ', hk: 'M', velthuis: '.m', slp1: 'M', name: 'Anusvara' },
+			{ char: 'ः', iast: 'ḥ', iso: 'ḥ', hk: 'H', velthuis: '.h', slp1: 'H', name: 'Visarga' },
+		]
+		
+		const table = document.getElementById('comparisonTable')
+		table.innerHTML = `
+			<thead>
+				<tr>
+					<th>Devanagari</th>
+					<th>IAST</th>
+					<th>ISO 15919</th>
+					<th>Harvard-Kyoto</th>
+					<th>Velthuis</th>
+					<th>SLP1</th>
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				${comparisonData.map(row => `
+					<tr>
+						<td class="devanagari">${row.char}</td>
+						<td class="scheme-col" style="color: #059669;">${row.iast}</td>
+						<td class="scheme-col" style="color: #dc2626;">${row.iso}</td>
+						<td class="scheme-col" style="color: #7c3aed;">${row.hk}</td>
+						<td class="scheme-col" style="color: #ea580c;">${row.velthuis}</td>
+						<td class="scheme-col" style="color: #0891b2;">${row.slp1}</td>
+						<td>${row.name}</td>
+					</tr>
+				`).join('')}
+			</tbody>
+		`
+		
+		// Event listeners
+		document.getElementById('input').addEventListener('input', updateOutput)
+		document.getElementById('copyBtn').addEventListener('click', async () => {
+			const text = document.getElementById('output').textContent
+			await navigator.clipboard.writeText(text)
+			const btn = document.getElementById('copyBtn')
+			btn.textContent = '✅ Copied!'
+			setTimeout(() => btn.textContent = '📋 Copy Output', 2000)
+		})
+		document.getElementById('clearBtn').addEventListener('click', () => {
+			document.getElementById('input').value = ''
+			document.getElementById('output').textContent = '(Type above to see output)'
+		})
+		
+		// Initialize
+		updateSchemeInfo()
+		updateExamples()
+	</script>
+</body>
+</html>

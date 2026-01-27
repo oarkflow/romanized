@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Phase 1: Complete Devanagari Character Test</title>
+	<style>
+		* { box-sizing: border-box; margin: 0; padding: 0; }
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			min-height: 100vh;
+			padding: 2rem;
+		}
+		.container { max-width: 1400px; margin: 0 auto; }
+		header { text-align: center; color: white; margin-bottom: 2rem; }
+		h1 { font-size: 2.5rem; margin-bottom: 0.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+		.card { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+		.test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+		.test-item { background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 8px; padding: 1.5rem; }
+		.test-item.pass { border-color: #10b981; background: #d1fae5; }
+		.test-item.fail { border-color: #ef4444; background: #fee2e2; }
+		.test-label { font-weight: 600; color: #374151; margin-bottom: 0.5rem; }
+		.test-input { font-family: monospace; color: #6b7280; margin-bottom: 0.5rem; }
+		.test-output { font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif; font-size: 2rem; color: #1f2937; }
+		.test-expected { font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; }
+		.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+		.stat-card { background: #f9fafb; padding: 1.5rem; border-radius: 8px; text-align: center; }
+		.stat-value { font-size: 2.5rem; font-weight: bold; color: #667eea; }
+		.stat-label { font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; }
+	</style>
+</head>
+<body>
+	<div class="container">
+		<header>
+			<h1>✅ Phase 1: Complete Character Testing</h1>
+			<p class="subtitle">Comprehensive test of all Devanagari characters including missing ones</p>
+		</header>
+		
+		<div class="card">
+			<div class="stats" id="stats"></div>
+		</div>
+		
+		<div class="card">
+			<h2 style="margin-bottom: 1rem;">Vowels Test</h2>
+			<div class="test-grid" id="vowelsTest"></div>
+		</div>
+		
+		<div class="card">
+			<h2 style="margin-bottom: 1rem;">Consonants Test</h2>
+			<div class="test-grid" id="consonantsTest"></div>
+		</div>
+		
+		<div class="card">
+			<h2 style="margin-bottom: 1rem;">Nukta Characters Test (NEW)</h2>
+			<div class="test-grid" id="nuktaTest"></div>
+		</div>
+		
+		<div class="card">
+			<h2 style="margin-bottom: 1rem;">Special Characters Test (NEW)</h2>
+			<div class="test-grid" id="specialTest"></div>
+		</div>
+		
+		<div class="card">
+			<h2 style="margin-bottom: 1rem;">Digits Test</h2>
+			<div class="test-grid" id="digitsTest"></div>
+		</div>
+	</div>
+	
+	<script type="module">
+		import { transliterate } from '../../packages/nepali-input/dist/index.js'
+		
+		const testCases = {
+			vowels: [
+				{ input: 'a', expected: 'अ', name: 'Short a' },
+				{ input: 'aa', expected: 'आ', name: 'Long aa' },
+				{ input: 'i', expected: 'इ', name: 'Short i' },
+				{ input: 'ii', expected: 'ई', name: 'Long ii' },
+				{ input: 'u', expected: 'उ', name: 'Short u' },
+				{ input: 'uu', expected: 'ऊ', name: 'Long uu' },
+				{ input: 'ri', expected: 'ऋ', name: 'Vocalic ri' },
+				{ input: 'rri', expected: 'ॠ', name: 'Long vocalic rri (NEW)' },
+				{ input: 'R', expected: 'ॠ', name: 'Long vocalic R (NEW)' },
+				{ input: 'lri', expected: 'ऌ', name: 'Vocalic lri (NEW)' },
+				{ input: 'lree', expected: 'ॡ', name: 'Long vocalic lree (NEW)' },
+				{ input: 'e', expected: 'ए', name: 'e' },
+				{ input: 'ai', expected: 'ऐ', name: 'ai' },
+				{ input: 'o', expected: 'ओ', name: 'o' },
+				{ input: 'au', expected: 'औ', name: 'au' },
+				{ input: 'e^', expected: 'ॅ', name: 'Candra e (NEW)' },
+				{ input: 'eN', expected: 'ॅ', name: 'Candra eN (NEW)' },
+			],
+			consonants: [
+				{ input: 'ka', expected: 'क', name: 'ka' },
+				{ input: 'kha', expected: 'ख', name: 'kha' },
+				{ input: 'ga', expected: 'ग', name: 'ga' },
+				{ input: 'gha', expected: 'घ', name: 'gha' },
+				{ input: 'nga', expected: 'ङ', name: 'nga' },
+				{ input: 'cha', expected: 'च', name: 'cha' },
+				{ input: 'chha', expected: 'छ', name: 'chha' },
+				{ input: 'ja', expected: 'ज', name: 'ja' },
+				{ input: 'jha', expected: 'झ', name: 'jha' },
+				{ input: 'nya', expected: 'ञ', name: 'nya' },
+				{ input: 'Ta', expected: 'ट', name: 'Ta' },
+				{ input: 'Tha', expected: 'ठ', name: 'Tha' },
+				{ input: 'Da', expected: 'ड', name: 'Da' },
+				{ input: 'Dha', expected: 'ढ', name: 'Dha' },
+				{ input: 'Na', expected: 'ण', name: 'Na' },
+				{ input: 'ta', expected: 'त', name: 'ta' },
+				{ input: 'tha', expected: 'थ', name: 'tha' },
+				{ input: 'da', expected: 'द', name: 'da' },
+				{ input: 'dha', expected: 'ध', name: 'dha' },
+				{ input: 'na', expected: 'न', name: 'na' },
+				{ input: 'pa', expected: 'प', name: 'pa' },
+				{ input: 'pha', expected: 'फ', name: 'pha' },
+				{ input: 'ba', expected: 'ब', name: 'ba' },
+				{ input: 'bha', expected: 'भ', name: 'bha' },
+				{ input: 'ma', expected: 'म', name: 'ma' },
+				{ input: 'ya', expected: 'य', name: 'ya' },
+				{ input: 'ra', expected: 'र', name: 'ra' },
+				{ input: 'la', expected: 'ल', name: 'la' },
+				{ input: 'va', expected: 'व', name: 'va' },
+				{ input: 'sha', expected: 'श', name: 'sha' },
+				{ input: 'Sha', expected: 'ष', name: 'Sha' },
+				{ input: 'sa', expected: 'स', name: 'sa' },
+				{ input: 'ha', expected: 'ह', name: 'ha' },
+			],
+			nukta: [
+				{ input: 'qa', expected: 'क़', name: 'qa (NEW)' },
+				{ input: 'za', expected: 'ज़', name: 'za (NEW)' },
+				{ input: 'fa', expected: 'फ़', name: 'fa (NEW)' },
+			],
+			special: [
+				{ input: 'om', expected: 'ॐ', name: 'Om (NEW)' },
+				{ input: '.a', expected: 'ऽ', name: 'Avagraha .a (NEW)' },
+				{ input: "'", expected: 'ऽ', name: "Avagraha ' (NEW)" },
+				{ input: 'M', expected: 'ं', name: 'Anusvara' },
+				{ input: 'H', expected: 'ः', name: 'Visarga' },
+				{ input: '~', expected: 'ँ', name: 'Chandrabindu' },
+			],
+			digits: [
+				{ input: '0', expected: '0', name: '0 (ASCII)' },
+				{ input: '1', expected: '1', name: '1 (ASCII)' },
+				{ input: '2', expected: '2', name: '2 (ASCII)' },
+				{ input: '3', expected: '3', name: '3 (ASCII)' },
+				{ input: '4', expected: '4', name: '4 (ASCII)' },
+				{ input: '5', expected: '5', name: '5 (ASCII)' },
+				{ input: '6', expected: '6', name: '6 (ASCII)' },
+				{ input: '7', expected: '7', name: '7 (ASCII)' },
+				{ input: '8', expected: '8', name: '8 (ASCII)' },
+				{ input: '9', expected: '9', name: '9 (ASCII)' },
+			],
+		}
+		
+		function runTests() {
+			let totalTests = 0
+			let passedTests = 0
+			let failedTests = 0
+			
+			Object.keys(testCases).forEach(category => {
+				const container = document.getElementById(category + 'Test')
+				const tests = testCases[category]
+				
+				tests.forEach(test => {
+					totalTests++
+					const output = transliterate(test.input)
+					const passed = output === test.expected
+					
+					if (passed) passedTests++
+					else failedTests++
+					
+					const testItem = document.createElement('div')
+					testItem.className = `test-item ${passed ? 'pass' : 'fail'}`
+					testItem.innerHTML = `
+						<div class="test-label">${test.name}</div>
+						<div class="test-input">Input: ${test.input}</div>
+						<div class="test-output">${output}</div>
+						<div class="test-expected">Expected: ${test.expected} ${passed ? '✅' : '❌'}</div>
+					`
+					container.appendChild(testItem)
+				})
+			})
+			
+			// Update stats
+			const stats = document.getElementById('stats')
+			const passRate = ((passedTests / totalTests) * 100).toFixed(1)
+			stats.innerHTML = `
+				<div class="stat-card">
+					<div class="stat-value">${totalTests}</div>
+					<div class="stat-label">Total Tests</div>
+				</div>
+				<div class="stat-card" style="border: 2px solid #10b981;">
+					<div class="stat-value" style="color: #10b981;">${passedTests}</div>
+					<div class="stat-label">Passed</div>
+				</div>
+				<div class="stat-card" style="border: 2px solid #ef4444;">
+					<div class="stat-value" style="color: #ef4444;">${failedTests}</div>
+					<div class="stat-label">Failed</div>
+				</div>
+				<div class="stat-card" style="border: 2px solid #667eea;">
+					<div class="stat-value">${passRate}%</div>
+					<div class="stat-label">Pass Rate</div>
+				</div>
+			`
+		}
+		
+		// Run tests on load
+		runTests()
+	</script>
+</body>
+</html>
