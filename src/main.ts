@@ -1,5 +1,7 @@
 import './style.css'
 import { transliterate, reverseTransliterate } from './transliterate'
+import { createNepaliInput } from './nepali-input'
+import { createNepaliTextarea } from './nepali-textarea'
 
 const STORAGE_KEY = 'romanized-nepali::draft'
 const SAMPLE_TEXT = 'Mero naam Sujit ho.'
@@ -55,19 +57,57 @@ if (!app) {
 
 app.innerHTML = `
   <main class="shell">
-    <header class="hero">
-      <p class="eyebrow">Romanized Nepali</p>
-      <h1>Inline IME-style Nepali Typing</h1>
-      <p class="lede">
-        Type romanized text and watch it convert to देवनागरी as you type, word by word.
-      </p>
-    </header>
 
     <section class="ime-section">
       <div class="panel ime-panel">
         <div class="panel-head">
           <div>
-            <p class="eyebrow">IME Mode</p>
+            <p class="eyebrow">Component Demo</p>
+            <h2>Nepali Input Components</h2>
+          </div>
+          <label class="toggle">
+            <input id="component-digit-toggle" type="checkbox" checked />
+            <span>Use Nepali digits ०-९</span>
+          </label>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--fg-default);">
+              NepaliInput Component:
+            </label>
+            <input
+              id="nepali-input-demo"
+              type="text"
+              placeholder="Type in romanized Nepali..."
+              style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-default); border-radius: 0.5rem; font-family: 'Space Grotesk', 'Noto Sans Devanagari', sans-serif; font-size: 1rem; background: var(--bg-input); color: var(--fg-default);"
+            />
+          </div>
+
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--fg-default);">
+              NepaliTextarea Component:
+            </label>
+            <textarea
+              id="nepali-textarea-demo"
+              placeholder="Type longer text in romanized Nepali..."
+              rows="4"
+              style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-default); border-radius: 0.5rem; font-family: 'Space Grotesk', 'Noto Sans Devanagari', sans-serif; font-size: 1rem; background: var(--bg-input); color: var(--fg-default); resize: vertical;"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="panel-foot">
+          <p class="stat ime-hint">These components auto-convert as you type • Try: namaste, swagatam, dhanyabad</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="ime-section">
+      <div class="panel ime-panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">ContentEditable Demo</p>
             <h2>Inline Nepali Typing</h2>
           </div>
           <label class="toggle">
@@ -80,10 +120,10 @@ app.innerHTML = `
           class="ime-input"
           contenteditable="true"
           spellcheck="false"
-          data-placeholder="Start typing in romanized Nepali... Press Space to convert word"
+          data-placeholder="Start typing in romanized Nepali..."
         ></div>
         <div class="panel-foot">
-          <p class="stat ime-hint">Type romanized text, press <kbd>Space</kbd> or <kbd>Enter</kbd> to convert current word</p>
+          <p class="stat ime-hint">Type romanized text with instant conversion</p>
         </div>
         <div class="chip-row" role="list">
           <button class="chip" type="button" data-ime-sample="Mero naam Sujit ho.">Greeting</button>
@@ -150,16 +190,6 @@ app.innerHTML = `
         </div>
       </div>
     </section>
-
-    <section class="tips">
-      <h3>Power tips</h3>
-      <ul id="tips-list">
-        <li>Double vowels for long sounds (aa -> ा, ee -> ी, oo -> ू).</li>
-        <li>Type <code>ri</code> for ऋ, <code>sh</code> for श, <code>Sh</code> for ष.</li>
-        <li>Add <code>^</code> after a consonant to drop the inherent vowel (क^sha -> क्ष).</li>
-        <li>Use <code>m~</code> for ं, <code>n~</code> for ँ, <code>h~</code> for ः.</li>
-      </ul>
-    </section>
   </main>
 `
 
@@ -175,7 +205,6 @@ const sampleButtons = app.querySelectorAll<HTMLButtonElement>('.chip[data-sample
 const inputLabel = app.querySelector<HTMLHeadingElement>('#input-label')
 const outputLabel = app.querySelector<HTMLHeadingElement>('#output-label')
 const directionLabel = app.querySelector<HTMLSpanElement>('#direction-label')
-const tipsList = app.querySelector<HTMLUListElement>('#tips-list')
 const sampleChips = app.querySelector<HTMLDivElement>('#sample-chips')
 
 // IME input elements
@@ -183,9 +212,41 @@ const imeInput = app.querySelector<HTMLDivElement>('#ime-input')
 const imeDigitToggle = app.querySelector<HTMLInputElement>('#ime-digit-toggle')
 const imeSampleButtons = app.querySelectorAll<HTMLButtonElement>('.chip[data-ime-sample]')
 
-if (!romanInput || !nepaliOutput || !statusLine || !latinCount || !devanagariCount || !digitToggle || !directionToggle || !copyButton || !inputLabel || !outputLabel || !directionLabel || !tipsList || !sampleChips || !imeInput || !imeDigitToggle) {
+// Component demo elements
+const componentDigitToggle = app.querySelector<HTMLInputElement>('#component-digit-toggle')
+const nepaliInputDemo = app.querySelector<HTMLInputElement>('#nepali-input-demo')
+const nepaliTextareaDemo = app.querySelector<HTMLTextAreaElement>('#nepali-textarea-demo')
+
+if (!romanInput || !nepaliOutput || !statusLine || !latinCount || !devanagariCount || !digitToggle || !directionToggle || !copyButton || !inputLabel || !outputLabel || !directionLabel || !sampleChips || !imeInput || !imeDigitToggle || !componentDigitToggle || !nepaliInputDemo || !nepaliTextareaDemo) {
 	throw new Error('Transliteration UI failed to initialize')
 }
+
+// ============================================================================
+// INITIALIZE NEPALI INPUT/TEXTAREA COMPONENTS
+// ============================================================================
+
+const nepaliInput = createNepaliInput(nepaliInputDemo, {
+	useDevanagariDigits: true,
+	autoConvert: true,
+	onInput: (value) => {
+		// Optional: do something on input
+	}
+})
+
+const nepaliTextarea = createNepaliTextarea(nepaliTextareaDemo, {
+	useDevanagariDigits: true,
+	autoConvert: true,
+	onInput: (value) => {
+		// Optional: do something on input
+	}
+})
+
+// Sync digit toggle with components
+componentDigitToggle.addEventListener('change', () => {
+	const useDevanagariDigits = componentDigitToggle.checked
+	nepaliInput.setOptions({ useDevanagariDigits })
+	nepaliTextarea.setOptions({ useDevanagariDigits })
+})
 
 const setStatus = (message: string) => {
 	statusLine.textContent = message
@@ -287,7 +348,7 @@ const updateUILabels = () => {
 }
 
 // ============================================================================
-// IME INPUT LOGIC - Simple approach using full text replacement
+// IME INPUT LOGIC - Instant real-time conversion as you type
 // ============================================================================
 
 const imeDigitMap: Record<string, string> = {
@@ -295,127 +356,187 @@ const imeDigitMap: Record<string, string> = {
 	'5': '५', '6': '६', '7': '७', '8': '८', '9': '९',
 }
 
-const convertAndInsert = (textBefore: string, converted: string, separator: string) => {
-	const newText = textBefore + converted + separator
-	// Use textContent instead of innerText to avoid <br> issues
-	imeInput.textContent = newText
+// Track what the user is typing in romanized form
+let imeRomanBuffer: string[] = [] // Array of romanized words/segments
+let currentRomanWord = '' // Current word being typed
 
-	// Move cursor to end precisely
+const renderImeContent = () => {
+	const options = { useDevanagariDigits: imeDigitToggle.checked }
+
+	// Convert all completed words/segments
+	let output = ''
+	for (const segment of imeRomanBuffer) {
+		if (/^[\s।॥!?,;:\n]+$/.test(segment)) {
+			// Whitespace/punctuation - keep as is
+			output += segment
+		} else if (/^[०-९]+$/.test(segment)) {
+			// Already Nepali digits - keep as is
+			output += segment
+		} else {
+			// Romanized word - convert it
+			output += transliterate(segment, options)
+		}
+	}
+
+	// Add the current word being typed (convert it live)
+	if (currentRomanWord) {
+		output += transliterate(currentRomanWord, options)
+	}
+
+	// Update the display - use innerHTML with non-breaking spaces to preserve trailing spaces
+	// Replace regular spaces with &nbsp; to make them visible
+	const htmlOutput = output
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/ /g, '\u00A0') // Non-breaking space
+		.replace(/\n/g, '<br>')
+
+	imeInput.innerHTML = htmlOutput
+
+	// Move cursor to end
 	const range = document.createRange()
 	const selection = window.getSelection()
 
-	if (imeInput.firstChild) {
-		range.setStart(imeInput.firstChild, newText.length)
-		range.setEnd(imeInput.firstChild, newText.length)
+	// Find the last text node or element
+	const walker = document.createTreeWalker(imeInput, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT)
+	let lastNode: Node | null = null
+	let lastOffset = 0
+
+	while (walker.nextNode()) {
+		const node = walker.currentNode
+		if (node.nodeType === Node.TEXT_NODE) {
+			lastNode = node
+			lastOffset = (node as Text).length
+		} else if (node.nodeName === 'BR') {
+			lastNode = node.parentNode
+			lastOffset = Array.from(node.parentNode!.childNodes).indexOf(node as ChildNode) + 1
+		}
+	}
+
+	if (lastNode) {
+		range.setStart(lastNode, lastOffset)
+		range.setEnd(lastNode, lastOffset)
+	} else {
+		range.setStart(imeInput, 0)
+		range.setEnd(imeInput, 0)
 	}
 
 	if (selection) {
 		selection.removeAllRanges()
 		selection.addRange(range)
 	}
-
-	imeInput.focus()
 }
 
 const handleImeKeydown = (e: KeyboardEvent) => {
-	// Get text content, trimming any initial whitespace/newlines from empty div
-	let text = imeInput.innerText || ''
-	// Fix: remove leading newline that contenteditable adds when empty
-	if (text === '\n' || text === '\r\n') {
-		text = ''
-	}
-	const options = { useDevanagariDigits: imeDigitToggle.checked }
 	const key = e.key
 
-	// Handle digits
-	if (/^[0-9]$/.test(key) && imeDigitToggle.checked) {
-		e.preventDefault()
+	// Allow control key combinations (Ctrl+A, Ctrl+C, Ctrl+V, etc.)
+	if (e.ctrlKey || e.metaKey || e.altKey) {
+		return // Let browser handle it
+	}
 
-		// First convert any pending romanized word
-		const lastWordMatch = text.match(/([a-zA-Z~^`]+)$/)
-		if (lastWordMatch) {
-			const romanWord = lastWordMatch[1]
-			const converted = transliterate(romanWord, options)
-			const beforeWord = text.slice(0, text.length - romanWord.length)
-			convertAndInsert(beforeWord, converted, imeDigitMap[key])
-		} else {
-			// Just insert the Nepali digit - use textContent to avoid <br> issues
-			const newText = text + imeDigitMap[key]
-			imeInput.textContent = newText
-			const range = document.createRange()
-			const selection = window.getSelection()
-			if (imeInput.firstChild) {
-				range.setStart(imeInput.firstChild, newText.length)
-				range.setEnd(imeInput.firstChild, newText.length)
+	// Handle backspace
+	if (key === 'Backspace') {
+		e.preventDefault()
+		if (currentRomanWord.length > 0) {
+			// Remove last character from current word
+			currentRomanWord = currentRomanWord.slice(0, -1)
+		} else if (imeRomanBuffer.length > 0) {
+			// Remove from buffer
+			const lastSegment = imeRomanBuffer.pop()!
+			if (lastSegment.length > 1) {
+				// Put back without last char
+				imeRomanBuffer.push(lastSegment.slice(0, -1))
 			}
-			if (selection) {
-				selection.removeAllRanges()
-				selection.addRange(range)
-			}
+			// If it was a single char, it's just removed
 		}
+		renderImeContent()
 		return
 	}
 
-	// Handle punctuation that should trigger conversion
+	// Handle digits
+	if (/^[0-9]$/.test(key)) {
+		e.preventDefault()
+		// Commit current word first
+		if (currentRomanWord) {
+			imeRomanBuffer.push(currentRomanWord)
+			currentRomanWord = ''
+		}
+		// Add Nepali digit
+		const digit = imeDigitToggle.checked ? imeDigitMap[key] : key
+		imeRomanBuffer.push(digit)
+		renderImeContent()
+		return
+	}
+
+	// Handle punctuation
 	if (key === '.' || key === '|' || key === '!' || key === '?' || key === ',' || key === ';' || key === ':') {
 		e.preventDefault()
-
-		const punctuation = key === '.' ? '।' : key === '|' ? '।' : key
-		const lastWordMatch = text.match(/([a-zA-Z~^`]+)$/)
-
-		if (lastWordMatch) {
-			const romanWord = lastWordMatch[1]
-			const converted = transliterate(romanWord, options)
-			const beforeWord = text.slice(0, text.length - romanWord.length)
-			convertAndInsert(beforeWord, converted, punctuation)
-		} else {
-			// Just insert the punctuation - use textContent to avoid <br> issues
-			const newText = text + punctuation
-			imeInput.textContent = newText
-			const range = document.createRange()
-			const selection = window.getSelection()
-			if (imeInput.firstChild) {
-				range.setStart(imeInput.firstChild, newText.length)
-				range.setEnd(imeInput.firstChild, newText.length)
-			}
-			if (selection) {
-				selection.removeAllRanges()
-				selection.addRange(range)
-			}
+		// Commit current word first
+		if (currentRomanWord) {
+			imeRomanBuffer.push(currentRomanWord)
+			currentRomanWord = ''
 		}
+		// Add punctuation (convert . and | to danda)
+		const punct = (key === '.' || key === '|') ? '।' : key
+		imeRomanBuffer.push(punct)
+		renderImeContent()
 		return
 	}
 
-	// Convert on space or enter
-	if (key === ' ' || key === 'Enter') {
-		// Find and convert the last romanized word
-		const lastWordMatch = text.match(/([a-zA-Z~^`]+)$/)
-
-		if (lastWordMatch) {
-			e.preventDefault()
-
-			const romanWord = lastWordMatch[1]
-			const converted = transliterate(romanWord, options)
-			const separator = key === ' ' ? ' ' : '\n'
-			const beforeWord = text.slice(0, text.length - romanWord.length)
-
-			convertAndInsert(beforeWord, converted, separator)
+	// Handle space
+	if (key === ' ') {
+		e.preventDefault()
+		// Commit current word
+		if (currentRomanWord) {
+			imeRomanBuffer.push(currentRomanWord)
+			currentRomanWord = ''
 		}
-		// If no romanized word found, let space/enter work normally
+		// Add space
+		imeRomanBuffer.push(' ')
+		renderImeContent()
+		return
+	}
+
+	// Handle enter
+	if (key === 'Enter') {
+		e.preventDefault()
+		// Commit current word
+		if (currentRomanWord) {
+			imeRomanBuffer.push(currentRomanWord)
+			currentRomanWord = ''
+		}
+		// Add newline
+		imeRomanBuffer.push('\n')
+		renderImeContent()
+		return
+	}
+
+	// Handle letter input
+	if (/^[a-zA-Z~^`]$/.test(key)) {
+		e.preventDefault()
+		currentRomanWord += key
+		renderImeContent()
+		return
 	}
 }
 
-const handleImeInputEvent = () => {
-	// This runs after input - we don't need to do anything special here
-	// The keydown handler takes care of conversion
-}
+// Clear IME on focus
+imeInput.addEventListener('focus', () => {
+	// Keep existing content
+})
 
 imeInput.addEventListener('keydown', handleImeKeydown)
-imeInput.addEventListener('input', handleImeInputEvent)
+
+// Prevent default input behavior since we handle everything in keydown
+imeInput.addEventListener('beforeinput', (e) => {
+	e.preventDefault()
+})
 
 imeDigitToggle.addEventListener('change', () => {
-	// Re-convert existing text with new digit setting
-	// (optional enhancement)
+	// Re-render with new digit setting
+	renderImeContent()
 })
 
 imeSampleButtons.forEach((button) => {
