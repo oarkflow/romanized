@@ -36,40 +36,40 @@
 			<h1>✅ Phase 1: Complete Character Testing</h1>
 			<p class="subtitle">Comprehensive test of all Devanagari characters including missing ones</p>
 		</header>
-		
+
 		<div class="card">
 			<div class="stats" id="stats"></div>
 		</div>
-		
+
 		<div class="card">
 			<h2 style="margin-bottom: 1rem;">Vowels Test</h2>
 			<div class="test-grid" id="vowelsTest"></div>
 		</div>
-		
+
 		<div class="card">
 			<h2 style="margin-bottom: 1rem;">Consonants Test</h2>
 			<div class="test-grid" id="consonantsTest"></div>
 		</div>
-		
+
 		<div class="card">
 			<h2 style="margin-bottom: 1rem;">Nukta Characters Test (NEW)</h2>
 			<div class="test-grid" id="nuktaTest"></div>
 		</div>
-		
+
 		<div class="card">
 			<h2 style="margin-bottom: 1rem;">Special Characters Test (NEW)</h2>
 			<div class="test-grid" id="specialTest"></div>
 		</div>
-		
+
 		<div class="card">
 			<h2 style="margin-bottom: 1rem;">Digits Test</h2>
 			<div class="test-grid" id="digitsTest"></div>
 		</div>
 	</div>
-	
+
 	<script type="module">
 		import { transliterate } from '../../packages/nepali-input/dist/index.js'
-		
+
 		const testCases = {
 			vowels: [
 				{ input: 'a', expected: 'अ', name: 'Short a' },
@@ -151,24 +151,24 @@
 				{ input: '9', expected: '9', name: '9 (ASCII)' },
 			],
 		}
-		
+
 		function runTests() {
 			let totalTests = 0
 			let passedTests = 0
 			let failedTests = 0
-			
+
 			Object.keys(testCases).forEach(category => {
 				const container = document.getElementById(category + 'Test')
 				const tests = testCases[category]
-				
+
 				tests.forEach(test => {
 					totalTests++
 					const output = transliterate(test.input)
 					const passed = output === test.expected
-					
+
 					if (passed) passedTests++
 					else failedTests++
-					
+
 					const testItem = document.createElement('div')
 					testItem.className = `test-item ${passed ? 'pass' : 'fail'}`
 					testItem.innerHTML = `
@@ -180,7 +180,7 @@
 					container.appendChild(testItem)
 				})
 			})
-			
+
 			// Update stats
 			const stats = document.getElementById('stats')
 			const passRate = ((passedTests / totalTests) * 100).toFixed(1)
@@ -203,7 +203,7 @@
 				</div>
 			`
 		}
-		
+
 		// Run tests on load
 		runTests()
 	</script>

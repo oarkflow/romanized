@@ -20,18 +20,18 @@ export const velthuisVowelMapping = buildMapping<{ independent: string; matra: s
 	{ keys: ['"a'], value: { independent: 'आ', matra: 'ा' } },
 	{ keys: ['"i'], value: { independent: 'ई', matra: 'ी' } },
 	{ keys: ['"u'], value: { independent: 'ऊ', matra: 'ू' } },
-	
+
 	// Vocalic vowels (dot prefix)
 	{ keys: ['.r'], value: { independent: 'ऋ', matra: 'ृ' } },
 	{ keys: ['.rr'], value: { independent: 'ॠ', matra: 'ॄ' } },
 	{ keys: ['.l'], value: { independent: 'ऌ', matra: 'ॢ' } },
 	{ keys: ['.ll'], value: { independent: 'ॡ', matra: 'ॣ' } },
-	
+
 	// Short vowels
 	{ keys: ['a'], value: { independent: 'अ', matra: '', inherent: true } },
 	{ keys: ['i'], value: { independent: 'इ', matra: 'ि' } },
 	{ keys: ['u'], value: { independent: 'उ', matra: 'ु' } },
-	
+
 	// Diphthongs
 	{ keys: ['e'], value: { independent: 'ए', matra: 'े' } },
 	{ keys: ['ai'], value: { independent: 'ऐ', matra: 'ै' } },
@@ -50,47 +50,47 @@ export const velthuisConsonantMapping = buildMapping<string>([
 	{ keys: ['g'], value: 'ग' },
 	{ keys: ['gh'], value: 'घ' },
 	{ keys: ['"n'], value: 'ङ' }, // velar nasal (quote)
-	
+
 	// Palatals
 	{ keys: ['c'], value: 'च' },
 	{ keys: ['ch'], value: 'छ' },
 	{ keys: ['j'], value: 'ज' },
 	{ keys: ['jh'], value: 'झ' },
 	{ keys: ['~n'], value: 'ञ' }, // palatal nasal (tilde)
-	
+
 	// Retroflex (dot prefix)
 	{ keys: ['.t'], value: 'ट' },
 	{ keys: ['.th'], value: 'ठ' },
 	{ keys: ['.d'], value: 'ड' },
 	{ keys: ['.dh'], value: 'ढ' },
 	{ keys: ['.n'], value: 'ण' },
-	
+
 	// Dentals
 	{ keys: ['t'], value: 'त' },
 	{ keys: ['th'], value: 'थ' },
 	{ keys: ['d'], value: 'द' },
 	{ keys: ['dh'], value: 'ध' },
 	{ keys: ['n'], value: 'न' },
-	
+
 	// Labials
 	{ keys: ['p'], value: 'प' },
 	{ keys: ['ph'], value: 'फ' },
 	{ keys: ['b'], value: 'ब' },
 	{ keys: ['bh'], value: 'भ' },
 	{ keys: ['m'], value: 'म' },
-	
+
 	// Semivowels
 	{ keys: ['y'], value: 'य' },
 	{ keys: ['r'], value: 'र' },
 	{ keys: ['l'], value: 'ल' },
 	{ keys: ['v'], value: 'व' },
-	
+
 	// Sibilants
 	{ keys: ['"s'], value: 'श' }, // palatal (quote)
 	{ keys: ['.s'], value: 'ष' }, // retroflex (dot)
 	{ keys: ['s'], value: 'स' }, // dental
 	{ keys: ['h'], value: 'ह' },
-	
+
 	// Compounds
 	{ keys: ['k.s'], value: 'क्ष' },
 	{ keys: ['j~n'], value: 'ज्ञ' },
@@ -134,10 +134,10 @@ export const VELTHUIS_TO_DEVANAGARI: Record<string, string> = {
 export const velthuisToDevanagari = (text: string): string => {
 	let result = ''
 	let i = 0
-	
+
 	while (i < text.length) {
 		let matched = false
-		
+
 		for (let len = 4; len >= 1; len--) {
 			const substr = text.slice(i, i + len)
 			if (VELTHUIS_TO_DEVANAGARI[substr]) {
@@ -147,12 +147,12 @@ export const velthuisToDevanagari = (text: string): string => {
 				break
 			}
 		}
-		
+
 		if (!matched) {
 			result += text[i]
 			i++
 		}
 	}
-	
+
 	return result
 }

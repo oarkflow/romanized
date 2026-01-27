@@ -20,18 +20,18 @@ export const iso15919VowelMapping = buildMapping<{ independent: string; matra: s
 	{ keys: ['ā', 'aa'], value: { independent: 'आ', matra: 'ा' } },
 	{ keys: ['ī', 'ii'], value: { independent: 'ई', matra: 'ी' } },
 	{ keys: ['ū', 'uu'], value: { independent: 'ऊ', matra: 'ू' } },
-	
+
 	// Vocalic vowels
 	{ keys: ['r̥', '.r', 'r.'], value: { independent: 'ऋ', matra: 'ृ' } },
 	{ keys: ['r̥̄', '.rr', 'rr.'], value: { independent: 'ॠ', matra: 'ॄ' } },
 	{ keys: ['l̥', '.l', 'l.'], value: { independent: 'ऌ', matra: 'ॢ' } },
 	{ keys: ['l̥̄', '.ll', 'll.'], value: { independent: 'ॡ', matra: 'ॣ' } },
-	
+
 	// Short vowels
 	{ keys: ['a'], value: { independent: 'अ', matra: '', inherent: true } },
 	{ keys: ['i'], value: { independent: 'इ', matra: 'ि' } },
 	{ keys: ['u'], value: { independent: 'उ', matra: 'ु' } },
-	
+
 	// Diphthongs (no diacritics - key difference from IAST)
 	{ keys: ['e'], value: { independent: 'ए', matra: 'े' } },
 	{ keys: ['ai'], value: { independent: 'ऐ', matra: 'ै' } },
@@ -49,47 +49,47 @@ export const iso15919ConsonantMapping = buildMapping<string>([
 	{ keys: ['g'], value: 'ग' },
 	{ keys: ['gh'], value: 'घ' },
 	{ keys: ['ṅ', '.n'], value: 'ङ' },
-	
+
 	// Palatals
 	{ keys: ['c'], value: 'च' },
 	{ keys: ['ch'], value: 'छ' },
 	{ keys: ['j'], value: 'ज' },
 	{ keys: ['jh'], value: 'झ' },
 	{ keys: ['ñ', '~n'], value: 'ञ' },
-	
+
 	// Retroflex
 	{ keys: ['ṭ', '.t'], value: 'ट' },
 	{ keys: ['ṭh', '.th'], value: 'ठ' },
 	{ keys: ['ḍ', '.d'], value: 'ड' },
 	{ keys: ['ḍh', '.dh'], value: 'ढ' },
 	{ keys: ['ṇ', '.n'], value: 'ण' },
-	
+
 	// Dentals
 	{ keys: ['t'], value: 'त' },
 	{ keys: ['th'], value: 'थ' },
 	{ keys: ['d'], value: 'द' },
 	{ keys: ['dh'], value: 'ध' },
 	{ keys: ['n'], value: 'न' },
-	
+
 	// Labials
 	{ keys: ['p'], value: 'प' },
 	{ keys: ['ph'], value: 'फ' },
 	{ keys: ['b'], value: 'ब' },
 	{ keys: ['bh'], value: 'भ' },
 	{ keys: ['m'], value: 'म' },
-	
+
 	// Semivowels
 	{ keys: ['y'], value: 'य' },
 	{ keys: ['r'], value: 'र' },
 	{ keys: ['l'], value: 'ल' },
 	{ keys: ['v'], value: 'व' },
-	
+
 	// Sibilants
 	{ keys: ['ś', '.s'], value: 'श' },
 	{ keys: ['ṣ', 's.'], value: 'ष' },
 	{ keys: ['s'], value: 'स' },
 	{ keys: ['h'], value: 'ह' },
-	
+
 	// Compounds
 	{ keys: ['kṣ', 'k.s'], value: 'क्ष' },
 	{ keys: ['jñ', 'j~n'], value: 'ज्ञ' },
@@ -131,10 +131,10 @@ export const ISO15919_TO_DEVANAGARI: Record<string, string> = {
 export const iso15919ToDevanagari = (text: string): string => {
 	let result = ''
 	let i = 0
-	
+
 	while (i < text.length) {
 		let matched = false
-		
+
 		for (let len = 3; len >= 1; len--) {
 			const substr = text.slice(i, i + len)
 			if (ISO15919_TO_DEVANAGARI[substr]) {
@@ -144,12 +144,12 @@ export const iso15919ToDevanagari = (text: string): string => {
 				break
 			}
 		}
-		
+
 		if (!matched) {
 			result += text[i]
 			i++
 		}
 	}
-	
+
 	return result
 }

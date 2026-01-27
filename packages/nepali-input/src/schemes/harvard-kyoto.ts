@@ -20,18 +20,18 @@ export const harvardKyotoVowelMapping = buildMapping<{ independent: string; matr
 	{ keys: ['A'], value: { independent: 'आ', matra: 'ा' }, caseSensitive: true },
 	{ keys: ['I'], value: { independent: 'ई', matra: 'ी' }, caseSensitive: true },
 	{ keys: ['U'], value: { independent: 'ऊ', matra: 'ू' }, caseSensitive: true },
-	
+
 	// Vocalic vowels
 	{ keys: ['R'], value: { independent: 'ऋ', matra: 'ृ' }, caseSensitive: true },
 	{ keys: ['RR'], value: { independent: 'ॠ', matra: 'ॄ' }, caseSensitive: true },
 	{ keys: ['lR'], value: { independent: 'ऌ', matra: 'ॢ' }, caseSensitive: true },
 	{ keys: ['lRR'], value: { independent: 'ॡ', matra: 'ॣ' }, caseSensitive: true },
-	
+
 	// Short vowels (lowercase)
 	{ keys: ['a'], value: { independent: 'अ', matra: '', inherent: true } },
 	{ keys: ['i'], value: { independent: 'इ', matra: 'ि' } },
 	{ keys: ['u'], value: { independent: 'उ', matra: 'ु' } },
-	
+
 	// Diphthongs
 	{ keys: ['e'], value: { independent: 'ए', matra: 'े' } },
 	{ keys: ['ai'], value: { independent: 'ऐ', matra: 'ै' } },
@@ -50,47 +50,47 @@ export const harvardKyotoConsonantMapping = buildMapping<string>([
 	{ keys: ['g'], value: 'ग' },
 	{ keys: ['gh'], value: 'घ' },
 	{ keys: ['G'], value: 'ङ', caseSensitive: true }, // velar nasal
-	
+
 	// Palatals
 	{ keys: ['c'], value: 'च' },
 	{ keys: ['ch'], value: 'छ' },
 	{ keys: ['j'], value: 'ज' },
 	{ keys: ['jh'], value: 'झ' },
 	{ keys: ['J'], value: 'ञ', caseSensitive: true }, // palatal nasal
-	
+
 	// Retroflex (uppercase)
 	{ keys: ['T'], value: 'ट', caseSensitive: true },
 	{ keys: ['Th'], value: 'ठ', caseSensitive: true },
 	{ keys: ['D'], value: 'ड', caseSensitive: true },
 	{ keys: ['Dh'], value: 'ढ', caseSensitive: true },
 	{ keys: ['N'], value: 'ण', caseSensitive: true }, // retroflex nasal
-	
+
 	// Dentals (lowercase)
 	{ keys: ['t'], value: 'त' },
 	{ keys: ['th'], value: 'थ' },
 	{ keys: ['d'], value: 'द' },
 	{ keys: ['dh'], value: 'ध' },
 	{ keys: ['n'], value: 'न' },
-	
+
 	// Labials
 	{ keys: ['p'], value: 'प' },
 	{ keys: ['ph'], value: 'फ' },
 	{ keys: ['b'], value: 'ब' },
 	{ keys: ['bh'], value: 'भ' },
 	{ keys: ['m'], value: 'म' },
-	
+
 	// Semivowels
 	{ keys: ['y'], value: 'य' },
 	{ keys: ['r'], value: 'र' },
 	{ keys: ['l'], value: 'ल' },
 	{ keys: ['v'], value: 'व' },
-	
+
 	// Sibilants
 	{ keys: ['z'], value: 'श', caseSensitive: true }, // palatal (lowercase z)
 	{ keys: ['S'], value: 'ष', caseSensitive: true }, // retroflex (uppercase)
 	{ keys: ['s'], value: 'स' }, // dental
 	{ keys: ['h'], value: 'ह' },
-	
+
 	// Compounds
 	{ keys: ['kS'], value: 'क्ष', caseSensitive: true },
 	{ keys: ['jJ'], value: 'ज्ञ', caseSensitive: true },
@@ -134,10 +134,10 @@ export const HARVARD_KYOTO_TO_DEVANAGARI: Record<string, string> = {
 export const harvardKyotoToDevanagari = (text: string): string => {
 	let result = ''
 	let i = 0
-	
+
 	while (i < text.length) {
 		let matched = false
-		
+
 		// Try longer sequences first
 		for (let len = 4; len >= 1; len--) {
 			const substr = text.slice(i, i + len)
@@ -148,12 +148,12 @@ export const harvardKyotoToDevanagari = (text: string): string => {
 				break
 			}
 		}
-		
+
 		if (!matched) {
 			result += text[i]
 			i++
 		}
 	}
-	
+
 	return result
 }

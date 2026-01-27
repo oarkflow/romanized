@@ -3,30 +3,30 @@
 ## Completed Features ✅
 
 ### 1. Missing Devanagari Characters (Phase 1)
-**Status:** Completed  
+**Status:** Completed
 **Implementation Time:** ~1 hour
 
 **Added Characters:**
 - **Candra E (ॅ)**: Input `e^` or `eN` → ॅ
   - Example: `cafe^` → कॅफे
-  
+
 - **Vocalic L (ऌ, ॡ)**: Sanskrit vowels
   - Input: `lri` → ऌ, `lree` → ॡ
-  
-- **Long Vocalic R (ॠ)**: 
+
+- **Long Vocalic R (ॠ)**:
   - Input: `rri` or `R` → ॠ
-  
+
 - **Avagraha (ऽ)**: Sanskrit separator
   - Input: `.a` or `'` → ऽ
   - Example: `so'ham` → सोऽहम्
-  
+
 - **Nukta characters (़)**: Urdu/Persian loanwords
   - `qa` → क़ (qaf)
   - `kha` → ख़ (khe) *Note: Conflicts with ख (kha), needs refinement*
   - `gha` → ग़ (ghain) *Note: Conflicts with घ (gha), needs refinement*
   - `za` → ज़ (zal)
   - `fa` → फ़ (fe)
-  
+
 - **Om symbol (ॐ)**:
   - Input: `om` → ॐ (when standalone)
 
@@ -43,7 +43,7 @@
 ---
 
 ### 2. Undo/Redo Functionality (Phase 1)
-**Status:** Completed  
+**Status:** Completed
 **Implementation Time:** ~1.5 hours
 
 **Features:**
@@ -71,7 +71,7 @@
   - Added `shift` modifier to handleKey parameters
   - Implemented `undo()`, `redo()`, `canUndo()`, `canRedo()` methods
   - Added `pushHistory()` calls after state changes
-  
+
 - `/packages/nepali-input/src/index.ts`
   - Exported `HistoryManager`, `HistoryState`, `HistoryOptions`
 
@@ -100,7 +100,7 @@ if (ime.canRedo()) {
 ime.clearHistory()
 ```
 
-**Build Status:** ✅ Successfully built  
+**Build Status:** ✅ Successfully built
 - Package size: 99.30 kB (ESM), 99.70 kB (CJS)
 - +4.4 kB increase due to history management
 
@@ -109,8 +109,8 @@ ime.clearHistory()
 ## In Progress 🚧
 
 ### 3. Comprehensive Keyboard Shortcuts (Phase 4)
-**Status:** Planned  
-**Priority:** HIGH  
+**Status:** Planned
+**Priority:** HIGH
 **Estimated Time:** 6-8 hours
 
 **Proposed Shortcuts:**
@@ -137,7 +137,7 @@ ime.clearHistory()
 ## Pending Features 📋
 
 ### 4. Auto-suggestions/Autocomplete (Phase 2)
-**Priority:** HIGH  
+**Priority:** HIGH
 **Estimated Time:** 12-16 hours
 
 **Requirements:**
@@ -149,7 +149,7 @@ ime.clearHistory()
 - LocalStorage for learning
 
 ### 5. IAST Transliteration Scheme (Phase 2)
-**Priority:** HIGH  
+**Priority:** HIGH
 **Estimated Time:** 8-12 hours
 
 **Requirements:**
@@ -159,7 +159,7 @@ ime.clearHistory()
 - Scheme selector UI
 
 ### 6. Character Palette/Picker (Phase 4)
-**Priority:** MEDIUM  
+**Priority:** MEDIUM
 **Estimated Time:** 10-12 hours
 
 **Requirements:**
@@ -170,7 +170,7 @@ ime.clearHistory()
 - Recent characters history
 
 ### 7. Progressive Web App (Phase 9)
-**Priority:** HIGH  
+**Priority:** HIGH
 **Estimated Time:** 8-12 hours
 
 **Requirements:**
@@ -181,7 +181,7 @@ ime.clearHistory()
 - Background sync
 
 ### 8. REST API (Phase 6)
-**Priority:** HIGH  
+**Priority:** HIGH
 **Estimated Time:** 12-16 hours
 
 **Requirements:**
@@ -278,7 +278,7 @@ ime.clearHistory()
 ### Latest Build:
 - **Date:** January 27, 2026
 - **Version:** 1.0.0
-- **Core Package Size:** 
+- **Core Package Size:**
   - ESM: 99.30 kB (gzip: 20.66 kB)
   - CJS: 99.70 kB (gzip: 20.78 kB)
 - **Build Time:** 1.72s
@@ -307,5 +307,5 @@ ime.clearHistory()
 
 ---
 
-**Last Updated:** January 27, 2026  
+**Last Updated:** January 27, 2026
 **Next Review:** February 3, 2026

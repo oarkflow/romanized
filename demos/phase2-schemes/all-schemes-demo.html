@@ -50,44 +50,44 @@
 			<h1>🔤 Phase 2: All Transliteration Schemes</h1>
 			<p style="color: white; opacity: 0.9; margin-top: 0.5rem;">Complete implementation of IAST, ISO 15919, Harvard-Kyoto, Velthuis, and SLP1</p>
 		</header>
-		
+
 		<div class="card">
 			<h2 style="margin-bottom: 1rem;">Select Transliteration Scheme</h2>
 			<div class="scheme-selector" id="schemeSelector"></div>
-			
+
 			<div id="schemeInfo" class="scheme-info"></div>
-			
+
 			<div class="converter">
 				<div class="input-area">
 					<label for="input">Input Text (Romanized)</label>
 					<textarea id="input" placeholder="Type here using the selected scheme..."></textarea>
 				</div>
-				
+
 				<div class="input-area">
 					<label for="output">Output (Devanagari)</label>
 					<div id="output" class="output-area">(Type above to see output)</div>
 				</div>
-				
+
 				<div style="display: flex; gap: 1rem;">
 					<button id="copyBtn">📋 Copy Output</button>
 					<button id="clearBtn" style="background: #6b7280;">🗑️ Clear</button>
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="card">
 			<h3 style="margin-bottom: 1rem;">Example Texts <span style="color: #888; font-weight: normal;">(Click to try)</span></h3>
 			<div class="examples-grid" id="examples"></div>
 		</div>
-		
+
 		<div class="card">
 			<h3 style="margin-bottom: 1rem;">Character Comparison Across Schemes</h3>
 			<table class="comparison-table" id="comparisonTable"></table>
 		</div>
 	</div>
-	
+
 	<script type="module">
-		import { 
+		import {
 			iastToDevanagari,
 			iso15919ToDevanagari,
 			harvardKyotoToDevanagari,
@@ -95,7 +95,7 @@
 			slp1ToDevanagari,
 			SCHEMES,
 		} from '../../packages/nepali-input/dist/index.js'
-		
+
 		const schemes = {
 			iast: {
 				convert: iastToDevanagari,
@@ -153,11 +153,11 @@
 				],
 			},
 		}
-		
+
 		let currentScheme = 'iast'
-		
+
 		const schemesInfo = SCHEMES.filter(s => s.id !== 'default')
-		
+
 		// Create scheme selector
 		const selector = document.getElementById('schemeSelector')
 		schemesInfo.forEach(scheme => {
@@ -169,7 +169,7 @@
 			btn.addEventListener('click', () => switchScheme(scheme.id))
 			selector.appendChild(btn)
 		})
-		
+
 		function switchScheme(schemeId) {
 			currentScheme = schemeId
 			document.querySelectorAll('.scheme-btn').forEach(btn => {
@@ -179,7 +179,7 @@
 			updateExamples()
 			updateOutput()
 		}
-		
+
 		function updateSchemeInfo() {
 			const info = schemesInfo.find(s => s.id === currentScheme)
 			const infoDiv = document.getElementById('schemeInfo')
@@ -194,12 +194,12 @@
 				</ul>
 			`
 		}
-		
+
 		function updateExamples() {
 			const examplesDiv = document.getElementById('examples')
 			examplesDiv.innerHTML = ''
 			const examplesList = schemes[currentScheme].examples
-			
+
 			examplesList.forEach(ex => {
 				const card = document.createElement('div')
 				card.className = 'example-card'
@@ -214,7 +214,7 @@
 				examplesDiv.appendChild(card)
 			})
 		}
-		
+
 		function updateOutput() {
 			const input = document.getElementById('input').value
 			const output = document.getElementById('output')
@@ -225,7 +225,7 @@
 			const converted = schemes[currentScheme].convert(input)
 			output.textContent = converted
 		}
-		
+
 		// Create comparison table
 		const comparisonData = [
 			{ char: 'आ', iast: 'ā', iso: 'ā', hk: 'A', velthuis: '"a', slp1: 'A', name: 'Long a' },
@@ -241,7 +241,7 @@
 			{ char: 'ं', iast: 'ṃ', iso: 'ṁ', hk: 'M', velthuis: '.m', slp1: 'M', name: 'Anusvara' },
 			{ char: 'ः', iast: 'ḥ', iso: 'ḥ', hk: 'H', velthuis: '.h', slp1: 'H', name: 'Visarga' },
 		]
-		
+
 		const table = document.getElementById('comparisonTable')
 		table.innerHTML = `
 			<thead>
@@ -269,7 +269,7 @@
 				`).join('')}
 			</tbody>
 		`
-		
+
 		// Event listeners
 		document.getElementById('input').addEventListener('input', updateOutput)
 		document.getElementById('copyBtn').addEventListener('click', async () => {
@@ -283,7 +283,7 @@
 			document.getElementById('input').value = ''
 			document.getElementById('output').textContent = '(Type above to see output)'
 		})
-		
+
 		// Initialize
 		updateSchemeInfo()
 		updateExamples()

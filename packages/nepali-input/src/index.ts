@@ -62,16 +62,16 @@ export {
 	SCHEMES,
 	getSchemeInfo,
 } from './schemes'
-export type { 
-	IASTMapping, 
+export type {
+	IASTMapping,
 	ISO15919Mapping,
 	HarvardKyotoMapping,
 	VelthuisMapping,
 	SLP1Mapping,
-	MappingEntry, 
-	CompiledMapping, 
-	TransliterationScheme, 
-	SchemeInfo 
+	MappingEntry,
+	CompiledMapping,
+	TransliterationScheme,
+	SchemeInfo
 } from './schemes'
 
 // Character Palette

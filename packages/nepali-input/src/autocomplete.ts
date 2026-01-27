@@ -189,7 +189,7 @@ export const COMMON_WORDS: AutocompleteEntry[] = [
 	{ roman: 'shukriya', nepali: 'शुक्रिया', frequency: 85 },
 	{ roman: 'tapai', nepali: 'तपाई', frequency: 80 },
 	{ roman: 'hajur', nepali: 'हजुर', frequency: 75 },
-	
+
 	// Pronouns (High frequency)
 	{ roman: 'ma', nepali: 'म', frequency: 100 },
 	{ roman: 'hami', nepali: 'हामी', frequency: 90 },
@@ -198,7 +198,7 @@ export const COMMON_WORDS: AutocompleteEntry[] = [
 	{ roman: 'timi', nepali: 'तिमी', frequency: 88 },
 	{ roman: 'yo', nepali: 'यो', frequency: 92 },
 	{ roman: 'tyo', nepali: 'त्यो', frequency: 87 },
-	
+
 	// Common Verbs
 	{ roman: 'garnu', nepali: 'गर्नु', frequency: 85 },
 	{ roman: 'huncha', nepali: 'हुन्छ', frequency: 90 },
@@ -208,14 +208,14 @@ export const COMMON_WORDS: AutocompleteEntry[] = [
 	{ roman: 'aunu', nepali: 'आउनु', frequency: 80 },
 	{ roman: 'khanu', nepali: 'खानु', frequency: 78 },
 	{ roman: 'bolnu', nepali: 'बोल्नु', frequency: 76 },
-	
+
 	// Common Adjectives
 	{ roman: 'ramro', nepali: 'राम्रो', frequency: 85 },
 	{ roman: 'thulo', nepali: 'ठुलो', frequency: 75 },
 	{ roman: 'sano', nepali: 'सानो', frequency: 74 },
 	{ roman: 'mitho', nepali: 'मिठो', frequency: 72 },
 	{ roman: 'naya', nepali: 'नयाँ', frequency: 78 },
-	
+
 	// Family Relations
 	{ roman: 'aama', nepali: 'आमा', frequency: 90 },
 	{ roman: 'buwa', nepali: 'बुवा', frequency: 88 },
@@ -223,7 +223,7 @@ export const COMMON_WORDS: AutocompleteEntry[] = [
 	{ roman: 'bhai', nepali: 'भाइ', frequency: 84 },
 	{ roman: 'bahini', nepali: 'बहिनी', frequency: 80 },
 	{ roman: 'daai', nepali: 'दाइ', frequency: 81 },
-	
+
 	// Common Nouns
 	{ roman: 'ghar', nepali: 'घर', frequency: 85 },
 	{ roman: 'paani', nepali: 'पानी', frequency: 80 },
@@ -232,7 +232,7 @@ export const COMMON_WORDS: AutocompleteEntry[] = [
 	{ roman: 'skul', nepali: 'स्कूल', frequency: 75 },
 	{ roman: 'kaam', nepali: 'काम', frequency: 78 },
 	{ roman: 'samaya', nepali: 'समय', frequency: 76 },
-	
+
 	// Question Words
 	{ roman: 'kasto', nepali: 'कस्तो', frequency: 80 },
 	{ roman: 'kasari', nepali: 'कसरी', frequency: 78 },
@@ -240,33 +240,33 @@ export const COMMON_WORDS: AutocompleteEntry[] = [
 	{ roman: 'kaha', nepali: 'कहाँ', frequency: 81 },
 	{ roman: 'kun', nepali: 'कुन', frequency: 77 },
 	{ roman: 'ko', nepali: 'को', frequency: 90 },
-	
+
 	// Time & Date
 	{ roman: 'aaja', nepali: 'आज', frequency: 85 },
 	{ roman: 'bholi', nepali: 'भोली', frequency: 82 },
 	{ roman: 'hijo', nepali: 'हिजो', frequency: 80 },
 	{ roman: 'bihana', nepali: 'बिहान', frequency: 75 },
 	{ roman: 'beluka', nepali: 'बेलुका', frequency: 74 },
-	
+
 	// Common Phrases
 	{ roman: 'kripaya', nepali: 'कृपया', frequency: 70 },
 	{ roman: 'maaf', nepali: 'माफ', frequency: 72 },
 	{ roman: 'thik', nepali: 'ठिक', frequency: 80 },
 	{ roman: 'asti', nepali: 'अस्ति', frequency: 68 },
-	
+
 	// Cities (Medium frequency)
 	{ roman: 'Kathmandu', nepali: 'काठमाडौं', frequency: 85 },
 	{ roman: 'Pokhara', nepali: 'पोखरा', frequency: 75 },
 	{ roman: 'Biratnagar', nepali: 'विराटनगर', frequency: 60 },
 	{ roman: 'Lalitpur', nepali: 'ललितपुर', frequency: 65 },
 	{ roman: 'Bhaktapur', nepali: 'भक्तपुर', frequency: 63 },
-	
+
 	// Countries
 	{ roman: 'Nepal', nepali: 'नेपाल', frequency: 95 },
 	{ roman: 'Bharat', nepali: 'भारत', frequency: 70 },
 	{ roman: 'America', nepali: 'अमेरिका', frequency: 65 },
 	{ roman: 'China', nepali: 'चीन', frequency: 62 },
-	
+
 	// Numbers in words
 	{ roman: 'ek', nepali: 'एक', frequency: 75 },
 	{ roman: 'dui', nepali: 'दुई', frequency: 72 },

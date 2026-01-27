@@ -19,7 +19,7 @@ Full history management with smart state merging and configurable size.
 ```typescript
 import { HistoryManager } from '@verishore/nepali-input'
 
-const history = new HistoryManager({ 
+const history = new HistoryManager({
   maxHistory: 100,  // Keep last 100 states (default)
   mergeDelay: 300   // Merge states within 300ms (default)
 })
@@ -53,7 +53,7 @@ const ime = new NepaliIMECore({
 
 // Shortcuts work automatically
 // Ctrl+Z → undo
-// Ctrl+Y → redo  
+// Ctrl+Y → redo
 // Ctrl+Shift+Z → redo
 ```
 
@@ -188,8 +188,8 @@ Academic standard romanization with diacritical marks.
 
 ### Usage
 ```typescript
-import { 
-  iastToDevanagari, 
+import {
+  iastToDevanagari,
   devanagariToIAST,
   IAST_TO_DEVANAGARI,
   DEVANAGARI_TO_IAST
@@ -271,11 +271,11 @@ results = palette.search('ka')
 // Returns: क ख ग घ (all ka-varga)
 
 // Record selection (adds to recent)
-palette.selectCharacter({ 
-  char: 'ॐ', 
-  name: 'Om', 
-  romanization: 'om', 
-  unicode: 'U+0950' 
+palette.selectCharacter({
+  char: 'ॐ',
+  name: 'Om',
+  romanization: 'om',
+  unicode: 'U+0950'
 })
 
 // Get recent characters
@@ -438,19 +438,19 @@ input.addEventListener('keydown', (e) => {
 
 ## FAQ
 
-**Q: Can I disable new features?**  
+**Q: Can I disable new features?**
 A: Yes! All features are opt-in via constructor options.
 
-**Q: What's the bundle size impact?**  
+**Q: What's the bundle size impact?**
 A: ~32 KB uncompressed, ~7 KB gzipped for all features.
 
-**Q: Does IAST replace the default scheme?**  
+**Q: Does IAST replace the default scheme?**
 A: No, both coexist. Use `scheme: 'iast'` to switch.
 
-**Q: Can I customize autocomplete words?**  
+**Q: Can I customize autocomplete words?**
 A: Yes! Use `addWords()` to add custom entries.
 
-**Q: Are keyboard shortcuts configurable?**  
+**Q: Are keyboard shortcuts configurable?**
 A: Yes! Use `register()` to add/override shortcuts.
 
 ---
@@ -463,5 +463,5 @@ A: Yes! Use `register()` to add/override shortcuts.
 
 ---
 
-**Version:** 1.0.0  
+**Version:** 1.0.0
 **Last Updated:** January 2025

@@ -74,41 +74,41 @@ export const CHARACTER_CATEGORIES: CharacterCategory[] = [
 			{ char: 'ग', name: 'ga', romanization: 'ga', unicode: 'U+0917', category: 'Velar' },
 			{ char: 'घ', name: 'gha', romanization: 'gha', unicode: 'U+0918', category: 'Velar' },
 			{ char: 'ङ', name: 'ṅa', romanization: 'nga', unicode: 'U+0919', category: 'Velar' },
-			
+
 			// Palatals (cha-varga)
 			{ char: 'च', name: 'ca', romanization: 'cha', unicode: 'U+091A', category: 'Palatal' },
 			{ char: 'छ', name: 'cha', romanization: 'chha', unicode: 'U+091B', category: 'Palatal' },
 			{ char: 'ज', name: 'ja', romanization: 'ja', unicode: 'U+091C', category: 'Palatal' },
 			{ char: 'झ', name: 'jha', romanization: 'jha', unicode: 'U+091D', category: 'Palatal' },
 			{ char: 'ञ', name: 'ña', romanization: 'nya', unicode: 'U+091E', category: 'Palatal' },
-			
+
 			// Retroflex (ta-varga)
 			{ char: 'ट', name: 'ṭa', romanization: 'Ta', unicode: 'U+091F', category: 'Retroflex' },
 			{ char: 'ठ', name: 'ṭha', romanization: 'Tha', unicode: 'U+0920', category: 'Retroflex' },
 			{ char: 'ड', name: 'ḍa', romanization: 'Da', unicode: 'U+0921', category: 'Retroflex' },
 			{ char: 'ढ', name: 'ḍha', romanization: 'Dha', unicode: 'U+0922', category: 'Retroflex' },
 			{ char: 'ण', name: 'ṇa', romanization: 'Na', unicode: 'U+0923', category: 'Retroflex' },
-			
+
 			// Dentals (ta-varga)
 			{ char: 'त', name: 'ta', romanization: 'ta', unicode: 'U+0924', category: 'Dental' },
 			{ char: 'थ', name: 'tha', romanization: 'tha', unicode: 'U+0925', category: 'Dental' },
 			{ char: 'द', name: 'da', romanization: 'da', unicode: 'U+0926', category: 'Dental' },
 			{ char: 'ध', name: 'dha', romanization: 'dha', unicode: 'U+0927', category: 'Dental' },
 			{ char: 'न', name: 'na', romanization: 'na', unicode: 'U+0928', category: 'Dental' },
-			
+
 			// Labials (pa-varga)
 			{ char: 'प', name: 'pa', romanization: 'pa', unicode: 'U+092A', category: 'Labial' },
 			{ char: 'फ', name: 'pha', romanization: 'pha', unicode: 'U+092B', category: 'Labial' },
 			{ char: 'ब', name: 'ba', romanization: 'ba', unicode: 'U+092C', category: 'Labial' },
 			{ char: 'भ', name: 'bha', romanization: 'bha', unicode: 'U+092D', category: 'Labial' },
 			{ char: 'म', name: 'ma', romanization: 'ma', unicode: 'U+092E', category: 'Labial' },
-			
+
 			// Semivowels (antaḥstha)
 			{ char: 'य', name: 'ya', romanization: 'ya', unicode: 'U+092F', category: 'Semivowel' },
 			{ char: 'र', name: 'ra', romanization: 'ra', unicode: 'U+0930', category: 'Semivowel' },
 			{ char: 'ल', name: 'la', romanization: 'la', unicode: 'U+0932', category: 'Semivowel' },
 			{ char: 'व', name: 'va', romanization: 'va/wa', unicode: 'U+0935', category: 'Semivowel' },
-			
+
 			// Sibilants (ūṣman)
 			{ char: 'श', name: 'śa', romanization: 'sha', unicode: 'U+0936', category: 'Sibilant' },
 			{ char: 'ष', name: 'ṣa', romanization: 'Sha', unicode: 'U+0937', category: 'Sibilant' },
@@ -207,7 +207,7 @@ export class CharacterPaletteManager {
 			showRomanization: options.showRomanization ?? true,
 			showUnicode: options.showUnicode ?? false,
 			maxRecent: options.maxRecent ?? 20,
-			onSelect: options.onSelect ?? (() => {}),
+			onSelect: options.onSelect ?? (() => { }),
 		}
 
 		this.buildSearchIndex()
