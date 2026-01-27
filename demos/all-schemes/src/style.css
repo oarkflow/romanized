@@ -1,0 +1,273 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500&display=swap');
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	min-height: 100vh;
+	padding: 2rem;
+}
+
+.container {
+	max-width: 1600px;
+	margin: 0 auto;
+}
+
+header {
+	text-align: center;
+	color: white;
+	margin-bottom: 2rem;
+}
+
+h1 {
+	font-size: 2.5rem;
+	margin-bottom: 0.5rem;
+	text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.subtitle {
+	color: white;
+	opacity: 0.9;
+	margin-top: 0.5rem;
+	font-size: 1.1rem;
+}
+
+.card {
+	background: white;
+	border-radius: 12px;
+	padding: 2rem;
+	margin-bottom: 2rem;
+	box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.card h2, .card h3 {
+	margin-bottom: 1rem;
+	color: #374151;
+}
+
+.scheme-selector {
+	display: flex;
+	gap: 1rem;
+	margin-bottom: 2rem;
+	flex-wrap: wrap;
+}
+
+.scheme-btn {
+	padding: 1rem 1.5rem;
+	background: #f3f4f6;
+	border: 2px solid #e5e7eb;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.2s;
+	font-weight: 600;
+	font-size: 1rem;
+	color: #374151;
+}
+
+.scheme-btn:hover {
+	background: #e5e7eb;
+}
+
+.scheme-btn.active {
+	background: #667eea;
+	color: white;
+	border-color: #667eea;
+}
+
+.converter {
+	background: #f9fafb;
+	border-radius: 8px;
+	padding: 2rem;
+}
+
+.input-area {
+	margin-bottom: 1.5rem;
+}
+
+label {
+	display: block;
+	font-weight: 600;
+	color: #374151;
+	margin-bottom: 0.5rem;
+}
+
+textarea {
+	width: 100%;
+	min-height: 120px;
+	padding: 1rem;
+	border: 2px solid #e5e7eb;
+	border-radius: 8px;
+	font-size: 1rem;
+	font-family: monospace;
+	transition: border-color 0.2s;
+}
+
+textarea:focus {
+	outline: none;
+	border-color: #667eea;
+}
+
+.output-area {
+	background: white;
+	border: 2px solid #e5e7eb;
+	border-radius: 8px;
+	padding: 1.5rem;
+	min-height: 120px;
+	font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+	font-size: 1.5rem;
+	line-height: 2;
+	color: #1f2937;
+}
+
+.examples-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 1rem;
+	margin-top: 1rem;
+}
+
+.example-card {
+	background: #f9fafb;
+	border: 2px solid #e5e7eb;
+	border-radius: 8px;
+	padding: 1rem;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.example-card:hover {
+	background: #667eea;
+	color: white;
+	border-color: #667eea;
+	transform: translateY(-2px);
+}
+
+.example-title {
+	font-weight: 600;
+	margin-bottom: 0.5rem;
+}
+
+.example-input {
+	font-family: monospace;
+	color: #6b7280;
+	font-size: 0.95rem;
+}
+
+.example-card:hover .example-input {
+	color: rgba(255,255,255,0.9);
+}
+
+.scheme-info {
+	background: #f0f4ff;
+	border-left: 4px solid #667eea;
+	padding: 1.5rem;
+	border-radius: 4px;
+	margin-bottom: 2rem;
+}
+
+.scheme-info h3 {
+	color: #667eea;
+	margin-bottom: 0.5rem;
+}
+
+.scheme-info p {
+	color: #555;
+	line-height: 1.6;
+	margin-bottom: 0.75rem;
+}
+
+.scheme-info ul {
+	margin-left: 2rem;
+	margin-top: 0.5rem;
+}
+
+.scheme-info li {
+	margin-bottom: 0.25rem;
+	color: #555;
+}
+
+.comparison-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 1rem;
+}
+
+.comparison-table th,
+.comparison-table td {
+	padding: 0.75rem;
+	text-align: left;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.comparison-table th {
+	background: #f9fafb;
+	font-weight: 600;
+	color: #667eea;
+}
+
+.comparison-table .devanagari {
+	font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+	font-size: 1.5rem;
+}
+
+.comparison-table .scheme-col {
+	font-family: monospace;
+	font-weight: bold;
+}
+
+.controls {
+	display: flex;
+	gap: 1rem;
+}
+
+button {
+	background: #667eea;
+	color: white;
+	border: none;
+	padding: 0.75rem 1.5rem;
+	border-radius: 8px;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: all 0.2s;
+	font-weight: 600;
+}
+
+button:hover {
+	background: #5568d3;
+	transform: translateY(-1px);
+}
+
+button.secondary {
+	background: #6b7280;
+}
+
+button.secondary:hover {
+	background: #4b5563;
+}
+
+@media (max-width: 768px) {
+	body {
+		padding: 1rem;
+	}
+	
+	h1 {
+		font-size: 2rem;
+	}
+	
+	.card {
+		padding: 1.5rem;
+	}
+	
+	.scheme-selector {
+		flex-direction: column;
+	}
+	
+	.examples-grid {
+		grid-template-columns: 1fr;
+	}
+}

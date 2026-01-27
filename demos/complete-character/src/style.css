@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500&display=swap');
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	min-height: 100vh;
+	padding: 2rem;
+}
+
+.container {
+	max-width: 1400px;
+	margin: 0 auto;
+}
+
+header {
+	text-align: center;
+	color: white;
+	margin-bottom: 2rem;
+}
+
+h1 {
+	font-size: 2.5rem;
+	margin-bottom: 0.5rem;
+	text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.subtitle {
+	font-size: 1.1rem;
+	opacity: 0.9;
+}
+
+.card {
+	background: white;
+	border-radius: 12px;
+	padding: 2rem;
+	margin-bottom: 2rem;
+	box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.card h2 {
+	margin-bottom: 1rem;
+	color: #374151;
+}
+
+.test-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	gap: 1rem;
+}
+
+.test-item {
+	background: #f9fafb;
+	border: 2px solid #e5e7eb;
+	border-radius: 8px;
+	padding: 1.5rem;
+}
+
+.test-item.pass {
+	border-color: #10b981;
+	background: #d1fae5;
+}
+
+.test-item.fail {
+	border-color: #ef4444;
+	background: #fee2e2;
+}
+
+.test-label {
+	font-weight: 600;
+	color: #374151;
+	margin-bottom: 0.5rem;
+}
+
+.test-input {
+	font-family: monospace;
+	color: #6b7280;
+	margin-bottom: 0.5rem;
+}
+
+.test-output {
+	font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+	font-size: 2rem;
+	color: #1f2937;
+}
+
+.test-expected {
+	font-size: 0.875rem;
+	color: #6b7280;
+	margin-top: 0.5rem;
+}
+
+.stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 1rem;
+	margin-bottom: 2rem;
+}
+
+.stat-card {
+	background: #f9fafb;
+	padding: 1.5rem;
+	border-radius: 8px;
+	text-align: center;
+}
+
+.stat-value {
+	font-size: 2.5rem;
+	font-weight: bold;
+	color: #667eea;
+}
+
+.stat-label {
+	font-size: 0.875rem;
+	color: #6b7280;
+	margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+	body {
+		padding: 1rem;
+	}
+	
+	h1 {
+		font-size: 2rem;
+	}
+	
+	.card {
+		padding: 1.5rem;
+	}
+	
+	.test-grid {
+		grid-template-columns: 1fr;
+	}
+}

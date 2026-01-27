@@ -1,0 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500&display=swap');
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	min-height: 100vh;
+	padding: 2rem;
+}
+
+.container {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+header {
+	text-align: center;
+	color: white;
+	margin-bottom: 3rem;
+}
+
+h1 {
+	font-size: 2.5rem;
+	margin-bottom: 0.5rem;
+	text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.subtitle {
+	font-size: 1.2rem;
+	opacity: 0.9;
+}
+
+.card {
+	background: white;
+	border-radius: 12px;
+	padding: 2rem;
+	margin-bottom: 2rem;
+	box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.card h3 {
+	margin-bottom: 1rem;
+	color: #333;
+}
+
+.info-box {
+	background: #f0f4ff;
+	border-left: 4px solid #667eea;
+	padding: 1.5rem;
+	margin-bottom: 2rem;
+	border-radius: 4px;
+}
+
+.info-box h3 {
+	color: #667eea;
+	margin-bottom: 0.5rem;
+}
+
+.info-box p {
+	color: #555;
+	line-height: 1.6;
+}
+
+.info-box ul {
+	margin-left: 2rem;
+	margin-top: 0.5rem;
+}
+
+.info-box li {
+	margin-bottom: 0.25rem;
+}
+
+.demo-section {
+	margin-bottom: 2rem;
+}
+
+.input-group {
+	margin-bottom: 1.5rem;
+}
+
+label {
+	display: block;
+	margin-bottom: 0.5rem;
+	font-weight: 600;
+	color: #555;
+}
+
+input[type="text"], textarea {
+	width: 100%;
+	padding: 0.75rem;
+	border: 2px solid #e0e0e0;
+	border-radius: 6px;
+	font-size: 1rem;
+	font-family: inherit;
+	transition: border-color 0.2s;
+}
+
+input[type="text"]:focus, textarea:focus {
+	outline: none;
+	border-color: #667eea;
+}
+
+textarea {
+	min-height: 120px;
+	resize: vertical;
+	font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+	font-size: 1.25rem;
+	line-height: 1.8;
+}
+
+.output-box {
+	background: #f9fafb;
+	border: 2px solid #e0e0e0;
+	border-radius: 6px;
+	padding: 1rem;
+	min-height: 100px;
+	font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+	font-size: 1.5rem;
+	line-height: 2;
+	color: #1f2937;
+}
+
+.examples-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 1rem;
+	margin-top: 1rem;
+}
+
+.example-card {
+	background: #f9fafb;
+	border: 1px solid #e0e0e0;
+	border-radius: 6px;
+	padding: 1rem;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.example-card:hover {
+	background: #667eea;
+	color: white;
+	border-color: #667eea;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.example-card .iast {
+	font-family: monospace;
+	font-size: 1rem;
+	margin-bottom: 0.5rem;
+}
+
+.example-card .devanagari {
+	font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+.char-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 1rem;
+}
+
+.char-table th,
+.char-table td {
+	padding: 0.75rem;
+	text-align: left;
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.char-table th {
+	background: #f9fafb;
+	font-weight: 600;
+	color: #667eea;
+}
+
+.char-table .iast-col {
+	font-family: monospace;
+	color: #059669;
+	font-weight: bold;
+}
+
+.char-table .deva-col {
+	font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+	font-size: 1.5rem;
+	color: #dc2626;
+}
+
+.controls {
+	display: flex;
+	gap: 1rem;
+	margin-top: 1rem;
+	flex-wrap: wrap;
+}
+
+button {
+	background: #667eea;
+	color: white;
+	border: none;
+	padding: 0.75rem 1.5rem;
+	border-radius: 6px;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: all 0.2s;
+	font-weight: 600;
+}
+
+button:hover {
+	background: #5568d3;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+button:active {
+	transform: translateY(0);
+}
+
+button.secondary {
+	background: #6b7280;
+}
+
+button.secondary:hover {
+	background: #4b5563;
+}
+
+.badge {
+	display: inline-block;
+	background: #667eea;
+	color: white;
+	padding: 0.25rem 0.75rem;
+	border-radius: 12px;
+	font-size: 0.875rem;
+	font-weight: 600;
+	margin-left: 0.5rem;
+}
+
+@media (max-width: 768px) {
+	body {
+		padding: 1rem;
+	}
+	
+	h1 {
+		font-size: 2rem;
+	}
+	
+	.card {
+		padding: 1.5rem;
+	}
+	
+	.examples-grid {
+		grid-template-columns: 1fr;
+	}
+}

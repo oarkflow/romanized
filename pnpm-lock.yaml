@@ -15,7 +15,59 @@ importers:
         specifier: ^7.2.4
         version: 7.3.1
 
+  demos/all-schemes:
+    dependencies:
+      '@verishore/nepali-input':
+        specifier: workspace:*
+        version: link:../../packages/nepali-input
+    devDependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.2.4
+        version: 7.3.1
+
   demos/basic:
+    dependencies:
+      '@verishore/nepali-input':
+        specifier: workspace:*
+        version: link:../../packages/nepali-input
+    devDependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.2.4
+        version: 7.3.1
+
+  demos/character-palette:
+    dependencies:
+      '@verishore/nepali-input':
+        specifier: workspace:*
+        version: link:../../packages/nepali-input
+    devDependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.2.4
+        version: 7.3.1
+
+  demos/complete-character:
+    dependencies:
+      '@verishore/nepali-input':
+        specifier: workspace:*
+        version: link:../../packages/nepali-input
+    devDependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.2.4
+        version: 7.3.1
+
+  demos/iast:
     dependencies:
       '@verishore/nepali-input':
         specifier: workspace:*

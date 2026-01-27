@@ -8,228 +8,337 @@ import { buildMapping, type CompiledMapping } from '../transliterate-utils'
 // IAST uses diacritical marks: ā ī ū ṛ ṝ ḷ ḹ ṅ ñ ṭ ḍ ṇ ś ṣ ṃ ḥ
 
 export interface IASTMapping {
-	vowels: CompiledMapping<{ independent: string; matra: string; inherent?: boolean }>
-	consonants: CompiledMapping<string>
-	diacritics: CompiledMapping<string>
+    vowels: CompiledMapping<{ independent: string; matra: string; inherent?: boolean }>
+    consonants: CompiledMapping<string>
+    diacritics: CompiledMapping<string>
 }
 
 /**
  * IAST vowel mappings with both Unicode diacritics and ASCII alternatives
  */
 export const iastVowelMapping = buildMapping<{ independent: string; matra: string; inherent?: boolean }>([
-	// Long vowels with diacritics
-	{ keys: ['ā', 'aa'], value: { independent: 'आ', matra: 'ा' } },
-	{ keys: ['ī', 'ii'], value: { independent: 'ई', matra: 'ी' } },
-	{ keys: ['ū', 'uu'], value: { independent: 'ऊ', matra: 'ू' } },
+    // Long vowels with diacritics
+    { keys: ['ā', 'aa'], value: { independent: 'आ', matra: 'ा' } },
+    { keys: ['ī', 'ii'], value: { independent: 'ई', matra: 'ी' } },
+    { keys: ['ū', 'uu'], value: { independent: 'ऊ', matra: 'ू' } },
 
-	// Vocalic vowels
-	{ keys: ['ṛ', '.r', 'r.'], value: { independent: 'ऋ', matra: 'ृ' } },
-	{ keys: ['ṝ', '.rr', 'rr.'], value: { independent: 'ॠ', matra: 'ॄ' } },
-	{ keys: ['ḷ', '.l', 'l.'], value: { independent: 'ऌ', matra: 'ॢ' } },
-	{ keys: ['ḹ', '.ll', 'll.'], value: { independent: 'ॡ', matra: 'ॣ' } },
+    // Vocalic vowels
+    { keys: ['ṛ', '.r', 'r.'], value: { independent: 'ऋ', matra: 'ृ' } },
+    { keys: ['ṝ', '.rr', 'rr.'], value: { independent: 'ॠ', matra: 'ॄ' } },
+    { keys: ['ḷ', '.l', 'l.'], value: { independent: 'ऌ', matra: 'ॢ' } },
+    { keys: ['ḹ', '.ll', 'll.'], value: { independent: 'ॡ', matra: 'ॣ' } },
 
-	// Short vowels
-	{ keys: ['a'], value: { independent: 'अ', matra: '', inherent: true } },
-	{ keys: ['i'], value: { independent: 'इ', matra: 'ि' } },
-	{ keys: ['u'], value: { independent: 'उ', matra: 'ु' } },
+    // Short vowels
+    { keys: ['a'], value: { independent: 'अ', matra: '', inherent: true } },
+    { keys: ['i'], value: { independent: 'इ', matra: 'ि' } },
+    { keys: ['u'], value: { independent: 'उ', matra: 'ु' } },
 
-	// Diphthongs
-	{ keys: ['e'], value: { independent: 'ए', matra: 'े' } },
-	{ keys: ['ai'], value: { independent: 'ऐ', matra: 'ै' } },
-	{ keys: ['o'], value: { independent: 'ओ', matra: 'ो' } },
-	{ keys: ['au'], value: { independent: 'औ', matra: 'ौ' } },
+    // Diphthongs
+    { keys: ['e'], value: { independent: 'ए', matra: 'े' } },
+    { keys: ['ai'], value: { independent: 'ऐ', matra: 'ै' } },
+    { keys: ['o'], value: { independent: 'ओ', matra: 'ो' } },
+    { keys: ['au'], value: { independent: 'औ', matra: 'ौ' } },
 ])
 
 /**
  * IAST consonant mappings
  */
 export const iastConsonantMapping = buildMapping<string>([
-	// Velars (ka-varga)
-	{ keys: ['k'], value: 'क' },
-	{ keys: ['kh'], value: 'ख' },
-	{ keys: ['g'], value: 'ग' },
-	{ keys: ['gh'], value: 'घ' },
-	{ keys: ['ṅ', '.n'], value: 'ङ' },
+    // Velars (ka-varga)
+    { keys: ['k'], value: 'क' },
+    { keys: ['kh'], value: 'ख' },
+    { keys: ['g'], value: 'ग' },
+    { keys: ['gh'], value: 'घ' },
+    { keys: ['ṅ', '.n'], value: 'ङ' },
 
-	// Palatals (cha-varga)
-	{ keys: ['c'], value: 'च' },
-	{ keys: ['ch'], value: 'छ' },
-	{ keys: ['j'], value: 'ज' },
-	{ keys: ['jh'], value: 'झ' },
-	{ keys: ['ñ', '~n'], value: 'ञ' },
+    // Palatals (cha-varga)
+    { keys: ['c'], value: 'च' },
+    { keys: ['ch'], value: 'छ' },
+    { keys: ['j'], value: 'ज' },
+    { keys: ['jh'], value: 'झ' },
+    { keys: ['ñ', '~n'], value: 'ञ' },
 
-	// Retroflex (ta-varga)
-	{ keys: ['ṭ', '.t'], value: 'ट' },
-	{ keys: ['ṭh', '.th'], value: 'ठ' },
-	{ keys: ['ḍ', '.d'], value: 'ड' },
-	{ keys: ['ḍh', '.dh'], value: 'ढ' },
-	{ keys: ['ṇ', '.n'], value: 'ण' },
+    // Retroflex (ta-varga)
+    { keys: ['ṭ', '.t'], value: 'ट' },
+    { keys: ['ṭh', '.th'], value: 'ठ' },
+    { keys: ['ḍ', '.d'], value: 'ड' },
+    { keys: ['ḍh', '.dh'], value: 'ढ' },
+    { keys: ['ṇ', '.n'], value: 'ण' },
 
-	// Dentals (ta-varga)
-	{ keys: ['t'], value: 'त' },
-	{ keys: ['th'], value: 'थ' },
-	{ keys: ['d'], value: 'द' },
-	{ keys: ['dh'], value: 'ध' },
-	{ keys: ['n'], value: 'न' },
+    // Dentals (ta-varga)
+    { keys: ['t'], value: 'त' },
+    { keys: ['th'], value: 'थ' },
+    { keys: ['d'], value: 'द' },
+    { keys: ['dh'], value: 'ध' },
+    { keys: ['n'], value: 'न' },
 
-	// Labials (pa-varga)
-	{ keys: ['p'], value: 'प' },
-	{ keys: ['ph'], value: 'फ' },
-	{ keys: ['b'], value: 'ब' },
-	{ keys: ['bh'], value: 'भ' },
-	{ keys: ['m'], value: 'म' },
+    // Labials (pa-varga)
+    { keys: ['p'], value: 'प' },
+    { keys: ['ph'], value: 'फ' },
+    { keys: ['b'], value: 'ब' },
+    { keys: ['bh'], value: 'भ' },
+    { keys: ['m'], value: 'म' },
 
-	// Semivowels (ya-varga)
-	{ keys: ['y'], value: 'य' },
-	{ keys: ['r'], value: 'र' },
-	{ keys: ['l'], value: 'ल' },
-	{ keys: ['v'], value: 'व' },
+    // Semivowels (ya-varga)
+    { keys: ['y'], value: 'य' },
+    { keys: ['r'], value: 'र' },
+    { keys: ['l'], value: 'ल' },
+    { keys: ['v'], value: 'व' },
 
-	// Sibilants (sha-varga)
-	{ keys: ['ś', '.s'], value: 'श' },
-	{ keys: ['ṣ', 's.'], value: 'ष' },
-	{ keys: ['s'], value: 'स' },
-	{ keys: ['h'], value: 'ह' },
+    // Sibilants (sha-varga)
+    { keys: ['ś', '.s'], value: 'श' },
+    { keys: ['ṣ', 's.'], value: 'ष' },
+    { keys: ['s'], value: 'स' },
+    { keys: ['h'], value: 'ह' },
 
-	// Compound consonants
-	{ keys: ['kṣ', 'k.s'], value: 'क्ष' },
-	{ keys: ['jñ', 'j~n'], value: 'ज्ञ' },
-	{ keys: ['tr'], value: 'त्र' },
-	{ keys: ['śr', '.sr'], value: 'श्र' },
+    // Compound consonants
+    { keys: ['kṣ', 'k.s'], value: 'क्ष' },
+    { keys: ['jñ', 'j~n'], value: 'ज्ञ' },
+    { keys: ['tr'], value: 'त्र' },
+    { keys: ['śr', '.sr'], value: 'श्र' },
 ])
 
 /**
  * IAST diacritic mappings
  */
 export const iastDiacriticMapping = buildMapping<string>([
-	{ keys: ['ṃ', '.m', 'm.'], value: 'ं' }, // Anusvara
-	{ keys: ['ḥ', '.h', 'h.'], value: 'ः' }, // Visarga
-	{ keys: ['m̐', '~m'], value: 'ँ' }, // Chandrabindu (rare in IAST)
+    { keys: ['ṃ', '.m', 'm.'], value: 'ं' }, // Anusvara
+    { keys: ['ḥ', '.h', 'h.'], value: 'ः' }, // Visarga
+    { keys: ['m̐', '~m'], value: 'ँ' }, // Chandrabindu (rare in IAST)
 ])
 
 /**
  * Create IAST mappings
  */
 export const createIASTMappings = (): IASTMapping => ({
-	vowels: iastVowelMapping,
-	consonants: iastConsonantMapping,
-	diacritics: iastDiacriticMapping,
+    vowels: iastVowelMapping,
+    consonants: iastConsonantMapping,
+    diacritics: iastDiacriticMapping,
 })
 
 /**
  * IAST to Devanagari character map for reverse transliteration
  */
 export const IAST_TO_DEVANAGARI: Record<string, string> = {
-	// Vowels
-	'ā': 'आ', 'ī': 'ई', 'ū': 'ऊ',
-	'ṛ': 'ऋ', 'ṝ': 'ॠ', 'ḷ': 'ऌ', 'ḹ': 'ॡ',
-	'a': 'अ', 'i': 'इ', 'u': 'उ',
-	'e': 'ए', 'ai': 'ऐ', 'o': 'ओ', 'au': 'औ',
+    // Vowels
+    'ā': 'आ', 'ī': 'ई', 'ū': 'ऊ',
+    'ṛ': 'ऋ', 'ṝ': 'ॠ', 'ḷ': 'ऌ', 'ḹ': 'ॡ',
+    'a': 'अ', 'i': 'इ', 'u': 'उ',
+    'e': 'ए', 'ai': 'ऐ', 'o': 'ओ', 'au': 'औ',
 
-	// Consonants
-	'k': 'क', 'kh': 'ख', 'g': 'ग', 'gh': 'घ', 'ṅ': 'ङ',
-	'c': 'च', 'ch': 'छ', 'j': 'ज', 'jh': 'झ', 'ñ': 'ञ',
-	'ṭ': 'ट', 'ṭh': 'ठ', 'ḍ': 'ड', 'ḍh': 'ढ', 'ṇ': 'ण',
-	't': 'त', 'th': 'थ', 'd': 'द', 'dh': 'ध', 'n': 'न',
-	'p': 'प', 'ph': 'फ', 'b': 'ब', 'bh': 'भ', 'm': 'म',
-	'y': 'य', 'r': 'र', 'l': 'ल', 'v': 'व',
-	'ś': 'श', 'ṣ': 'ष', 's': 'स', 'h': 'ह',
+    // Consonants
+    'k': 'क', 'kh': 'ख', 'g': 'ग', 'gh': 'घ', 'ṅ': 'ङ',
+    'c': 'च', 'ch': 'छ', 'j': 'ज', 'jh': 'झ', 'ñ': 'ञ',
+    'ṭ': 'ट', 'ṭh': 'ठ', 'ḍ': 'ड', 'ḍh': 'ढ', 'ṇ': 'ण',
+    't': 'त', 'th': 'थ', 'd': 'द', 'dh': 'ध', 'n': 'न',
+    'p': 'प', 'ph': 'फ', 'b': 'ब', 'bh': 'भ', 'm': 'म',
+    'y': 'य', 'r': 'र', 'l': 'ल', 'v': 'व',
+    'ś': 'श', 'ṣ': 'ष', 's': 'स', 'h': 'ह',
 
-	// Diacritics
-	'ṃ': 'ं', 'ḥ': 'ः', 'm̐': 'ँ',
+    // Diacritics
+    'ṃ': 'ं', 'ḥ': 'ः', 'm̐': 'ँ',
 
-	// Compounds
-	'kṣ': 'क्ष', 'jñ': 'ज्ञ', 'tr': 'त्र', 'śr': 'श्र',
+    // Compounds
+    'kṣ': 'क्ष', 'jñ': 'ज्ञ', 'tr': 'त्र', 'śr': 'श्र',
 }
 
 /**
  * Devanagari to IAST character map
  */
 export const DEVANAGARI_TO_IAST: Record<string, string> = {
-	// Vowels
-	'आ': 'ā', 'ई': 'ī', 'ऊ': 'ū',
-	'ऋ': 'ṛ', 'ॠ': 'ṝ', 'ऌ': 'ḷ', 'ॡ': 'ḹ',
-	'अ': 'a', 'इ': 'i', 'उ': 'u',
-	'ए': 'e', 'ऐ': 'ai', 'ओ': 'o', 'औ': 'au',
+    // Vowels
+    'आ': 'ā', 'ई': 'ī', 'ऊ': 'ū',
+    'ऋ': 'ṛ', 'ॠ': 'ṝ', 'ऌ': 'ḷ', 'ॡ': 'ḹ',
+    'अ': 'a', 'इ': 'i', 'उ': 'u',
+    'ए': 'e', 'ऐ': 'ai', 'ओ': 'o', 'औ': 'au',
 
-	// Vowel matras
-	'ा': 'ā', 'ि': 'i', 'ी': 'ī', 'ु': 'u', 'ू': 'ū',
-	'ृ': 'ṛ', 'ॄ': 'ṝ', 'ॢ': 'ḷ', 'ॣ': 'ḹ',
-	'े': 'e', 'ै': 'ai', 'ो': 'o', 'ौ': 'au',
+    // Vowel matras
+    'ा': 'ā', 'ि': 'i', 'ी': 'ī', 'ु': 'u', 'ू': 'ū',
+    'ृ': 'ṛ', 'ॄ': 'ṝ', 'ॢ': 'ḷ', 'ॣ': 'ḹ',
+    'े': 'e', 'ै': 'ai', 'ो': 'o', 'ौ': 'au',
 
-	// Consonants
-	'क': 'ka', 'ख': 'kha', 'ग': 'ga', 'घ': 'gha', 'ङ': 'ṅa',
-	'च': 'ca', 'छ': 'cha', 'ज': 'ja', 'झ': 'jha', 'ञ': 'ña',
-	'ट': 'ṭa', 'ठ': 'ṭha', 'ड': 'ḍa', 'ढ': 'ḍha', 'ण': 'ṇa',
-	'त': 'ta', 'थ': 'tha', 'द': 'da', 'ध': 'dha', 'न': 'na',
-	'प': 'pa', 'फ': 'pha', 'ब': 'ba', 'भ': 'bha', 'म': 'ma',
-	'य': 'ya', 'र': 'ra', 'ल': 'la', 'व': 'va',
-	'श': 'śa', 'ष': 'ṣa', 'स': 'sa', 'ह': 'ha',
+    // Consonants
+    'क': 'ka', 'ख': 'kha', 'ग': 'ga', 'घ': 'gha', 'ङ': 'ṅa',
+    'च': 'ca', 'छ': 'cha', 'ज': 'ja', 'झ': 'jha', 'ञ': 'ña',
+    'ट': 'ṭa', 'ठ': 'ṭha', 'ड': 'ḍa', 'ढ': 'ḍha', 'ण': 'ṇa',
+    'त': 'ta', 'थ': 'tha', 'द': 'da', 'ध': 'dha', 'न': 'na',
+    'प': 'pa', 'फ': 'pha', 'ब': 'ba', 'भ': 'bha', 'म': 'ma',
+    'य': 'ya', 'र': 'ra', 'ल': 'la', 'व': 'va',
+    'श': 'śa', 'ष': 'ṣa', 'स': 'sa', 'ह': 'ha',
 
-	// Diacritics
-	'ं': 'ṃ', 'ः': 'ḥ', 'ँ': 'm̐',
-	'्': '', // Halant
+    // Diacritics
+    'ं': 'ṃ', 'ः': 'ḥ', 'ँ': 'm̐',
+    '्': '', // Halant
 
-	// Compounds
-	'क्ष': 'kṣa', 'ज्ञ': 'jña', 'त्र': 'tra', 'श्र': 'śra',
+    // Compounds
+    'क्ष': 'kṣa', 'ज्ञ': 'jña', 'त्र': 'tra', 'श्र': 'śra',
 }
 
 /**
  * Convert text from IAST to Devanagari
+ * Properly handles consonant clusters, vowel matras, and halants
  */
 export const iastToDevanagari = (text: string): string => {
-	let result = ''
-	let i = 0
+    const HALANT = '्'
+    let result = ''
+    let i = 0
+    let pendingConsonant: string | null = null
 
-	while (i < text.length) {
-		let matched = false
+    // Vowel matras (used after consonants)
+    const vowelMatras: Record<string, string> = {
+        'ā': 'ा', 'aa': 'ा',
+        'i': 'ि',
+        'ī': 'ी', 'ii': 'ी',
+        'u': 'ु',
+        'ū': 'ू', 'uu': 'ू',
+        'ṛ': 'ृ', '.r': 'ृ',
+        'ṝ': 'ॄ', '.rr': 'ॄ',
+        'ḷ': 'ॢ', '.l': 'ॢ',
+        'ḹ': 'ॣ', '.ll': 'ॣ',
+        'e': 'े',
+        'ai': 'ै',
+        'o': 'ो',
+        'au': 'ौ',
+    }
 
-		// Try matching longest sequences first (3, 2, 1 characters)
-		for (let len = 3; len >= 1; len--) {
-			const substr = text.slice(i, i + len)
-			if (IAST_TO_DEVANAGARI[substr]) {
-				result += IAST_TO_DEVANAGARI[substr]
-				i += len
-				matched = true
-				break
-			}
-		}
+    // Independent vowels
+    const independentVowels: Record<string, string> = {
+        'a': 'अ',
+        'ā': 'आ', 'aa': 'आ',
+        'i': 'इ',
+        'ī': 'ई', 'ii': 'ई',
+        'u': 'उ',
+        'ū': 'ऊ', 'uu': 'ऊ',
+        'ṛ': 'ऋ', '.r': 'ऋ',
+        'ṝ': 'ॠ', '.rr': 'ॠ',
+        'ḷ': 'ऌ', '.l': 'ऌ',
+        'ḹ': 'ॡ', '.ll': 'ॡ',
+        'e': 'ए',
+        'ai': 'ऐ',
+        'o': 'ओ',
+        'au': 'औ',
+    }
 
-		if (!matched) {
-			result += text[i]
-			i++
-		}
-	}
+    // Consonants (without inherent 'a')
+    const consonants: Record<string, string> = {
+        'k': 'क', 'kh': 'ख', 'g': 'ग', 'gh': 'घ', 'ṅ': 'ङ', '.n': 'ङ',
+        'c': 'च', 'ch': 'छ', 'j': 'ज', 'jh': 'झ', 'ñ': 'ञ', '~n': 'ञ',
+        'ṭ': 'ट', '.t': 'ट', 'ṭh': 'ठ', '.th': 'ठ',
+        'ḍ': 'ड', '.d': 'ड', 'ḍh': 'ढ', '.dh': 'ढ',
+        'ṇ': 'ण',
+        't': 'त', 'th': 'थ', 'd': 'द', 'dh': 'ध', 'n': 'न',
+        'p': 'प', 'ph': 'फ', 'b': 'ब', 'bh': 'भ', 'm': 'म',
+        'y': 'य', 'r': 'र', 'l': 'ल', 'v': 'व', 'w': 'व',
+        'ś': 'श', '.s': 'श', 'ṣ': 'ष', 's.': 'ष', 's': 'स', 'h': 'ह',
+    }
 
-	return result
+    // Diacritics
+    const diacritics: Record<string, string> = {
+        'ṃ': 'ं', '.m': 'ं', 'm.': 'ं',
+        'ḥ': 'ः', '.h': 'ः', 'h.': 'ः',
+        'm̐': 'ँ', '~m': 'ँ',
+    }
+
+    const flushPendingConsonant = (addInherentA: boolean = true) => {
+        if (pendingConsonant) {
+            result += pendingConsonant
+            if (!addInherentA) {
+                result += HALANT
+            }
+            pendingConsonant = null
+        }
+    }
+
+    const tryMatch = (map: Record<string, string>, maxLen: number = 3): { key: string; value: string } | null => {
+        for (let len = maxLen; len >= 1; len--) {
+            const substr = text.slice(i, i + len)
+            if (map[substr]) {
+                return { key: substr, value: map[substr] }
+            }
+        }
+        return null
+    }
+
+    while (i < text.length) {
+        // Try diacritics first
+        const diacriticMatch = tryMatch(diacritics, 3)
+        if (diacriticMatch) {
+            flushPendingConsonant(true)
+            result += diacriticMatch.value
+            i += diacriticMatch.key.length
+            continue
+        }
+
+        // Try consonants
+        const consonantMatch = tryMatch(consonants, 3)
+        if (consonantMatch) {
+            if (pendingConsonant) {
+                // There's a pending consonant - add halant before the new consonant
+                result += pendingConsonant + HALANT
+            }
+            pendingConsonant = consonantMatch.value
+            i += consonantMatch.key.length
+            continue
+        }
+
+        // Try vowels
+        const vowelMatch = tryMatch(independentVowels, 3)
+        if (vowelMatch) {
+            if (pendingConsonant) {
+                // Vowel after consonant - use matra
+                result += pendingConsonant
+                const matra = vowelMatras[vowelMatch.key]
+                if (matra && vowelMatch.key !== 'a') {
+                    result += matra
+                }
+                // 'a' is inherent, no matra needed
+                pendingConsonant = null
+            } else {
+                // Independent vowel
+                result += vowelMatch.value
+            }
+            i += vowelMatch.key.length
+            continue
+        }
+
+        // No match - flush pending and output character as-is
+        flushPendingConsonant(true)
+        result += text[i]
+        i++
+    }
+
+    // Flush any remaining pending consonant
+    flushPendingConsonant(true)
+
+    return result
 }
 
 /**
  * Convert text from Devanagari to IAST
  */
 export const devanagariToIAST = (text: string): string => {
-	let result = ''
-	let i = 0
+    let result = ''
+    let i = 0
 
-	while (i < text.length) {
-		let matched = false
+    while (i < text.length) {
+        let matched = false
 
-		// Try matching longest sequences first
-		for (let len = 3; len >= 1; len--) {
-			const substr = text.slice(i, i + len)
-			if (DEVANAGARI_TO_IAST[substr]) {
-				result += DEVANAGARI_TO_IAST[substr]
-				i += len
-				matched = true
-				break
-			}
-		}
+        // Try matching longest sequences first
+        for (let len = 3; len >= 1; len--) {
+            const substr = text.slice(i, i + len)
+            if (DEVANAGARI_TO_IAST[substr]) {
+                result += DEVANAGARI_TO_IAST[substr]
+                i += len
+                matched = true
+                break
+            }
+        }
 
-		if (!matched) {
-			result += text[i]
-			i++
-		}
-	}
+        if (!matched) {
+            result += text[i]
+            i++
+        }
+    }
 
-	return result
+    return result
 }

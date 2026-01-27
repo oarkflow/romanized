@@ -1,3 +1,8 @@
 packages:
   - 'packages/*'
-  - 'demos/*'
+  - 'demos/basic'
+  - 'demos/react'
+  - 'demos/character-palette'
+  - 'demos/complete-character'
+  - 'demos/iast'
+  - 'demos/all-schemes'
