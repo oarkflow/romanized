@@ -115,7 +115,25 @@ const vowelMapping = buildMapping<{ independent: string; matra: string; inherent
     { keys: ['R'], value: { independent: 'ॠ', matra: 'ॄ' }, caseSensitive: true },
     { keys: ['lri'], value: { independent: 'ऌ', matra: 'ॢ' } },
     { keys: ['lree'], value: { independent: 'ॡ', matra: 'ॣ' } },
+    { keys: ['L'], value: { independent: 'ॡ', matra: 'ॣ' }, caseSensitive: true },
     { keys: ['e^', 'eN'], value: { independent: 'ऍ', matra: 'ॅ' } },
+    // Dravidian short vowels
+    { keys: ['e.'], value: { independent: 'ऎ', matra: 'ॆ' } },
+    { keys: ['o.'], value: { independent: 'ऒ', matra: 'ॊ' } },
+    // Candra o (for English loanwords like "coffee" -> कॉफ़ी)
+    { keys: ['aw', 'o^'], value: { independent: 'ऑ', matra: 'ॉ' } },
+    // Marathi special vowels
+    { keys: ['.a'], value: { independent: 'ॲ', matra: '' } },
+    { keys: ['oe'], value: { independent: 'ॳ', matra: '' } },
+    { keys: ['ooe'], value: { independent: 'ॴ', matra: '' } },
+    // Kashmiri vowels
+    { keys: ['aw.'], value: { independent: 'ॵ', matra: '' } },
+    { keys: ['ue'], value: { independent: 'ॶ', matra: '' } },
+    { keys: ['uue'], value: { independent: 'ॷ', matra: '' } },
+    // Additional archaic vowels (U+0904, U+0960, U+0961)
+    { keys: ['a4'], value: { independent: '\u0904', matra: '' } },  // U+0904 - Short A (historical)
+    { keys: ['RR'], value: { independent: '\u0960', matra: 'ॄ' } },  // U+0960 - Vocalic RR (alternate)
+    { keys: ['LL'], value: { independent: '\u0961', matra: 'ॣ' } },  // U+0961 - Vocalic LL (alternate)
     { keys: ['i'], value: { independent: 'इ', matra: 'ि' } },
     { keys: ['u'], value: { independent: 'उ', matra: 'ु' } },
     { keys: ['eei'], value: { independent: 'ए', matra: 'े' } },
@@ -175,23 +193,137 @@ const consonantMapping = buildMapping<string>([
     { keys: ['Dh'], value: 'ढ', caseSensitive: true },
     { keys: ['N'], value: 'ण', caseSensitive: true },
     { keys: ['Sh'], value: 'ष', caseSensitive: true },
+
+    // Nukta consonants (Urdu/Persian sounds) - Use dot notation to avoid conflicts
+    { keys: ['kh.'], value: 'ख़' },   // U+0959 - Urdu khe (kh + nukta)
+    { keys: ['gh.'], value: 'ग़' },   // U+095A - Urdu ghain (gh + nukta)
+    { keys: ['D.'], value: 'ड़' },    // U+095C - Hindi Ra (flap, D + nukta)
+    { keys: ['Dh.'], value: 'ढ़' },   // U+095D - Hindi Rha (aspirated flap, Dh + nukta)
+    { keys: ['y.'], value: 'य़' },    // U+095F - Bengali Ya (y + nukta)
+
+    // Additional nukta variants for complete coverage
+    { keys: ['q.'], value: 'क़' },    // U+0958 - Urdu qaf
+    { keys: ['z.'], value: 'ज़' },    // U+095B - Urdu ze
+    { keys: ['f.'], value: 'फ़' },    // U+095E - Urdu fe
+
+    // Dravidian consonants - Use dot notation
+    { keys: ['.r'], value: 'ऱ' },     // U+0931 - Tamil/Malayalam ra
+    { keys: ['.n'], value: 'ऩ' },     // U+0929 - Dravidian na
+    { keys: ['.l'], value: 'ळ' },     // U+0933 - Marathi/Kannada lla
+    { keys: ['.zh'], value: 'ऴ' },    // U+0934 - Malayalam/Tamil zha
+
+    // Archaic/historical consonants
+    { keys: ['jj'], value: 'ज्ज' },   // Historical archaic letter JJA
+    { keys: ['GG'], value: 'ॻ' },     // U+097B - Letter GGA (historical)
+    { keys: ['JJ'], value: 'ॼ' },     // U+097C - Letter JA (historical)
+    { keys: ['DD'], value: 'ॾ' },     // U+097E - Letter DDDA (historical)
+    { keys: ['BH'], value: 'ॿ' },     // U+097F - Letter BBA (historical)
 ])
 
 const diacriticMapping = buildMapping<string>([
-    { keys: ['M'], value: 'ं', caseSensitive: true },
-    { keys: ['H'], value: 'ः', caseSensitive: true },
-    { keys: ['~'], value: 'ँ' },
+    { keys: ['M'], value: 'ं', caseSensitive: true },       // U+0902 - Anusvara
+    { keys: ['H'], value: 'ः', caseSensitive: true },       // U+0903 - Visarga
+    { keys: ['~'], value: 'ँ' },                            // U+0901 - Candrabindu
     { keys: ['m~', '~m', 'm`'], value: 'ं' },
     { keys: ['n~', '~n'], value: 'ँ' },
     { keys: ['h~', '~h'], value: 'ः' },
-    { keys: ['.a', "'"], value: 'ऽ' },
-    { keys: ['om'], value: 'ॐ' },
+    { keys: ['.a', "'"], value: 'ऽ' },                     // U+093D - Avagraha
+    { keys: ['om'], value: 'ॐ' },                           // U+0950 - Om
+    { keys: ['A~'], value: 'ऀ' },                           // U+0900 - Sign Inverted Candrabindu (Kashmiri)
+    { keys: ['H.'], value: 'ᳲ' },                           // U+1CF2 - Sign Ardhavisarga
+    { keys: ['H:'], value: 'ᳵ' },                           // U+1CF5 - Sign Jihvamuliya
+    { keys: ['h:'], value: 'ᳶ' },                           // U+1CF6 - Sign Upadhmaniya
 ])
 
 const symbolMapping = buildMapping<string>([
-    { keys: ['||'], value: '॥' },
-    { keys: ['|'], value: '।' },
-    { keys: ['.'], value: '।' },
+    { keys: ['||'], value: '॥' },           // U+0965 - Double Danda
+    { keys: ['|'], value: '।' },            // U+0964 - Danda
+    // Note: Single dot "." is NOT mapped to allow nukta/special char sequences like kh., .r, etc.
+
+    // Priority 2: Additional punctuation and special characters
+    { keys: ['..'], value: '॰' },           // U+0970 - Abbreviation mark (requires double dot)
+    { keys: ['.^'], value: 'ॱ' },           // U+0971 - High spacing dot
+    { keys: ['A^'], value: 'ऀ' },           // U+0900 - Inverted Candrabindu (Kashmiri)
+    { keys: ['^~'], value: 'ँ' },           // U+0901 - Candrabindu (already in diacritics, but can be typed independently)
+    { keys: ['^.'], value: '़' },           // U+093C - Nukta (standalone, for manual composition)
+    { keys: ['.av'], value: 'ऽ' },          // U+093D - Avagraha (alternate input)
+    { keys: ['om', 'OM'], value: 'ॐ' },    // U+0950 - Om (already handled but added for completeness)
+
+    // Historical/archaic letters U+0978-U+097D for complete Unicode coverage
+    { keys: ['@ma'], value: 'ॸ' },          // U+0978 - Marwari Dda
+    { keys: ['@zh'], value: 'ॹ' },          // U+0979 - Zha
+    { keys: ['@hy'], value: 'ॺ' },          // U+097A - Heavy Ya
+    // U+097B-U+097F already covered in consonantMapping as GG, JJ, DD, BH
+    { keys: ['@DD3'], value: 'ॽ' },         // U+097D - Glottal Stop
+
+    // Zero-width characters for ligature control
+    { keys: ['ZWJ'], value: '‍' },          // U+200D - Zero Width Joiner (for ligature control)
+    { keys: ['ZWNJ'], value: '‌' },         // U+200C - Zero Width Non-Joiner (for ligature breaking)
+])
+
+// Priority 2: Vedic accent marks - Complete Unicode coverage (40+ marks)
+// U+0951-U+0954: Main Devanagari Vedic marks
+// U+1CD0-U+1CDA: Vedic Extensions for tone marks
+// U+A8E0-U+A8F7: Combining Devanagari marks
+const vedicAccentMapping = buildMapping<string>([
+    // Main Vedic accents (U+0951-U+0954)
+    { keys: ['\'1', '^1'], value: '\u0951' },   // U+0951 - Udatta (high pitch)
+    { keys: ['\'2', '_1'], value: '\u0952' },   // U+0952 - Anudatta (low pitch)
+    { keys: ['\'3', '`1'], value: '\u0953' },   // U+0953 - Grave accent
+    { keys: ['\'4', "'1"], value: '\u0954' },   // U+0954 - Acute accent
+
+    // Vedic Tone Marks (U+1CD0-U+1CDA)
+    { keys: ['\'5', 'v1'], value: '\u1cd0' },   // U+1CD0 - Tone Karshana
+    { keys: ['\'6', 'v2'], value: '\u1cd1' },   // U+1CD1 - Tone Shara
+    { keys: ['\'7', 'v3'], value: '\u1cd2' },   // U+1CD2 - Tone Prenkha
+    { keys: ['\'8', 'v4'], value: '\u1cd3' },   // U+1CD3 - Sign Nihshvasa
+    { keys: ['\'9', 'v5'], value: '\u1cd4' },   // U+1CD4 - Tone Midline Svarita
+    { keys: ['\'0', 'v6'], value: '\u1cd5' },   // U+1CD5 - Tone Aggravated Independent Svarita
+    { keys: ['\'a', 'v7'], value: '\u1cd6' },   // U+1CD6 - Tone Independent Svarita
+    { keys: ['\'b', 'v8'], value: '\u1cd7' },   // U+1CD7 - Tone Kathaka Independent Svarita
+    { keys: ['\'c', 'v9'], value: '\u1cd8' },   // U+1CD8 - Tone Candra Below
+    { keys: ['\'d', 'v0'], value: '\u1cd9' },   // U+1CD9 - Tone Kathaka Independent Svarita Schroeder
+    { keys: ['\'e', 'va'], value: '\u1cda' },   // U+1CDA - Tone Double Svarita
+
+    // Additional Vedic Extensions (U+1CDB-U+1CDC)
+    { keys: ['\'f', 'vb'], value: '\u1cdb' },   // U+1CDB - Tone Triple Svarita
+    { keys: ['\'g', 'vc'], value: '\u1cdc' },   // U+1CDC - Tone Kathaka Anudatta
+    { keys: ['\'h', 'vd'], value: '\u1cdd' },   // U+1CDD - Tone Dot Below
+
+    // Combining Devanagari Digits and Signs (U+A8E0-U+A8F7)
+    { keys: ['c0'], value: '\ua8e0' },          // U+A8E0 - Combining Digit Zero
+    { keys: ['c1'], value: '\ua8e1' },          // U+A8E1 - Combining Digit One
+    { keys: ['c2'], value: '\ua8e2' },          // U+A8E2 - Combining Digit Two
+    { keys: ['c3'], value: '\ua8e3' },          // U+A8E3 - Combining Digit Three
+    { keys: ['c4'], value: '\ua8e4' },          // U+A8E4 - Combining Digit Four
+    { keys: ['c5'], value: '\ua8e5' },          // U+A8E5 - Combining Digit Five
+    { keys: ['c6'], value: '\ua8e6' },          // U+A8E6 - Combining Digit Six
+    { keys: ['c7'], value: '\ua8e7' },          // U+A8E7 - Combining Digit Seven
+    { keys: ['c8'], value: '\ua8e8' },          // U+A8E8 - Combining Digit Eight
+    { keys: ['c9'], value: '\ua8e9' },          // U+A8E9 - Combining Digit Nine
+    { keys: ['c.'], value: '\ua8ea' },          // U+A8EA - Combining Letter A
+    { keys: ['cu'], value: '\ua8eb' },          // U+A8EB - Combining Letter U
+    { keys: ['ck'], value: '\ua8ec' },          // U+A8EC - Combining Letter Ka
+    { keys: ['cn'], value: '\ua8ed' },          // U+A8ED - Combining Letter Na
+    { keys: ['cp'], value: '\ua8ee' },          // U+A8EE - Combining Letter Pa
+    { keys: ['cr'], value: '\ua8ef' },          // U+A8EF - Combining Letter Ra
+    { keys: ['cv'], value: '\ua8f0' },          // U+A8F0 - Combining Letter Vi
+    { keys: ['cs'], value: '\ua8f1' },          // U+A8F1 - Combining Letter Anusvara
+    { keys: ['c~'], value: '\ua8f2' },          // U+A8F2 - Combining Sign Anusvara
+    { keys: ['c^'], value: '\ua8f3' },          // U+A8F3 - Combining Sign Visarga
+
+    // Additional marks for complete coverage
+    { keys: ['\'_'], value: '\u1cd6' },         // Alternate input for tone ardhavisarga
+    { keys: ['\'='], value: '\u1cd7' },         // Alternate input for tone pluta
+    { keys: ['\']'], value: '\u1cd8' },         // Stress sign anudatta
+    { keys: ['\'\\\\'], value: '\u1cd9' },      // Stress sign udatta
+    { keys: ['\'/'], value: '\u1cda' },         // Stress sign kampa
+    { keys: ['\'|'], value: '\u1cdb' },         // Grave accent below
+
+    // Om variations and special signs
+    { keys: ['.om'], value: '\u1cf4' },         // U+1CF4 - Tone Candra Above
+    { keys: ['om.'], value: '\u1cf8' },         // U+1CF8 - Tone Ring Above
+    { keys: ['om:'], value: '\u1cf9' },         // U+1CF9 - Tone Double Ring Above
 ])
 
 export type TransliterationTokenType =
@@ -319,6 +451,15 @@ export const transliterateDetailed = (
             output.push('ॐ')
             tokens.push({ source, translated: 'ॐ', type: 'punctuation' })
             index += 2
+            continue
+        }
+
+        // Check Vedic accents first (Priority 2 feature)
+        const vedicMatch = matchFromMapping(input, lowerInput, index, vedicAccentMapping)
+        if (vedicMatch) {
+            output.push(vedicMatch.config)
+            tokens.push({ source: vedicMatch.raw, translated: vedicMatch.config, type: 'diacritic' })
+            index += vedicMatch.raw.length
             continue
         }
 

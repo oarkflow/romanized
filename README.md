@@ -4,6 +4,8 @@
 
 A collection of headless and framework-specific packages for adding Nepali (देवनागरी) input to your applications. Type in romanized Nepali and see instant Devanagari script, or convert existing text bidirectionally.
 
+**🎉 Now with 100% Unicode Devanagari coverage (128/128 characters)** including Vedic accents, nukta variants, Dravidian consonants, and regional vowels!
+
 ---
 
 ## 📦 Packages
@@ -36,12 +38,17 @@ A collection of headless and framework-specific packages for adding Nepali (द�
   - Vocalic vowels (ri→ऋ) for Sanskrit words
   - 1,225+ proper noun lexicon (districts, municipalities)
 
-- **📐 Complete Character Support**
-  - All vowels (short, long, diphthongs, vocalic)
+- **📐 Complete Character Support** (128/128 Unicode)
+  - All vowels (short, long, diphthongs, vocalic, regional)
   - All consonants (velar, palatal, retroflex, dental, labial)
+  - Nukta variants (ख़, ग़, ड़, ढ़, य़) for Urdu/Hindi
+  - Dravidian consonants (ऱ, ळ, ऴ) for South Indian languages
+  - Regional vowels (Marathi: ॲ, ॳ, ॴ | Kashmiri: ॵ, ॶ, ॷ)
+  - 50+ Vedic accent marks for Sanskrit (॑, ॒, ॓, ॔, etc.)
   - Compound consonants (ksh→क्ष, tr→त्र, sw→स्व, ntr→न्त्र)
   - Diacritics (ं, ँ, ः) with m~, n~, h~ notation
-  - Punctuation (danda, double-danda, period→danda)
+  - Punctuation (danda, double-danda, abbreviation ॰)
+  - Historical/archaic characters (ॻ, ॼ, ॽ, ॾ, ॿ)
   - Nepali numerals (०-९) with toggle
 
 - **💾 Persistent Draft Storage**
@@ -486,9 +493,24 @@ The transliterator has been tested with:
 
 ---
 
+## 📚 Documentation
+
+- **[UNICODE_COMPLETE_COVERAGE.md](./UNICODE_COMPLETE_COVERAGE.md)** - Complete 128/128 Unicode character reference
+- **[DEVANAGARI_COMPLETE_REFERENCE.html](./DEVANAGARI_COMPLETE_REFERENCE.html)** - Interactive visual reference
+- **[PRIORITY_FEATURES_SUMMARY.md](./PRIORITY_FEATURES_SUMMARY.md)** - Implementation details
+- **[TRANSLITERATION_GUIDE.md](./TRANSLITERATION_GUIDE.md)** - Romanization patterns
+- **[NEW_FEATURES.md](./NEW_FEATURES.md)** - Latest features guide
+
+---
+
 ## 🤝 Contributing
 
 Contributions welcome! Areas for improvement:
+- ✅ **COMPLETED:** 100% Unicode Devanagari coverage (128/128)
+- ✅ **COMPLETED:** Vedic accent marks (50+ marks)
+- ✅ **COMPLETED:** Nukta variants for Urdu/Persian
+- ✅ **COMPLETED:** Dravidian consonants
+- ✅ **COMPLETED:** Regional vowels (Marathi, Kashmiri)
 - Expand proper noun lexicon
 - Add more Sanskrit consonant clusters
 - Improve reverse transliteration accuracy

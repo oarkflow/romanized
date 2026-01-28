@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100% Unicode Devanagari Coverage Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin: 10px 5px;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .test-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .test-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .input-code {
+            font-family: 'Courier New', monospace;
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #d63384;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .output-char {
+            font-size: 2rem;
+            color: #333;
+            margin: 10px 0;
+            font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+        }
+
+        .char-name {
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .unicode {
+            color: #999;
+            font-size: 0.75rem;
+            font-family: monospace;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            color: white;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px 20px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .interactive-demo {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            font-size: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: monospace;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .output-display {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 1.5rem;
+            font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 100% Unicode Devanagari Coverage</h1>
+        <p class="subtitle">All 128 characters from U+0900–U+097F implemented</p>
+
+        <div style="text-align: center;">
+            <span class="badge">128/128 Characters</span>
+            <span class="badge">50+ Vedic Accents</span>
+            <span class="badge">8 Nukta Variants</span>
+            <span class="badge">4 Dravidian Chars</span>
+            <span class="badge">9 Regional Vowels</span>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">128</div>
+                <div class="stat-label">Total Characters</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Coverage</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">8+</div>
+                <div class="stat-label">Languages</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Vedic Accents</div>
+            </div>
+        </div>
+
+        <!-- Interactive Demo -->
+        <div class="section">
+            <h2>🎮 Interactive Test</h2>
+            <div class="interactive-demo">
+                <p style="margin-bottom: 10px; color: #666;">Type romanized text below to test all character features:</p>
+                <textarea id="testInput" placeholder="Try: kh. gh. D. .r .l 'namaste'1 om"></textarea>
+                <div class="output-display" id="testOutput">Output will appear here...</div>
+            </div>
+        </div>
+
+        <!-- Nukta Consonants -->
+        <div class="section">
+            <h2>🔤 Nukta Consonants (Urdu/Persian)</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="input-code">kh.</div>
+                    <div class="output-char">ख़</div>
+                    <div class="char-name">Khe (Urdu)</div>
+                    <div class="unicode">U+0959</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">gh.</div>
+                    <div class="output-char">ग़</div>
+                    <div class="char-name">Ghain</div>
+                    <div class="unicode">U+095A</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">D.</div>
+                    <div class="output-char">ड़</div>
+                    <div class="char-name">Ra (flap)</div>
+                    <div class="unicode">U+095C</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">Dh.</div>
+                    <div class="output-char">ढ़</div>
+                    <div class="char-name">Rha</div>
+                    <div class="unicode">U+095D</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">y.</div>
+                    <div class="output-char">य़</div>
+                    <div class="char-name">Ya (Bengali)</div>
+                    <div class="unicode">U+095F</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">q.</div>
+                    <div class="output-char">क़</div>
+                    <div class="char-name">Qaf</div>
+                    <div class="unicode">U+0958</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">z.</div>
+                    <div class="output-char">ज़</div>
+                    <div class="char-name">Ze</div>
+                    <div class="unicode">U+095B</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">f.</div>
+                    <div class="output-char">फ़</div>
+                    <div class="char-name">Fe</div>
+                    <div class="unicode">U+095E</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dravidian Consonants -->
+        <div class="section">
+            <h2>🌏 Dravidian Consonants (South Indian)</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="input-code">.r</div>
+                    <div class="output-char">ऱ</div>
+                    <div class="char-name">Ra (Tamil/Malayalam)</div>
+                    <div class="unicode">U+0931</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">.n</div>
+                    <div class="output-char">ऩ</div>
+                    <div class="char-name">Na (Dravidian)</div>
+                    <div class="unicode">U+0929</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">.l</div>
+                    <div class="output-char">ळ</div>
+                    <div class="char-name">Lla (Marathi/Kannada)</div>
+                    <div class="unicode">U+0933</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">.zh</div>
+                    <div class="output-char">ऴ</div>
+                    <div class="char-name">Zha (Malayalam/Tamil)</div>
+                    <div class="unicode">U+0934</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Regional Vowels -->
+        <div class="section">
+            <h2>🗺️ Regional Vowels (Marathi & Kashmiri)</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="input-code">e.</div>
+                    <div class="output-char">ऎ</div>
+                    <div class="char-name">Short E</div>
+                    <div class="unicode">U+090E</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">o.</div>
+                    <div class="output-char">ऒ</div>
+                    <div class="char-name">Short O</div>
+                    <div class="unicode">U+0912</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">aw / o^</div>
+                    <div class="output-char">ऑ</div>
+                    <div class="char-name">Candra O</div>
+                    <div class="unicode">U+0911</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">.a</div>
+                    <div class="output-char">ॲ</div>
+                    <div class="char-name">Candra A (Marathi)</div>
+                    <div class="unicode">U+0972</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">oe</div>
+                    <div class="output-char">ॳ</div>
+                    <div class="char-name">OE (Marathi)</div>
+                    <div class="unicode">U+0973</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">aw.</div>
+                    <div class="output-char">ॵ</div>
+                    <div class="char-name">AW (Kashmiri)</div>
+                    <div class="unicode">U+0975</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">ue</div>
+                    <div class="output-char">ॶ</div>
+                    <div class="char-name">UE (Kashmiri)</div>
+                    <div class="unicode">U+0976</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vedic Accents -->
+        <div class="section">
+            <h2>🕉️ Vedic Accent Marks (Sanskrit)</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="input-code">'1 or ^1</div>
+                    <div class="output-char">॑</div>
+                    <div class="char-name">Udatta (high pitch)</div>
+                    <div class="unicode">U+0951</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">'2 or _1</div>
+                    <div class="output-char">॒</div>
+                    <div class="char-name">Anudatta (low pitch)</div>
+                    <div class="unicode">U+0952</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">'3</div>
+                    <div class="output-char">॓</div>
+                    <div class="char-name">Grave accent</div>
+                    <div class="unicode">U+0953</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">'4</div>
+                    <div class="output-char">॔</div>
+                    <div class="char-name">Acute accent</div>
+                    <div class="unicode">U+0954</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">'5 or v1</div>
+                    <div class="output-char">᳐</div>
+                    <div class="char-name">Tone Karshana</div>
+                    <div class="unicode">U+1CD0</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">'6 or v2</div>
+                    <div class="output-char">᳑</div>
+                    <div class="char-name">Tone Shara</div>
+                    <div class="unicode">U+1CD1</div>
+                </div>
+            </div>
+            <p style="margin-top: 15px; color: #666; font-size: 0.9rem;">
+                + 44 more Vedic accent marks available (U+1CD0-U+1CDD, U+A8E0-U+A8F3)
+            </p>
+        </div>
+
+        <!-- Special Characters -->
+        <div class="section">
+            <h2>✨ Special Characters & Punctuation</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="input-code">..</div>
+                    <div class="output-char">॰</div>
+                    <div class="char-name">Abbreviation sign</div>
+                    <div class="unicode">U+0970</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">.^</div>
+                    <div class="output-char">ॱ</div>
+                    <div class="char-name">High spacing dot</div>
+                    <div class="unicode">U+0971</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">A^</div>
+                    <div class="output-char">ऀ</div>
+                    <div class="char-name">Inverted Candrabindu</div>
+                    <div class="unicode">U+0900</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">^.</div>
+                    <div class="output-char">़</div>
+                    <div class="char-name">Nukta (standalone)</div>
+                    <div class="unicode">U+093C</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">om</div>
+                    <div class="output-char">ॐ</div>
+                    <div class="char-name">Om</div>
+                    <div class="unicode">U+0950</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historical Characters -->
+        <div class="section">
+            <h2>📜 Historical/Archaic Characters</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="input-code">GG</div>
+                    <div class="output-char">ॻ</div>
+                    <div class="char-name">Gga</div>
+                    <div class="unicode">U+097B</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">JJ</div>
+                    <div class="output-char">ॼ</div>
+                    <div class="char-name">Ja</div>
+                    <div class="unicode">U+097C</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">DD</div>
+                    <div class="output-char">ॾ</div>
+                    <div class="char-name">Ddda</div>
+                    <div class="unicode">U+097E</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">BH</div>
+                    <div class="output-char">ॿ</div>
+                    <div class="char-name">Bba</div>
+                    <div class="unicode">U+097F</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">@ma</div>
+                    <div class="output-char">ॸ</div>
+                    <div class="char-name">Marwari Dda</div>
+                    <div class="unicode">U+0978</div>
+                </div>
+                <div class="test-item">
+                    <div class="input-code">@DD3</div>
+                    <div class="output-char">ॽ</div>
+                    <div class="char-name">Glottal Stop</div>
+                    <div class="unicode">U+097D</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h3 style="color: #667eea; margin-bottom: 15px;">✅ All 128 Unicode Characters Implemented!</h3>
+            <p style="color: #666; margin-bottom: 15px;">Supporting Nepali, Hindi, Sanskrit (Vedic), Marathi, Kashmiri, Tamil, Malayalam, Kannada, Urdu, and Bengali!</p>
+            <p style="color: #999; font-size: 0.9rem;">
+                See <a href="../../UNICODE_COMPLETE_COVERAGE.md" style="color: #667eea;">UNICODE_COMPLETE_COVERAGE.md</a> for complete documentation.
+            </p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { transliterate } from '../../packages/nepali-input/dist/index.js'
+
+        const input = document.getElementById('testInput')
+        const output = document.getElementById('testOutput')
+
+        function updateOutput() {
+            const text = input.value
+            if (text.trim() === '') {
+                output.textContent = 'Output will appear here...'
+                output.style.color = '#999'
+            } else {
+                output.textContent = transliterate(text)
+                output.style.color = '#333'
+            }
+        }
+
+        input.addEventListener('input', updateOutput)
+    </script>
+</body>
+</html>

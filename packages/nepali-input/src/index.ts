@@ -18,60 +18,64 @@ export type { ShortcutHandler, ShortcutDefinition, ShortcutOptions } from './key
 export { AutocompleteManager, COMMON_WORDS } from './autocomplete'
 export type { AutocompleteEntry, AutocompleteSuggestion, AutocompleteOptions } from './autocomplete'
 
+// Character Selector (for multiple mapping choices)
+export { CharacterSelector, getCharacterAlternatives } from './character-selector'
+export type { CharacterAlternative, CharacterSelectorOptions } from './character-selector'
+
 // Transliteration Schemes
 export {
-	// IAST
-	createIASTMappings,
-	iastToDevanagari,
-	devanagariToIAST,
-	iastVowelMapping,
-	iastConsonantMapping,
-	iastDiacriticMapping,
-	IAST_TO_DEVANAGARI,
-	DEVANAGARI_TO_IAST,
-	// ISO 15919
-	createISO15919Mappings,
-	iso15919ToDevanagari,
-	iso15919VowelMapping,
-	iso15919ConsonantMapping,
-	iso15919DiacriticMapping,
-	ISO15919_TO_DEVANAGARI,
-	// Harvard-Kyoto
-	createHarvardKyotoMappings,
-	harvardKyotoToDevanagari,
-	harvardKyotoVowelMapping,
-	harvardKyotoConsonantMapping,
-	harvardKyotoDiacriticMapping,
-	HARVARD_KYOTO_TO_DEVANAGARI,
-	// Velthuis
-	createVelthuisMappings,
-	velthuisToDevanagari,
-	velthuisVowelMapping,
-	velthuisConsonantMapping,
-	velthuisDiacriticMapping,
-	VELTHUIS_TO_DEVANAGARI,
-	// SLP1
-	createSLP1Mappings,
-	slp1ToDevanagari,
-	slp1VowelMapping,
-	slp1ConsonantMapping,
-	slp1DiacriticMapping,
-	SLP1_TO_DEVANAGARI,
-	// Utilities
-	buildMapping,
-	SCHEMES,
-	getSchemeInfo,
+    // IAST
+    createIASTMappings,
+    iastToDevanagari,
+    devanagariToIAST,
+    iastVowelMapping,
+    iastConsonantMapping,
+    iastDiacriticMapping,
+    IAST_TO_DEVANAGARI,
+    DEVANAGARI_TO_IAST,
+    // ISO 15919
+    createISO15919Mappings,
+    iso15919ToDevanagari,
+    iso15919VowelMapping,
+    iso15919ConsonantMapping,
+    iso15919DiacriticMapping,
+    ISO15919_TO_DEVANAGARI,
+    // Harvard-Kyoto
+    createHarvardKyotoMappings,
+    harvardKyotoToDevanagari,
+    harvardKyotoVowelMapping,
+    harvardKyotoConsonantMapping,
+    harvardKyotoDiacriticMapping,
+    HARVARD_KYOTO_TO_DEVANAGARI,
+    // Velthuis
+    createVelthuisMappings,
+    velthuisToDevanagari,
+    velthuisVowelMapping,
+    velthuisConsonantMapping,
+    velthuisDiacriticMapping,
+    VELTHUIS_TO_DEVANAGARI,
+    // SLP1
+    createSLP1Mappings,
+    slp1ToDevanagari,
+    slp1VowelMapping,
+    slp1ConsonantMapping,
+    slp1DiacriticMapping,
+    SLP1_TO_DEVANAGARI,
+    // Utilities
+    buildMapping,
+    SCHEMES,
+    getSchemeInfo,
 } from './schemes'
 export type {
-	IASTMapping,
-	ISO15919Mapping,
-	HarvardKyotoMapping,
-	VelthuisMapping,
-	SLP1Mapping,
-	MappingEntry,
-	CompiledMapping,
-	TransliterationScheme,
-	SchemeInfo
+    IASTMapping,
+    ISO15919Mapping,
+    HarvardKyotoMapping,
+    VelthuisMapping,
+    SLP1Mapping,
+    MappingEntry,
+    CompiledMapping,
+    TransliterationScheme,
+    SchemeInfo
 } from './schemes'
 
 // Character Palette
