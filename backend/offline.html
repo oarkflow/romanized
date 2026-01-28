@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Unavailable</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .status-page {
+            text-align: center;
+            max-width: 480px;
+            padding: 48px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.4);
+        }
+
+        .status-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            background: linear-gradient(135deg, rgba(251, 146, 60, 0.2) 0%, rgba(251, 146, 60, 0.1) 100%);
+            border: 2px solid rgba(251, 146, 60, 0.3);
+        }
+
+        .status-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .status-message {
+            font-size: 15px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 32px;
+        }
+
+        .status-details {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 32px;
+            text-align: left;
+        }
+
+        .status-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .status-detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .status-detail-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+        }
+
+        .status-detail-value {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(251, 146, 60, 0.15);
+            color: #fdba74;
+            margin-bottom: 16px;
+        }
+
+        .status-badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .refresh-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(79, 70, 229, 0.4);
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.5);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        .refresh-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .refresh-btn.loading svg {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .help-text {
+            margin-top: 24px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .help-text a {
+            color: #818cf8;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .help-text a:hover {
+            color: #a5b4fc;
+        }
+
+        .security-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .security-indicator svg {
+            width: 14px;
+            height: 14px;
+            color: #fbbf24;
+        }
+
+        .retry-countdown {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-page">
+        <div class="status-icon">⚡</div>
+        <h1 class="status-title">Service Unavailable</h1>
+        <p class="status-message">
+            The application server is currently offline or unreachable.
+            This could be due to maintenance or a temporary connection issue.
+        </p>
+
+        <div class="status-details">
+            <div class="status-detail-row">
+                <span class="status-detail-label">Status</span>
+                <span class="status-detail-value">503 - Service Unavailable</span>
+            </div>
+            <div class="status-detail-row">
+                <span class="status-detail-label">Connection</span>
+                <span class="status-detail-value" id="connection-status">Checking...</span>
+            </div>
+            <div class="status-detail-row">
+                <span class="status-detail-label">Last Checked</span>
+                <span class="status-detail-value" id="last-checked">--</span>
+            </div>
+        </div>
+
+        <span class="status-badge">
+            <span class="status-badge-dot"></span>
+            Server Offline
+        </span>
+
+        <div>
+            <button class="refresh-btn" onclick="handleRefresh(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Retry Connection
+            </button>
+            <p class="retry-countdown" id="auto-retry">Auto-retry in <span id="countdown">30</span>s</p>
+        </div>
+
+        <p class="help-text">
+            If this issue persists, please <a href="mailto:support@romanized.io">contact support</a>
+        </p>
+
+        <div class="security-indicator">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Served from cached offline page
+        </div>
+    </div>
+
+    <script>
+        // Update connection status
+        function updateConnectionStatus() {
+            const statusEl = document.getElementById('connection-status');
+            const lastCheckedEl = document.getElementById('last-checked');
+
+            statusEl.textContent = navigator.onLine ? 'Online (Server Down)' : 'Offline';
+            lastCheckedEl.textContent = new Date().toLocaleTimeString();
+        }
+
+        // Handle refresh button click
+        function handleRefresh(btn) {
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            // Try to fetch the main page
+            fetch(window.location.origin + '/', { cache: 'no-store' })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        throw new Error('Server still unavailable');
+                    }
+                })
+                .catch(() => {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    updateConnectionStatus();
+                });
+        }
+
+        // Auto-retry countdown
+        let countdown = 30;
+        function updateCountdown() {
+            const countdownEl = document.getElementById('countdown');
+            countdown--;
+
+            if (countdown <= 0) {
+                countdown = 30;
+                // Try to reload
+                fetch(window.location.origin + '/', { cache: 'no-store' })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        }
+                    })
+                    .catch(() => {
+                        updateConnectionStatus();
+                    });
+            }
+
+            countdownEl.textContent = countdown;
+        }
+
+        // Initialize
+        updateConnectionStatus();
+        setInterval(updateCountdown, 1000);
+
+        // Listen for online/offline events
+        window.addEventListener('online', () => {
+            updateConnectionStatus();
+            // Try to reload when coming back online
+            setTimeout(() => {
+                fetch(window.location.origin + '/', { cache: 'no-store' })
+                    .then(response => {
+                        if (response.ok) window.location.reload();
+                    })
+                    .catch(() => {});
+            }, 1000);
+        });
+
+        window.addEventListener('offline', updateConnectionStatus);
+    </script>
+</body>
+</html>

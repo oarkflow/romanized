@@ -125,7 +125,7 @@ if (!nepaliInputDemo) {
 	throw new Error('NepaliInput demo elements not found')
 }
 
-const nepaliInput = createNepaliInput(nepaliInputDemo, {
+createNepaliInput(nepaliInputDemo, {
 	useDevanagariDigits: true,
 	autoConvert: true
 })
@@ -140,7 +140,7 @@ if (!nepaliTextareaDemo) {
 	throw new Error('NepaliTextarea demo elements not found')
 }
 
-const nepaliTextarea = createNepaliTextarea(nepaliTextareaDemo, {
+createNepaliTextarea(nepaliTextareaDemo, {
 	useDevanagariDigits: true,
 	autoConvert: true
 })
@@ -160,7 +160,7 @@ if (!converterInput || !converterOutput || !converterCopyBtn || !converterInputC
 	throw new Error('NepaliConverter demo elements not found')
 }
 
-const nepaliConverter = createNepaliConverter(
+createNepaliConverter(
 	converterInput,
 	converterOutput,
 	converterCopyBtn,
@@ -173,7 +173,7 @@ const nepaliConverter = createNepaliConverter(
 			converterStatus.textContent = input ? 'Converting...' : 'Waiting for input'
 			converterCopyBtn.disabled = !output
 		},
-		onChange: (input, output) => {
+		onChange: (_input, output) => {
 			converterStatus.textContent = output ? 'Conversion complete' : 'Waiting for input'
 		}
 	}

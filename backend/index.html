@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <script>
+        // Register service worker immediately to cache offline page
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('[App] Service worker registered'))
+                .catch(err => console.log('[App] Service worker registration failed:', err));
+        }
+    </script>
+</head>
+<body>
+
+    <!-- WASM Loader Script -->
+    <script src="wasm_exec.js"></script>
+    <script>
+        'use strict';
+
+        // Security token storage
+        let securityToken = null;
+
+        // Update loader text
+        function updateLoaderText(text, subtext = '') {
+            const loaderText = document.querySelector('.loader-text');
+            const loaderSubtext = document.querySelector('.loader-subtext');
+            if (loaderText) loaderText.textContent = text;
+            if (loaderSubtext) loaderSubtext.textContent = subtext;
+        }
+
+        // Show professional status page
+        function showStatusPage(type, title, message, details = {}) {
+            const loader = document.getElementById('wasm-loader');
+
+            const iconMap = {
+                error: '🚫',
+                success: '✓',
+                loading: '⏳'
+            };
+
+            const detailsHTML = Object.entries(details).length > 0 ? `
+                <div class="status-details">
+                    ${Object.entries(details).map(([label, value]) => `
+                        <div class="status-detail-row">
+                            <span class="status-detail-label">${label}</span>
+                            <span class="status-detail-value">${value}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : '';
+
+            const statusBadgeClass = type === 'error' ? 'error' : 'success';
+            const statusBadgeText = type === 'error' ? 'Access Denied' : 'Authorized';
+
+            loader.innerHTML = `
+                <div class="status-page">
+                    <div class="status-icon ${type}">${iconMap[type]}</div>
+                    <h1 class="status-title">${title}</h1>
+                    <p class="status-message">${message}</p>
+                    ${detailsHTML}
+                    <div style="margin-bottom: 16px;">
+                        <span class="status-badge ${statusBadgeClass}">
+                            <span class="status-badge-dot"></span>
+                            ${statusBadgeText}
+                        </span>
+                    </div>
+                    <button class="refresh-btn" onclick="handleRefresh(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Refresh Page
+                    </button>
+                    <p class="help-text">
+                        If you believe this is an error, please <a href="mailto:support@romanized.io">contact support</a>
+                    </p>
+                    <div class="security-indicator">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        Protected by domain-level security
+                    </div>
+                </div>
+            `;
+        }
+
+        // Handle refresh button click
+        function handleRefresh(btn) {
+            btn.classList.add('loading');
+            btn.disabled = true;
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        }
+
+        // Inject CSS directly into the page
+        function injectCSS(path, cssContent) {
+            const style = document.createElement('style');
+            style.setAttribute('data-wasm-path', path);
+            style.textContent = cssContent;
+            document.head.appendChild(style);
+        }
+
+        // Inject JavaScript directly into the page
+        function injectScript(path, jsContent) {
+            const script = document.createElement('script');
+            script.setAttribute('data-wasm-path', path);
+            script.textContent = jsContent;
+            document.body.appendChild(script);
+        }
+
+        // Convert image data to base64 data URL
+        function createImageDataURL(uint8Array, mimeType) {
+            const base64 = btoa(
+                Array.from(uint8Array)
+                    .map(byte => String.fromCharCode(byte))
+                    .join('')
+            );
+            return `data:${mimeType};base64,${base64}`;
+        }
+
+        // Process and rewrite HTML to use data URLs for images
+        function processHTML(htmlContent) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, 'text/html');
+
+            // Process all img tags
+            const images = doc.querySelectorAll('img[src]');
+            images.forEach(img => {
+                const src = img.getAttribute('src');
+                img.setAttribute('data-wasm-src', src);
+                img.removeAttribute('src');
+            });
+
+            // Process favicon and icons
+            const links = doc.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"], link[rel="shortcut icon"]');
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href) {
+                    link.setAttribute('data-wasm-href', href);
+                    link.removeAttribute('href');
+                }
+            });
+
+            // Remove stylesheet links (we'll inject them directly)
+            const styleLinks = doc.querySelectorAll('link[rel="stylesheet"]');
+            const stylePaths = [];
+            styleLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href) stylePaths.push(href);
+                link.remove();
+            });
+
+            // Remove script tags with src (we'll inject them directly)
+            const scripts = doc.querySelectorAll('script[src]');
+            const scriptPaths = [];
+            scripts.forEach(script => {
+                const src = script.getAttribute('src');
+                if (src) scriptPaths.push(src);
+                script.remove();
+            });
+
+            return { doc, stylePaths, scriptPaths };
+        }
+
+        // Load and inject all images
+        async function loadImages() {
+            const images = document.querySelectorAll('img[data-wasm-src]');
+            for (const img of images) {
+                const src = img.getAttribute('data-wasm-src');
+                try {
+                    const cleanPath = src.replace(/^\.?\//, '');
+                    const result = window.goGetAsset(cleanPath, securityToken);
+                    if (!result.error && result.data) {
+                        const dataURL = createImageDataURL(result.data, result.mimeType);
+                        img.src = dataURL;
+                        img.removeAttribute('data-wasm-src');
+                    }
+                } catch (err) {
+                    console.error(`Error loading image ${src}:`, err);
+                }
+            }
+        }
+
+        // Load and inject favicon
+        async function loadFavicons() {
+            const links = document.querySelectorAll('link[data-wasm-href]');
+            for (const link of links) {
+                const href = link.getAttribute('data-wasm-href');
+                try {
+                    const cleanPath = href.replace(/^\.?\//, '');
+                    const result = window.goGetAsset(cleanPath, securityToken);
+                    if (!result.error && result.data) {
+                        const dataURL = createImageDataURL(result.data, result.mimeType);
+                        link.href = dataURL;
+                        link.removeAttribute('data-wasm-href');
+                    }
+                } catch (err) {
+                    console.error(`Error loading favicon ${href}:`, err);
+                }
+            }
+        }
+
+        // Get human-readable error message
+        function getErrorMessage(authError) {
+            const messages = {
+                'DOMAIN_NOT_ALLOWED': 'This domain is not authorized to access this application. The application is only available on specific approved domains.',
+                'HTTPS_REQUIRED': 'Secure connection required. Please access this application over HTTPS.',
+                'TOKEN_EXPIRED': 'Your session has expired. Please refresh the page to continue.',
+                'SECURITY_VALIDATION_FAILED': 'Security validation failed. This may indicate an unauthorized access attempt.'
+            };
+            return messages[authError] || 'Access to this application has been restricted. Please ensure you are accessing from an authorized domain.';
+        }
+
+        // Main loading function for authorized domains
+        async function loadFrontend() {
+            try {
+                updateLoaderText('Loading application assets...', 'Fetching resources from WASM');
+
+                // Get index.html using security token
+                const htmlResult = window.goGetAssetAsText('index.html', securityToken);
+                if (htmlResult.error) {
+                    showStatusPage('error', 'Loading Error', 'Failed to load application resources.', {
+                        'Error': htmlResult.error
+                    });
+                    return;
+                }
+
+                updateLoaderText('Parsing application...', 'Building DOM structure');
+                const { doc, stylePaths, scriptPaths } = processHTML(htmlResult.text);
+
+                // Set title
+                const title = doc.querySelector('title');
+                if (title) document.title = title.textContent;
+
+                // Copy meta tags
+                const metaTags = doc.querySelectorAll('meta');
+                metaTags.forEach(meta => {
+                    const name = meta.getAttribute('name') || meta.getAttribute('property');
+                    if (name && !document.querySelector(`meta[name="${name}"], meta[property="${name}"]`)) {
+                        document.head.appendChild(meta.cloneNode(true));
+                    }
+                });
+
+                // Load CSS files
+                updateLoaderText(`Loading stylesheets...`, `${stylePaths.length} files`);
+                for (const cssPath of stylePaths) {
+                    try {
+                        const cleanPath = cssPath.replace(/^\.?\//, '');
+                        const cssResult = window.goGetAssetAsText(cleanPath, securityToken);
+                        if (!cssResult.error) injectCSS(cssPath, cssResult.text);
+                    } catch (err) {
+                        console.error(`Error loading CSS ${cssPath}:`, err);
+                    }
+                }
+
+                // Inject body content
+                updateLoaderText('Rendering application...', 'Almost ready');
+                document.body.innerHTML = doc.body.innerHTML;
+
+                // Load images and favicons
+                await loadImages();
+                await loadFavicons();
+
+                // Load JavaScript files
+                updateLoaderText(`Loading scripts...`, `${scriptPaths.length} files`);
+                for (const scriptPath of scriptPaths) {
+                    try {
+                        const cleanPath = scriptPath.replace(/^\.?\//, '');
+                        const jsResult = window.goGetAssetAsText(cleanPath, securityToken);
+                        if (!jsResult.error) injectScript(scriptPath, jsResult.text);
+                    } catch (err) {
+                        console.error(`Error loading script ${scriptPath}:`, err);
+                    }
+                }
+
+                // Execute inline scripts
+                const inlineScripts = doc.querySelectorAll('script:not([src])');
+                inlineScripts.forEach(script => {
+                    if (script.textContent.trim()) {
+                        const newScript = document.createElement('script');
+                        newScript.textContent = script.textContent;
+                        document.body.appendChild(newScript);
+                    }
+                });
+
+                // Hide loader
+                setTimeout(() => {
+                    const loader = document.getElementById('wasm-loader');
+                    if (loader) {
+                        loader.classList.add('hidden');
+                        setTimeout(() => loader.remove(), 500);
+                    }
+                }, 300);
+
+                console.log('✅ Frontend loaded successfully from WASM!');
+
+            } catch (err) {
+                console.error('Failed to load frontend:', err);
+                showStatusPage('error', 'Loading Error', 'An unexpected error occurred.', {
+                    'Error': err.message
+                });
+            }
+        }
+
+        // Initialize WASM and load frontend
+        async function init() {
+            try {
+                updateLoaderText('Loading WebAssembly...', 'Initializing security module');
+
+                const go = new Go();
+                const result = await WebAssembly.instantiateStreaming(fetch('app.wasm'), go.importObject);
+
+                // Run WASM in background
+                go.run(result.instance);
+
+                // Wait for WASM to initialize
+                let attempts = 0;
+                const checkReady = setInterval(() => {
+                    if (window.goCheckDomain || attempts > 50) {
+                        clearInterval(checkReady);
+
+                        if (!window.goCheckDomain) {
+                            showStatusPage('error', 'Initialization Error', 'Failed to initialize security module.', {
+                                'Reason': 'WASM module did not expose required functions'
+                            });
+                            return;
+                        }
+
+                        // Perform domain security check
+                        updateLoaderText('Verifying domain access...', 'Validating security credentials');
+                        const domainCheck = window.goCheckDomain();
+
+                        if (!domainCheck.allowed) {
+                            console.error('❌ Domain not authorized:', domainCheck.hostname);
+                            console.error('⚠️ Auth error:', domainCheck.authError);
+
+                            showStatusPage('error', 'Access Denied', getErrorMessage(domainCheck.authError), {
+                                'Domain': domainCheck.hostname,
+                                'Protocol': window.location.protocol,
+                                'Status': domainCheck.authError || 'UNAUTHORIZED',
+                                'Timestamp': new Date().toISOString()
+                            });
+                            return;
+                        }
+
+                        // Store security token for authenticated requests
+                        securityToken = domainCheck.token;
+
+                        // Validate token periodically
+                        setInterval(() => {
+                            const validation = window.goValidateToken(securityToken);
+                            if (!validation.valid) {
+                                console.error('❌ Token validation failed');
+                                showStatusPage('error', 'Session Expired', 'Your security session has expired. Please refresh to continue.', {
+                                    'Domain': validation.domain,
+                                    'Reason': 'TOKEN_EXPIRED'
+                                });
+                            }
+                        }, 60000); // Validate every minute
+
+                        // Load the frontend for authorized domains
+                        loadFrontend();
+                    }
+                    attempts++;
+                }, 100);
+
+            } catch (err) {
+                console.error('Initialization error:', err);
+                showStatusPage('error', 'Connection Error', 'Failed to establish secure connection.', {
+                    'Error': err.message,
+                    'Suggestion': 'Check your internet connection and try again'
+                });
+            }
+        }
+
+        // Start the application
+        init();
+    </script>
+</body>
+</html>
