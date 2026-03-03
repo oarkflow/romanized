@@ -126,6 +126,14 @@ const vowelMapping = buildMapping<{ independent: string; matra: string; inherent
     { keys: ['.a'], value: { independent: 'ॲ', matra: '' } },
     { keys: ['oe'], value: { independent: 'ॳ', matra: '' } },
     { keys: ['ooe'], value: { independent: 'ॴ', matra: '' } },
+    // Rare dependent vowel signs and archaic matras
+    { keys: ['oe~'], value: { independent: 'ॳ', matra: 'ऺ' } },      // U+093A - Vowel Sign OE
+    { keys: ['ooe~'], value: { independent: 'ॴ', matra: 'ऻ' } },     // U+093B - Vowel Sign OOE
+    { keys: ['eP'], value: { independent: 'ए', matra: 'ॎ' } },       // U+094E - Vowel Sign Prishthamatra E
+    { keys: ['awP'], value: { independent: 'ऑ', matra: 'ॏ' } },      // U+094F - Vowel Sign Aw
+    { keys: ['eL'], value: { independent: 'ऍ', matra: 'ॕ' } },       // U+0955 - Vowel Sign Candra Long E
+    { keys: ['uL'], value: { independent: 'उ', matra: 'ॖ' } },       // U+0956 - Vowel Sign Ue
+    { keys: ['uuL'], value: { independent: 'ऊ', matra: 'ॗ' } },      // U+0957 - Vowel Sign Uue
     // Kashmiri vowels
     { keys: ['aw.'], value: { independent: 'ॵ', matra: '' } },
     { keys: ['ue'], value: { independent: 'ॶ', matra: '' } },
@@ -246,6 +254,13 @@ const symbolMapping = buildMapping<string>([
     { keys: ['A^'], value: 'ऀ' },           // U+0900 - Inverted Candrabindu (Kashmiri)
     { keys: ['^~'], value: 'ँ' },           // U+0901 - Candrabindu (already in diacritics, but can be typed independently)
     { keys: ['^.'], value: '़' },           // U+093C - Nukta (standalone, for manual composition)
+    { keys: ['.oe~'], value: 'ऺ' },         // U+093A - Vowel Sign OE (standalone)
+    { keys: ['.ooe~'], value: 'ऻ' },        // U+093B - Vowel Sign OOE (standalone)
+    { keys: ['.eP'], value: 'ॎ' },          // U+094E - Vowel Sign Prishthamatra E (standalone)
+    { keys: ['.awP'], value: 'ॏ' },         // U+094F - Vowel Sign Aw (standalone)
+    { keys: ['.eL'], value: 'ॕ' },          // U+0955 - Vowel Sign Candra Long E (standalone)
+    { keys: ['.uL'], value: 'ॖ' },          // U+0956 - Vowel Sign Ue (standalone)
+    { keys: ['.uuL'], value: 'ॗ' },         // U+0957 - Vowel Sign Uue (standalone)
     { keys: ['.av'], value: 'ऽ' },          // U+093D - Avagraha (alternate input)
     { keys: ['om', 'OM'], value: 'ॐ' },    // U+0950 - Om (already handled but added for completeness)
 

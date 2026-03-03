@@ -63,13 +63,16 @@ export abstract class NepaliInputBase<T extends HTMLInputElement | HTMLTextAreaE
 
         // Bind event handlers
         this.element.addEventListener('keydown', this.handleKeydown as EventListener)
+        this.element.addEventListener('input', this.handleNativeInput as EventListener)
         this.element.addEventListener('paste', this.handlePaste as EventListener)
         this.element.addEventListener('blur', this.handleBlur)
     }
 
     protected onCoreStateChange(state: NepaliIMEState) {
         // Update DOM element with new output
-        this.element.value = state.output
+        if (this.element.value !== state.output) {
+            this.element.value = state.output
+        }
         this.updateCursor(state)
         this.options.onInput(state.output)
     }
@@ -105,10 +108,8 @@ export abstract class NepaliInputBase<T extends HTMLInputElement | HTMLTextAreaE
         // Check if there's a text selection before delegating to core
         const hasSelection = this.element.selectionStart !== this.element.selectionEnd
 
-        // If there's a selection and user presses Backspace/Delete, clear everything
+        // Let native editing handle ranged selections; input handler will resync core state.
         if (hasSelection && (key === 'Backspace' || key === 'Delete')) {
-            e.preventDefault()
-            this.core.clear()
             return
         }
 
@@ -131,6 +132,14 @@ export abstract class NepaliInputBase<T extends HTMLInputElement | HTMLTextAreaE
         const text = e.clipboardData?.getData('text/plain') || ''
         this.core.insertText(text)
         this.options.onChange(this.core.getValue())
+    }
+
+    protected handleNativeInput = () => {
+        if (!this.enabled || !this.options.autoConvert) return
+        const value = this.element.value
+        if (value !== this.core.getValue()) {
+            this.core.setValue(value)
+        }
     }
 
     protected handleBlur = () => {
@@ -201,6 +210,7 @@ export abstract class NepaliInputBase<T extends HTMLInputElement | HTMLTextAreaE
 
     public destroy() {
         this.element.removeEventListener('keydown', this.handleKeydown as EventListener)
+        this.element.removeEventListener('input', this.handleNativeInput as EventListener)
         this.element.removeEventListener('paste', this.handlePaste as EventListener)
         this.element.removeEventListener('blur', this.handleBlur)
 

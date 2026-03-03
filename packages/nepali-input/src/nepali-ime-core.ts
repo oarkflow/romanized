@@ -29,6 +29,8 @@ export class NepaliIMECore {
     private state: NepaliIMEState
     private options: Required<NepaliIMEOptions>
     private history: HistoryManager | null
+    private convertedBuffer: string[]
+    private committedOutput: string
 
     constructor(options: NepaliIMEOptions = {}) {
         this.options = {
@@ -43,6 +45,8 @@ export class NepaliIMECore {
             output: '',
             cursorPosition: 0,
         }
+        this.convertedBuffer = []
+        this.committedOutput = ''
         this.history = this.options.enableHistory
             ? new HistoryManager({ maxHistory: this.options.maxHistory })
             : null
@@ -105,7 +109,7 @@ export class NepaliIMECore {
         if (/^[0-9]$/.test(key)) {
             this.commitCurrentWord()
             const digit = this.options.useDevanagariDigits ? digitMap[key] : key
-            this.state.romanBuffer.push(digit)
+            this.pushSegment(digit)
             this.updateOutput()
             return true
         }
@@ -114,7 +118,7 @@ export class NepaliIMECore {
         if (this.isPunctuation(key)) {
             this.commitCurrentWord()
             const punct = key === '|' ? '।' : key
-            this.state.romanBuffer.push(punct)
+            this.pushSegment(punct)
             this.updateOutput()
             return true
         }
@@ -122,7 +126,7 @@ export class NepaliIMECore {
         // Handle space
         if (key === ' ') {
             this.commitCurrentWord()
-            this.state.romanBuffer.push(' ')
+            this.pushSegment(' ')
             this.updateOutput()
             return true
         }
@@ -130,14 +134,24 @@ export class NepaliIMECore {
         // Handle enter/newline
         if (key === 'Enter') {
             this.commitCurrentWord()
-            this.state.romanBuffer.push('\n')
+            this.pushSegment('\n')
             this.updateOutput()
             return true
         }
 
-        // Handle letter input (including dot for nukta sequences like kh., gh., .r, .l)
-        if (/^[a-zA-Z~^`.]$/.test(key)) {
+        // Handle letter input (including dot/apostrophe for nukta and accent sequences)
+        if (/^[a-zA-Z~^`.'"]$/.test(key)) {
             this.state.currentWord += key
+            this.updateOutput()
+            this.pushHistory()
+            return true
+        }
+
+        // Keep state in sync for any other printable character.
+        // This prevents native DOM insertion from diverging from IME core state.
+        if (key.length === 1) {
+            this.commitCurrentWord()
+            this.pushSegment(key)
             this.updateOutput()
             this.pushHistory()
             return true
@@ -150,13 +164,8 @@ export class NepaliIMECore {
      * Insert text (e.g., from paste)
      */
     public insertText(text: string): void {
-        const converted = transliterate(text, {
-            useDevanagariDigits: this.options.useDevanagariDigits
-        })
-
-        // Split converted text into segments and add to buffer
         this.commitCurrentWord()
-        this.state.romanBuffer.push(converted)
+        this.pushSegment(text)
         this.updateOutput()
         this.pushHistory()
     }
@@ -167,6 +176,8 @@ export class NepaliIMECore {
     public clear(): void {
         this.state.romanBuffer = []
         this.state.currentWord = ''
+        this.convertedBuffer = []
+        this.committedOutput = ''
         this.updateOutput()
     }
 
@@ -174,7 +185,12 @@ export class NepaliIMECore {
      * Set content directly (useful for framework integration)
      */
     public setValue(value: string): void {
-        this.state.romanBuffer = value ? [value] : []
+        this.state.romanBuffer = []
+        this.convertedBuffer = []
+        this.committedOutput = ''
+        if (value) {
+            this.pushSegment(value)
+        }
         this.state.currentWord = ''
         this.updateOutput()
     }
@@ -191,6 +207,7 @@ export class NepaliIMECore {
      */
     public setUseDevanagariDigits(value: boolean): void {
         this.options.useDevanagariDigits = value
+        this.rebuildConvertedBuffer()
         this.updateOutput()
     }
 
@@ -205,7 +222,7 @@ export class NepaliIMECore {
 
     private commitCurrentWord(): void {
         if (this.state.currentWord) {
-            this.state.romanBuffer.push(this.state.currentWord)
+            this.pushSegment(this.state.currentWord)
             this.state.currentWord = ''
         }
     }
@@ -214,9 +231,10 @@ export class NepaliIMECore {
         if (this.state.currentWord.length > 0) {
             this.state.currentWord = this.state.currentWord.slice(0, -1)
         } else if (this.state.romanBuffer.length > 0) {
-            const lastSegment = this.state.romanBuffer.pop()!
+            const lastSegment = this.popSegment()
+            if (!lastSegment) return
             if (lastSegment.length > 1) {
-                this.state.romanBuffer.push(lastSegment.slice(0, -1))
+                this.pushSegment(lastSegment.slice(0, -1))
             }
         }
     }
@@ -240,12 +258,7 @@ export class NepaliIMECore {
     }
 
     private updateOutput(): void {
-        let output = ''
-
-        // Convert all completed segments
-        for (const segment of this.state.romanBuffer) {
-            output += this.convertSegment(segment)
-        }
+        let output = this.committedOutput
 
         // Add current word being typed
         if (this.state.currentWord) {
@@ -259,6 +272,35 @@ export class NepaliIMECore {
 
         // Notify listeners
         this.options.onStateChange(this.getState())
+    }
+
+    private pushSegment(segment: string): void {
+        const converted = this.convertSegment(segment)
+        this.state.romanBuffer.push(segment)
+        this.convertedBuffer.push(converted)
+        this.committedOutput += converted
+    }
+
+    private popSegment(): string | null {
+        if (this.state.romanBuffer.length === 0) {
+            return null
+        }
+        const raw = this.state.romanBuffer.pop()!
+        const converted = this.convertedBuffer.pop() ?? ''
+        if (converted.length > 0) {
+            this.committedOutput = this.committedOutput.slice(0, -converted.length)
+        }
+        return raw
+    }
+
+    private rebuildConvertedBuffer(): void {
+        this.convertedBuffer = []
+        this.committedOutput = ''
+        for (const segment of this.state.romanBuffer) {
+            const converted = this.convertSegment(segment)
+            this.convertedBuffer.push(converted)
+            this.committedOutput += converted
+        }
     }
 
     private pushHistory(): void {
