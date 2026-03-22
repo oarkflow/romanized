@@ -1,7 +1,7 @@
 {
-	"name": "@oarkflow/nepali-monorepo",
+	"name": "@oarkflow/nepali-input",
 	"private": true,
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"type": "module",
 	"scripts": {
 		"dev": "pnpm --filter demo dev",
