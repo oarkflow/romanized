@@ -6,7 +6,7 @@ import {
 	velthuisToDevanagari,
 	slp1ToDevanagari,
 	SCHEMES,
-} from '@verishore/nepali-input'
+} from '@oarkflow/nepali-input'
 
 const app = document.querySelector<HTMLDivElement>('#app')
 

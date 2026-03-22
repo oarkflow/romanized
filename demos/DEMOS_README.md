@@ -74,7 +74,7 @@ pnpm preview  # Preview production build
 
 ### Import Resolution Fixed
 - Updated `pnpm-workspace.yaml` to correctly reference all demo projects
-- All demos now properly resolve `@verishore/nepali-input` imports
+- All demos now properly resolve `@oarkflow/nepali-input` imports
 
 ### Character Mapping Improvements
 - Added case-sensitive mappings for `M` → `ं` (anusvara)

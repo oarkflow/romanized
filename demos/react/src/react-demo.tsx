@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { NepaliInput, NepaliTextarea, NepaliConverter } from '@verishore/nepali-react'
-import type { NepaliInputRef, NepaliConverterRef } from '@verishore/nepali-react'
+import { NepaliInput, NepaliTextarea, NepaliConverter } from '@oarkflow/nepali-react'
+import type { NepaliInputRef, NepaliConverterRef } from '@oarkflow/nepali-react'
 
 function ReactDemo() {
 	const [inputValue, setInputValue] = useState('')

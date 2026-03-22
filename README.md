@@ -11,13 +11,13 @@ A collection of headless and framework-specific packages for adding Nepali (द�
 ## 📦 Packages
 
 ### Core Package
-- **[@verishore/nepali-input](./packages/nepali-input)** - Headless core library with DOM adapters ✅
+- **[@oarkflow/nepali-input](./packages/nepali-input)** - Headless core library with DOM adapters ✅
 
 ### Framework Wrappers
-- **[@verishore/nepali-react](./packages/nepali-react)** - React components ✅
-- **@verishore/nepali-vue** - Vue 3 components (Coming soon)
-- **@verishore/nepali-svelte** - Svelte components (Coming soon)
-- **@verishore/nepali-angular** - Angular components (Coming soon)
+- **[@oarkflow/nepali-react](./packages/nepali-react)** - React components ✅
+- **@oarkflow/nepali-vue** - Vue 3 components (Coming soon)
+- **@oarkflow/nepali-svelte** - Svelte components (Coming soon)
+- **@oarkflow/nepali-angular** - Angular components (Coming soon)
 
 ---
 
@@ -68,24 +68,24 @@ A collection of headless and framework-specific packages for adding Nepali (द�
 
 ```bash
 # Core package (vanilla JS)
-npm install @verishore/nepali-input
+npm install @oarkflow/nepali-input
 
 # React
-npm install @verishore/nepali-react
+npm install @oarkflow/nepali-react
 
 # Vue (coming soon)
-npm install @verishore/nepali-vue
+npm install @oarkflow/nepali-vue
 ```
 
 **Quick example:**
 
 ```javascript
 // Vanilla JS
-import { createNepaliInput } from '@verishore/nepali-input'
+import { createNepaliInput } from '@oarkflow/nepali-input'
 createNepaliInput('#my-input', { useDevanagariDigits: true })
 
 // React
-import { NepaliInput } from '@verishore/nepali-react'
+import { NepaliInput } from '@oarkflow/nepali-react'
 <NepaliInput onChange={(value) => console.log(value)} />
 ```
 
@@ -100,7 +100,7 @@ import { NepaliInput } from '@verishore/nepali-react'
 
 ```bash
 # Clone repository
-git clone https://github.com/verishore/nepali-input.git
+git clone https://github.com/oarkflow/romanized.git
 cd nepali-input
 
 # Install dependencies
@@ -141,8 +141,8 @@ nepali-input/
 
 ## 📖 Documentation
 
-- [Core Package (@verishore/nepali-input)](./packages/nepali-input/README.md)
-- [React Package (@verishore/nepali-react)](./packages/nepali-react/README.md)
+- [Core Package (@oarkflow/nepali-input)](./packages/nepali-input/README.md)
+- [React Package (@oarkflow/nepali-react)](./packages/nepali-react/README.md)
 - [Framework Integration Examples](./FRAMEWORK_INTEGRATION.md)
 - [Components Guide](./COMPONENTS.md)
 

@@ -9,7 +9,7 @@
         "preview": "vite preview"
     },
     "dependencies": {
-        "@verishore/nepali-input": "workspace:*"
+        "@oarkflow/nepali-input": "workspace:*"
     },
     "devDependencies": {
         "typescript": "^5.9.3",

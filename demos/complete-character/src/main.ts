@@ -1,5 +1,5 @@
 import './style.css'
-import { transliterate } from '@verishore/nepali-input'
+import { transliterate } from '@oarkflow/nepali-input'
 
 const app = document.querySelector<HTMLDivElement>('#app')
 

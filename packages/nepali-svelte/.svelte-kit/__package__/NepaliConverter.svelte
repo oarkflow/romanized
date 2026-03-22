@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte'
-  import { NepaliConverterCore } from '@verishore/nepali-input'
+  import { NepaliConverterCore } from '@oarkflow/nepali-input'
 
   export let value = ''
   export let useDevanagariDigits = true

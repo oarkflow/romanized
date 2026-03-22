@@ -36,7 +36,7 @@ find packages -name "dist" -type d -exec sh -c '
     pkg=$(dirname {})
     pkg_name=$(basename $pkg)
     size=$(du -sh {} | cut -f1)
-    echo "  - @verishore/$pkg_name: $size"
+    echo "  - @oarkflow/$pkg_name: $size"
 ' \;
 
 echo ""

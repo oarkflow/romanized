@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
-import { NepaliConverterCore } from '@verishore/nepali-input'
+import { NepaliConverterCore } from '@oarkflow/nepali-input'
 
 interface Props {
   modelValue?: string

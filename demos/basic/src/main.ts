@@ -1,5 +1,5 @@
 import './style.css'
-import { createNepaliInput, createNepaliTextarea, createNepaliConverter } from '@verishore/nepali-input'
+import { createNepaliInput, createNepaliTextarea, createNepaliConverter } from '@oarkflow/nepali-input'
 
 const app = document.querySelector<HTMLDivElement>('#app')
 

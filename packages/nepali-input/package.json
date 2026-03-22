@@ -1,5 +1,5 @@
 {
-	"name": "@verishore/nepali-input",
+	"name": "@oarkflow/nepali-input",
 	"version": "1.0.0",
 	"description": "Headless Nepali input components with instant romanized-to-Devanagari transliteration",
 	"type": "module",
@@ -17,10 +17,12 @@
 		"dist",
 		"README.md"
 	],
+	"sideEffects": false,
 	"scripts": {
 		"build": "tsc && vite build",
 		"dev": "vite build --watch",
-		"type-check": "tsc --noEmit"
+		"type-check": "tsc --noEmit",
+		"prepublishOnly": "npm run build"
 	},
 	"keywords": [
 		"nepali",
@@ -32,11 +34,11 @@
 		"romanized",
 		"converter"
 	],
-	"author": "Verishore",
+	"author": "Oarkflow",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/verishore/nepali-input.git",
+		"url": "https://github.com/oarkflow/romanized.git",
 		"directory": "packages/nepali-input"
 	},
 	"devDependencies": {

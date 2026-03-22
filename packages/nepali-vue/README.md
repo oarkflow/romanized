@@ -1,13 +1,13 @@
-# @verishore/nepali-vue
+# @oarkflow/nepali-vue
 
 Vue 3 components for Nepali input with instant romanized-to-Devanagari transliteration.
 
 ## Installation
 
 ```bash
-npm install @verishore/nepali-vue
+npm install @oarkflow/nepali-vue
 # or
-pnpm add @verishore/nepali-vue
+pnpm add @oarkflow/nepali-vue
 ```
 
 ## Quick Start
@@ -15,7 +15,7 @@ pnpm add @verishore/nepali-vue
 ```vue
 <script setup>
 import { ref } from 'vue'
-import { NepaliInput, NepaliTextarea, NepaliConverter } from '@verishore/nepali-vue'
+import { NepaliInput, NepaliTextarea, NepaliConverter } from '@oarkflow/nepali-vue'
 
 const value = ref('')
 </script>
@@ -37,4 +37,4 @@ See [full documentation](../../FRAMEWORK_INTEGRATION.md#vue-3) for detailed API 
 
 ## License
 
-MIT © Verishore
+MIT © Oarkflow

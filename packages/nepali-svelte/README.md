@@ -1,20 +1,20 @@
-# @verishore/nepali-svelte
+# @oarkflow/nepali-svelte
 
 Svelte components for Nepali input with instant romanized-to-Devanagari transliteration.
 
 ## Installation
 
 ```bash
-npm install @verishore/nepali-svelte
+npm install @oarkflow/nepali-svelte
 # or
-pnpm add @verishore/nepali-svelte
+pnpm add @oarkflow/nepali-svelte
 ```
 
 ## Quick Start
 
 ```svelte
 <script>
-  import { NepaliInput, NepaliTextarea, NepaliConverter } from '@verishore/nepali-svelte'
+  import { NepaliInput, NepaliTextarea, NepaliConverter } from '@oarkflow/nepali-svelte'
 
   let value = ''
 </script>
@@ -34,4 +34,4 @@ See [full documentation](../../FRAMEWORK_INTEGRATION.md#svelte) for detailed API
 
 ## License
 
-MIT © Verishore
+MIT © Oarkflow

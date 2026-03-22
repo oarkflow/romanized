@@ -1,13 +1,13 @@
-# @verishore/nepali-angular
+# @oarkflow/nepali-angular
 
 Angular directives for Nepali input with instant romanized-to-Devanagari transliteration.
 
 ## Installation
 
 ```bash
-npm install @verishore/nepali-angular
+npm install @oarkflow/nepali-angular
 # or
-pnpm add @verishore/nepali-angular
+pnpm add @oarkflow/nepali-angular
 ```
 
 ## Quick Start
@@ -15,7 +15,7 @@ pnpm add @verishore/nepali-angular
 ```typescript
 import { Component } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { NepaliInputDirective, NepaliTextareaDirective } from '@verishore/nepali-angular'
+import { NepaliInputDirective, NepaliTextareaDirective } from '@oarkflow/nepali-angular'
 
 @Component({
   selector: 'app-root',
@@ -47,4 +47,4 @@ See [full documentation](../../FRAMEWORK_INTEGRATION.md#angular) for detailed AP
 
 ## License
 
-MIT © Verishore
+MIT © Oarkflow

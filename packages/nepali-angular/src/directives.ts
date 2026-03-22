@@ -2,7 +2,7 @@ import { Directive, ElementRef, forwardRef, Input, Output, EventEmitter } from '
 import type { OnInit, OnDestroy } from '@angular/core'
 import type { ControlValueAccessor } from '@angular/forms'
 import { NG_VALUE_ACCESSOR } from '@angular/forms'
-import { NepaliIMECore } from '@verishore/nepali-input'
+import { NepaliIMECore } from '@oarkflow/nepali-input'
 
 @Directive({
 	selector: 'input[nepaliInput]',

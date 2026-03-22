@@ -1,15 +1,15 @@
-# @verishore/nepali-react
+# @oarkflow/nepali-react
 
 React components for Nepali input with instant romanized-to-Devanagari transliteration.
 
 ## Installation
 
 ```bash
-npm install @verishore/nepali-react
+npm install @oarkflow/nepali-react
 # or
-pnpm add @verishore/nepali-react
+pnpm add @oarkflow/nepali-react
 # or
-yarn add @verishore/nepali-react
+yarn add @oarkflow/nepali-react
 ```
 
 ## Components
@@ -19,7 +19,7 @@ yarn add @verishore/nepali-react
 Single-line input with instant conversion as you type.
 
 ```tsx
-import { NepaliInput } from '@verishore/nepali-react'
+import { NepaliInput } from '@oarkflow/nepali-react'
 
 function App() {
   const [value, setValue] = useState('')
@@ -40,7 +40,7 @@ function App() {
 Multi-line textarea with instant conversion.
 
 ```tsx
-import { NepaliTextarea } from '@verishore/nepali-react'
+import { NepaliTextarea } from '@oarkflow/nepali-react'
 
 function App() {
   return (
@@ -58,7 +58,7 @@ function App() {
 Input/Output pair with copy button for converting paragraphs.
 
 ```tsx
-import { NepaliConverter } from '@verishore/nepali-react'
+import { NepaliConverter } from '@oarkflow/nepali-react'
 
 function App() {
   return (
@@ -139,8 +139,8 @@ interface NepaliConverterRef {
 
 ```tsx
 import { useRef } from 'react'
-import { NepaliInput } from '@verishore/nepali-react'
-import type { NepaliInputRef } from '@verishore/nepali-react'
+import { NepaliInput } from '@oarkflow/nepali-react'
+import type { NepaliInputRef } from '@oarkflow/nepali-react'
 
 function App() {
   const inputRef = useRef<NepaliInputRef>(null)
@@ -159,4 +159,4 @@ function App() {
 
 ## License
 
-MIT © Verishore
+MIT © Oarkflow

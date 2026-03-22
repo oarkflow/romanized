@@ -18,14 +18,14 @@ export default defineConfig({
 			fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`
 		},
 		rollupOptions: {
-			external: ['@angular/core', '@angular/forms', 'rxjs', 'rxjs/operators', '@verishore/nepali-input'],
+			external: ['@angular/core', '@angular/forms', 'rxjs', 'rxjs/operators', '@oarkflow/nepali-input'],
 			output: {
 				exports: 'named',
 				globals: {
 					'@angular/core': 'ng.core',
 					'@angular/forms': 'ng.forms',
 					'rxjs': 'rxjs',
-					'@verishore/nepali-input': 'NepaliInput'
+					'@oarkflow/nepali-input': 'NepaliInput'
 				}
 			}
 		},

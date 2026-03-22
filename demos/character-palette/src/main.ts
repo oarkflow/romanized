@@ -1,5 +1,5 @@
 import './style.css'
-import { CharacterPaletteManager, CHARACTER_CATEGORIES } from '@verishore/nepali-input'
+import { CharacterPaletteManager, CHARACTER_CATEGORIES } from '@oarkflow/nepali-input'
 
 const app = document.querySelector<HTMLDivElement>('#app')
 

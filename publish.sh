@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Nepali Input Packages - Build and Publish Script
-# This script handles building, versioning, and publishing all @verishore packages to npm
+# This script handles building, versioning, and publishing all @oarkflow packages to npm
 
 set -e  # Exit on error
 
@@ -122,7 +122,7 @@ publish_package() {
     local package_dir=$1
     local package_name=$(basename "$package_dir")
 
-    print_status "Publishing @verishore/$package_name..."
+    print_status "Publishing @oarkflow/$package_name..."
 
     cd "$package_dir"
 
@@ -135,11 +135,11 @@ publish_package() {
 
     # Publish to npm
     if npm publish --access public; then
-        print_success "Published @verishore/$package_name"
+        print_success "Published @oarkflow/$package_name"
         cd - > /dev/null
         return 0
     else
-        print_error "Failed to publish @verishore/$package_name"
+        print_error "Failed to publish @oarkflow/$package_name"
         cd - > /dev/null
         return 1
     fi
@@ -170,7 +170,7 @@ git_tag_and_push() {
 main() {
     echo ""
     echo "=========================================="
-    echo "  @verishore Packages - Publish Script"
+    echo "  @oarkflow Packages - Publish Script"
     echo "=========================================="
     echo ""
 
@@ -212,7 +212,7 @@ main() {
     for pkg in "${PACKAGES[@]}"; do
         local package_name=$(basename "$pkg")
         local version=$(node -p "require('./$pkg/package.json').version")
-        echo "  - @verishore/$package_name@$version"
+        echo "  - @oarkflow/$package_name@$version"
     done
     echo ""
     read -p "Continue with publishing? (y/n) " -n 1 -r

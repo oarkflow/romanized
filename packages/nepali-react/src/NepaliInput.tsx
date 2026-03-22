@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, forwardRef, useImperativeHandle, type InputHTMLAttributes } from 'react'
-import { NepaliIMECore } from '@verishore/nepali-input'
+import { NepaliIMECore } from '@oarkflow/nepali-input'
 
 export interface NepaliInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'onInput' | 'value'> {
 	value?: string

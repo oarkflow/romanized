@@ -1,5 +1,5 @@
 {
-	"name": "@verishore/nepali-react",
+	"name": "@oarkflow/nepali-react",
 	"version": "1.0.0",
 	"description": "React components for Nepali input with instant romanized-to-Devanagari transliteration",
 	"type": "module",
@@ -17,10 +17,12 @@
 		"dist",
 		"README.md"
 	],
+	"sideEffects": false,
 	"scripts": {
 		"build": "tsc && vite build",
 		"dev": "vite build --watch",
-		"type-check": "tsc --noEmit"
+		"type-check": "tsc --noEmit",
+		"prepublishOnly": "npm run build"
 	},
 	"keywords": [
 		"nepali",
@@ -30,18 +32,18 @@
 		"input",
 		"component"
 	],
-	"author": "Verishore",
+	"author": "Oarkflow",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/verishore/nepali-input.git",
+		"url": "https://github.com/oarkflow/romanized.git",
 		"directory": "packages/nepali-react"
 	},
 	"peerDependencies": {
 		"react": ">=16.8.0"
 	},
 	"dependencies": {
-		"@verishore/nepali-input": "workspace:*"
+		"@oarkflow/nepali-input": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/react": "^18.3.18",

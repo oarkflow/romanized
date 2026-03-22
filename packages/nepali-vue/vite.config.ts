@@ -20,12 +20,12 @@ export default defineConfig({
 			fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`
 		},
 		rollupOptions: {
-			external: ['vue', '@verishore/nepali-input'],
+			external: ['vue', '@oarkflow/nepali-input'],
 			output: {
 				exports: 'named',
 				globals: {
 					vue: 'Vue',
-					'@verishore/nepali-input': 'NepaliInput'
+					'@oarkflow/nepali-input': 'NepaliInput'
 				}
 			}
 		},

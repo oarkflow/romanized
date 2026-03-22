@@ -1,4 +1,4 @@
-# @verishore/nepali-input
+# @oarkflow/nepali-input
 
 Headless Nepali input components with instant romanized-to-Devanagari transliteration.
 
@@ -16,11 +16,11 @@ Headless Nepali input components with instant romanized-to-Devanagari transliter
 ## Installation
 
 ```bash
-npm install @verishore/nepali-input
+npm install @oarkflow/nepali-input
 # or
-pnpm add @verishore/nepali-input
+pnpm add @oarkflow/nepali-input
 # or
-yarn add @verishore/nepali-input
+yarn add @oarkflow/nepali-input
 ```
 
 ## Quick Start
@@ -28,7 +28,7 @@ yarn add @verishore/nepali-input
 ### Vanilla JavaScript - DOM Adapters
 
 ```javascript
-import { createNepaliInput, createNepaliTextarea, createNepaliConverter } from '@verishore/nepali-input'
+import { createNepaliInput, createNepaliTextarea, createNepaliConverter } from '@oarkflow/nepali-input'
 
 // Single-line input
 const input = createNepaliInput('#my-input', {
@@ -56,7 +56,7 @@ const converter = createNepaliConverter(
 ### Headless Core (Framework Integration)
 
 ```javascript
-import { NepaliIMECore, NepaliConverterCore } from '@verishore/nepali-input'
+import { NepaliIMECore, NepaliConverterCore } from '@oarkflow/nepali-input'
 
 // IME for character-by-character conversion
 const imeCore = new NepaliIMECore({
@@ -84,10 +84,10 @@ converterCore.setInput('namaste')
 
 For React, Vue, Svelte, and Angular, use the dedicated wrapper packages:
 
-- **React**: `@verishore/nepali-react`
-- **Vue**: `@verishore/nepali-vue`
-- **Svelte**: `@verishore/nepali-svelte`
-- **Angular**: `@verishore/nepali-angular`
+- **React**: `@oarkflow/nepali-react`
+- **Vue**: `@oarkflow/nepali-vue`
+- **Svelte**: `@oarkflow/nepali-svelte`
+- **Angular**: `@oarkflow/nepali-angular`
 
 ## API Documentation
 
@@ -224,7 +224,7 @@ Use `^` to drop inherent vowel:
 
 ## License
 
-MIT © Verishore
+MIT © Oarkflow
 
 ## Contributing
 

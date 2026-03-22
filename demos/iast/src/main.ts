@@ -1,5 +1,5 @@
 import './style.css'
-import { iastToDevanagari, devanagariToIAST } from '@verishore/nepali-input'
+import { iastToDevanagari, devanagariToIAST } from '@oarkflow/nepali-input'
 
 const app = document.querySelector<HTMLDivElement>('#app')
 

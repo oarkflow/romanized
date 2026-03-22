@@ -18,12 +18,12 @@ export default defineConfig({
 			fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`
 		},
 		rollupOptions: {
-			external: ['react', 'react/jsx-runtime', '@verishore/nepali-input'],
+			external: ['react', 'react/jsx-runtime', '@oarkflow/nepali-input'],
 			output: {
 				exports: 'named',
 				globals: {
 					react: 'React',
-					'@verishore/nepali-input': 'NepaliInput'
+					'@oarkflow/nepali-input': 'NepaliInput'
 				}
 			}
 		},

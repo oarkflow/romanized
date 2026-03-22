@@ -1,5 +1,5 @@
 {
-	"name": "@verishore/nepali-svelte",
+	"name": "@oarkflow/nepali-svelte",
 	"version": "1.0.0",
 	"description": "Svelte components for Nepali input with instant romanized-to-Devanagari transliteration",
 	"type": "module",
@@ -15,10 +15,12 @@
 		"dist",
 		"README.md"
 	],
+	"sideEffects": false,
 	"scripts": {
 		"build": "svelte-package -i src -o dist",
 		"dev": "svelte-package -i src -o dist --watch",
-		"type-check": "svelte-check"
+		"type-check": "svelte-check",
+		"prepublishOnly": "npm run build"
 	},
 	"keywords": [
 		"nepali",
@@ -28,18 +30,18 @@
 		"input",
 		"component"
 	],
-	"author": "Verishore",
+	"author": "Oarkflow",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/verishore/nepali-input.git",
+		"url": "https://github.com/oarkflow/romanized.git",
 		"directory": "packages/nepali-svelte"
 	},
 	"peerDependencies": {
 		"svelte": "^4.0.0 || ^5.0.0"
 	},
 	"dependencies": {
-		"@verishore/nepali-input": "workspace:*"
+		"@oarkflow/nepali-input": "workspace:*"
 	},
 	"devDependencies": {
 		"@sveltejs/package": "^2.3.7",

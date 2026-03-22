@@ -9,8 +9,8 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@verishore/nepali-input": "workspace:*",
-		"@verishore/nepali-react": "workspace:*"
+		"@oarkflow/nepali-input": "workspace:*",
+		"@oarkflow/nepali-react": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/react": "^18.3.18",

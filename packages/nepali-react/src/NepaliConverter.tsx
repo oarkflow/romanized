@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, forwardRef, useImperativeHandle, type HTMLAttributes, type TextareaHTMLAttributes } from 'react'
-import { NepaliConverterCore } from '@verishore/nepali-input'
+import { NepaliConverterCore } from '@oarkflow/nepali-input'
 
 export interface NepaliConverterProps {
 	value?: string
