@@ -1,11 +1,14 @@
 import { useState, useEffect, useRef, forwardRef, useImperativeHandle, type TextareaHTMLAttributes } from 'react'
-import { NepaliIMECore } from '@oarkflow/nepali-input'
+import { NepaliIMECore, type DevanagariLanguage } from '@oarkflow/nepali-input'
 
 export interface NepaliTextareaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange' | 'onInput' | 'value'> {
 	value?: string
 	onChange?: (value: string) => void
 	onInput?: (value: string) => void
 	useDevanagariDigits?: boolean
+	language?: DevanagariLanguage
+	enableExtendedRomanization?: boolean
+	customWordMap?: Record<string, string>
 }
 
 export interface NepaliTextareaRef {
@@ -16,7 +19,7 @@ export interface NepaliTextareaRef {
 }
 
 export const NepaliTextarea = forwardRef<NepaliTextareaRef, NepaliTextareaProps>(
-	({ value, onChange, onInput, useDevanagariDigits = true, className, ...props }, ref) => {
+	({ value, onChange, onInput, useDevanagariDigits = true, language = 'generic', enableExtendedRomanization = false, customWordMap, className, ...props }, ref) => {
 		const [internalValue, setInternalValue] = useState(value || '')
 		const coreRef = useRef<NepaliIMECore | null>(null)
 		const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -24,6 +27,9 @@ export const NepaliTextarea = forwardRef<NepaliTextareaRef, NepaliTextareaProps>
 		useEffect(() => {
 			coreRef.current = new NepaliIMECore({
 				useDevanagariDigits,
+				language,
+				enableExtendedRomanization,
+				customWordMap,
 				onStateChange: (state) => {
 					setInternalValue(state.output)
 					onInput?.(state.output)
@@ -34,7 +40,7 @@ export const NepaliTextarea = forwardRef<NepaliTextareaRef, NepaliTextareaProps>
 			return () => {
 				coreRef.current = null
 			}
-		}, [useDevanagariDigits])
+		}, [useDevanagariDigits, language, enableExtendedRomanization, customWordMap])
 
 		useEffect(() => {
 			if (value !== undefined && value !== internalValue) {

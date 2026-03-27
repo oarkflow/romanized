@@ -1,3 +1,4 @@
+import { DevanagariLanguage } from '@oarkflow/nepali-input';
 import { ForwardRefExoticComponent } from 'react';
 import { HTMLAttributes } from 'react';
 import { InputHTMLAttributes } from 'react';
@@ -13,6 +14,9 @@ export declare interface NepaliConverterProps {
     onChange?: (input: string, output: string) => void;
     onInput?: (input: string, output: string) => void;
     useDevanagariDigits?: boolean;
+    language?: DevanagariLanguage;
+    enableExtendedRomanization?: boolean;
+    customWordMap?: Record<string, string>;
     debounceMs?: number;
     showCopyButton?: boolean;
     direction?: 'toNepali' | 'toRoman';
@@ -36,6 +40,9 @@ export declare interface NepaliInputProps extends Omit<InputHTMLAttributes<HTMLI
     onChange?: (value: string) => void;
     onInput?: (value: string) => void;
     useDevanagariDigits?: boolean;
+    language?: DevanagariLanguage;
+    enableExtendedRomanization?: boolean;
+    customWordMap?: Record<string, string>;
 }
 
 export declare interface NepaliInputRef {
@@ -52,6 +59,9 @@ export declare interface NepaliTextareaProps extends Omit<TextareaHTMLAttributes
     onChange?: (value: string) => void;
     onInput?: (value: string) => void;
     useDevanagariDigits?: boolean;
+    language?: DevanagariLanguage;
+    enableExtendedRomanization?: boolean;
+    customWordMap?: Record<string, string>;
 }
 
 export declare interface NepaliTextareaRef {

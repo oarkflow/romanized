@@ -1,8 +1,8 @@
 # 🇳🇵 Nepali Input Monorepo
 
-**Framework-agnostic Nepali input components with instant romanized-to-Devanagari transliteration**
+**Framework-agnostic Devanagari input components with instant romanized transliteration for Nepali, Hindi, Marathi, Sanskrit, and other Devanagari languages**
 
-A collection of headless and framework-specific packages for adding Nepali (देवनागरी) input to your applications. Type in romanized Nepali and see instant Devanagari script, or convert existing text bidirectionally.
+A collection of headless and framework-specific packages for adding Devanagari input to your applications. Type in romanized Nepali, Hindi, Marathi, Sanskrit, and related languages to get instant Devanagari script, or convert existing text bidirectionally.
 
 **🎉 Now with 100% Unicode Devanagari coverage (128/128 characters)** including Vedic accents, nukta variants, Dravidian consonants, and regional vowels!
 
@@ -15,8 +15,9 @@ A collection of headless and framework-specific packages for adding Nepali (द�
 
 ### Framework Wrappers
 - **[@oarkflow/nepali-react](./packages/nepali-react)** - React components ✅
-- **@oarkflow/nepali-vue** - Vue 3 components (Coming soon)
-- **@oarkflow/nepali-svelte** - Svelte components (Coming soon)
+- **[@oarkflow/nepali-vue](./packages/nepali-vue)** - Vue 3 components ✅
+- **[@oarkflow/nepali-svelte](./packages/nepali-svelte)** - Svelte components ✅
+- **[@oarkflow/nepali-solid](./packages/nepali-solid)** - SolidJS components ✅
 - **@oarkflow/nepali-angular** - Angular components (Coming soon)
 
 ---
@@ -73,7 +74,10 @@ npm install @oarkflow/nepali-input
 # React
 npm install @oarkflow/nepali-react
 
-# Vue (coming soon)
+# SolidJS
+npm install @oarkflow/nepali-solid
+
+# Vue
 npm install @oarkflow/nepali-vue
 ```
 
@@ -109,6 +113,9 @@ pnpm install
 # Build all packages
 pnpm run build
 
+# Run the core transliteration test suite
+pnpm run test:core
+
 # Run demo
 pnpm run dev
 # Opens at http://localhost:5173
@@ -143,6 +150,7 @@ nepali-input/
 
 - [Core Package (@oarkflow/nepali-input)](./packages/nepali-input/README.md)
 - [React Package (@oarkflow/nepali-react)](./packages/nepali-react/README.md)
+- [Solid Package (@oarkflow/nepali-solid)](./packages/nepali-solid/README.md)
 - [Framework Integration Examples](./FRAMEWORK_INTEGRATION.md)
 - [Components Guide](./COMPONENTS.md)
 

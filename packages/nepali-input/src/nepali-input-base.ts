@@ -1,6 +1,7 @@
 import { NepaliIMECore } from './nepali-ime-core'
 import type { NepaliIMEState } from './nepali-ime-core'
 import { CharacterSelector, getCharacterAlternatives, type CharacterAlternative } from './character-selector'
+import type { DevanagariLanguage } from './transliterate'
 
 export interface NepaliInputOptions {
     useDevanagariDigits?: boolean
@@ -8,6 +9,9 @@ export interface NepaliInputOptions {
     enableCharacterSelector?: boolean
     onInput?: (value: string) => void
     onChange?: (value: string) => void
+    language?: DevanagariLanguage
+    enableExtendedRomanization?: boolean
+    customWordMap?: Record<string, string>
 }
 
 /**
@@ -30,12 +34,18 @@ export abstract class NepaliInputBase<T extends HTMLInputElement | HTMLTextAreaE
             enableCharacterSelector: options.enableCharacterSelector ?? true,
             onInput: options.onInput ?? (() => { }),
             onChange: options.onChange ?? (() => { }),
+            language: options.language ?? 'generic',
+            enableExtendedRomanization: options.enableExtendedRomanization ?? false,
+            customWordMap: options.customWordMap ?? {},
         }
 
         // Initialize headless core
         this.core = new NepaliIMECore({
             useDevanagariDigits: this.options.useDevanagariDigits,
-            onStateChange: (state) => this.onCoreStateChange(state)
+            onStateChange: (state) => this.onCoreStateChange(state),
+            language: this.options.language,
+            enableExtendedRomanization: this.options.enableExtendedRomanization,
+            customWordMap: this.options.customWordMap
         })
 
         // Initialize character selector if enabled
@@ -201,6 +211,9 @@ export abstract class NepaliInputBase<T extends HTMLInputElement | HTMLTextAreaE
         this.options = { ...this.options, ...options }
         if (options.useDevanagariDigits !== undefined) {
             this.core.setUseDevanagariDigits(options.useDevanagariDigits)
+        }
+        if (options.language !== undefined) {
+            this.core.setLanguage(options.language)
         }
     }
 

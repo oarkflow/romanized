@@ -1,6 +1,6 @@
-# Romanized Nepali Demos
+# Romanized Devanagari Demos
 
-This directory contains demonstration projects showing different implementations of the Nepali input library.
+This directory contains demonstration projects showing different implementations of the Devanagari input library.
 
 ## Demo Structure
 
@@ -14,6 +14,11 @@ All demos now use proper Vite + TypeScript setup instead of standalone HTML file
 - **[react/](react/)** - React framework integration
   - Port: 5174 (Note: may conflict with character-palette if running simultaneously)
   - Run: `cd react && pnpm dev`
+
+- **[solid/](solid/)** - SolidJS framework integration
+  - Port: 5178
+  - Run: `cd solid && pnpm dev`
+  - Features: Language profile switcher for Nepali, Hindi, Marathi, Sanskrit, and other Devanagari languages
 
 ### Phase 1: Character Demos
 - **[character-palette/](character-palette/)** - Interactive character palette

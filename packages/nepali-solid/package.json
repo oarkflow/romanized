@@ -1,0 +1,68 @@
+{
+	"name": "@oarkflow/nepali-solid",
+	"version": "1.0.0",
+	"description": "SolidJS components for Nepali input with instant romanized-to-Devanagari transliteration",
+	"type": "module",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"solid": "./dist/index.js",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs",
+			"default": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"sideEffects": false,
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "tsc && vite build",
+		"dev": "vite build --watch",
+		"type-check": "tsc --noEmit",
+		"prepublishOnly": "npm run build"
+	},
+	"keywords": [
+		"nepali",
+		"devanagari",
+		"transliteration",
+		"solid",
+		"solidjs",
+		"input",
+		"component"
+	],
+	"author": "Oarkflow",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/oarkflow/romanized.git",
+		"directory": "packages/nepali-solid"
+	},
+	"bugs": {
+		"url": "https://github.com/oarkflow/romanized/issues"
+	},
+	"homepage": "https://github.com/oarkflow/romanized/tree/main/packages/nepali-solid",
+	"engines": {
+		"node": ">=18"
+	},
+	"peerDependencies": {
+		"solid-js": ">=1.8.0"
+	},
+	"dependencies": {
+		"@oarkflow/nepali-input": "workspace:*"
+	},
+	"devDependencies": {
+		"solid-js": "^1.9.0",
+		"typescript": "~5.9.3",
+		"vite": "^7.2.4",
+		"vite-plugin-dts": "^4.3.0",
+		"vite-plugin-solid": "^2.11.0"
+	}
+}

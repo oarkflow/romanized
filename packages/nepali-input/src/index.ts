@@ -1,6 +1,6 @@
 // Main transliteration engine
 export { transliterate, reverseTransliterate } from './transliterate'
-export type { TransliterationOptions } from './transliterate'
+export type { TransliterationOptions, ReverseTransliterationOptions, DevanagariLanguage } from './transliterate'
 
 // Headless IME Core (framework-agnostic)
 export { NepaliIMECore } from './nepali-ime-core'

@@ -2,13 +2,16 @@ import { jsx, jsxs } from "react/jsx-runtime";
 import { forwardRef, useState, useRef, useEffect, useImperativeHandle } from "react";
 import { NepaliIMECore, NepaliConverterCore } from "@oarkflow/nepali-input";
 const NepaliInput = forwardRef(
-  ({ value, onChange, onInput, useDevanagariDigits = true, className, ...props }, ref) => {
+  ({ value, onChange, onInput, useDevanagariDigits = true, language = "generic", enableExtendedRomanization = false, customWordMap, className, ...props }, ref) => {
     const [internalValue, setInternalValue] = useState(value || "");
     const coreRef = useRef(null);
     const inputRef = useRef(null);
     useEffect(() => {
       coreRef.current = new NepaliIMECore({
         useDevanagariDigits,
+        language,
+        enableExtendedRomanization,
+        customWordMap,
         onStateChange: (state) => {
           setInternalValue(state.output);
           onInput?.(state.output);
@@ -18,7 +21,7 @@ const NepaliInput = forwardRef(
       return () => {
         coreRef.current = null;
       };
-    }, [useDevanagariDigits]);
+    }, [useDevanagariDigits, language, enableExtendedRomanization, customWordMap]);
     useEffect(() => {
       if (value !== void 0 && value !== internalValue) {
         coreRef.current?.setValue(value);
@@ -78,13 +81,16 @@ const NepaliInput = forwardRef(
 );
 NepaliInput.displayName = "NepaliInput";
 const NepaliTextarea = forwardRef(
-  ({ value, onChange, onInput, useDevanagariDigits = true, className, ...props }, ref) => {
+  ({ value, onChange, onInput, useDevanagariDigits = true, language = "generic", enableExtendedRomanization = false, customWordMap, className, ...props }, ref) => {
     const [internalValue, setInternalValue] = useState(value || "");
     const coreRef = useRef(null);
     const textareaRef = useRef(null);
     useEffect(() => {
       coreRef.current = new NepaliIMECore({
         useDevanagariDigits,
+        language,
+        enableExtendedRomanization,
+        customWordMap,
         onStateChange: (state) => {
           setInternalValue(state.output);
           onInput?.(state.output);
@@ -94,7 +100,7 @@ const NepaliTextarea = forwardRef(
       return () => {
         coreRef.current = null;
       };
-    }, [useDevanagariDigits]);
+    }, [useDevanagariDigits, language, enableExtendedRomanization, customWordMap]);
     useEffect(() => {
       if (value !== void 0 && value !== internalValue) {
         coreRef.current?.setValue(value);
@@ -158,6 +164,9 @@ const NepaliConverter = forwardRef(
     onChange,
     onInput,
     useDevanagariDigits = true,
+    language = "generic",
+    enableExtendedRomanization = false,
+    customWordMap,
     debounceMs = 300,
     showCopyButton = true,
     direction = "toNepali",
@@ -172,6 +181,9 @@ const NepaliConverter = forwardRef(
     useEffect(() => {
       coreRef.current = new NepaliConverterCore({
         useDevanagariDigits,
+        language,
+        enableExtendedRomanization,
+        customWordMap,
         debounceMs,
         bidirectional: true,
         onInput: (inputText, outputText) => {
@@ -186,7 +198,7 @@ const NepaliConverter = forwardRef(
       return () => {
         coreRef.current = null;
       };
-    }, [useDevanagariDigits, debounceMs]);
+    }, [useDevanagariDigits, language, enableExtendedRomanization, customWordMap, debounceMs]);
     useEffect(() => {
       if (value !== void 0 && value !== input) {
         setInput(value);

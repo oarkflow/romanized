@@ -1,4 +1,12 @@
 import { LEXICON_ENTRIES } from './lexicon'
+import {
+    getCommonWordMap,
+    getCommonWordsForLanguage,
+    normalizeLexicalKey,
+    type DevanagariLanguage,
+} from './language-data'
+
+export type { DevanagariLanguage } from './language-data'
 
 interface MappingEntry<T> {
     keys: string[]
@@ -70,8 +78,6 @@ const matchFromMapping = <T>(
 const HALANT = '्'
 const DEFAULT_HALANT_TRIGGERS = ['^']
 
-const normalizeLexicalKey = (value: string) => value.toLowerCase().replace(/[^a-z]/g, '')
-
 const shouldIndexLexiconEntry = (roman: string) => {
     const trimmed = roman.trim()
     if (trimmed.length >= 5) return true
@@ -116,7 +122,8 @@ const vowelMapping = buildMapping<{ independent: string; matra: string; inherent
     { keys: ['lri'], value: { independent: 'ऌ', matra: 'ॢ' } },
     { keys: ['lree'], value: { independent: 'ॡ', matra: 'ॣ' } },
     { keys: ['L'], value: { independent: 'ॡ', matra: 'ॣ' }, caseSensitive: true },
-    { keys: ['e^', 'eN'], value: { independent: 'ऍ', matra: 'ॅ' } },
+    { keys: ['e^'], value: { independent: 'ऍ', matra: 'ॅ' } },
+    { keys: ['eN'], value: { independent: 'ऍ', matra: 'ॅ' }, caseSensitive: true },
     // Dravidian short vowels
     { keys: ['e.'], value: { independent: 'ऎ', matra: 'ॆ' } },
     { keys: ['o.'], value: { independent: 'ऒ', matra: 'ॊ' } },
@@ -129,19 +136,19 @@ const vowelMapping = buildMapping<{ independent: string; matra: string; inherent
     // Rare dependent vowel signs and archaic matras
     { keys: ['oe~'], value: { independent: 'ॳ', matra: 'ऺ' } },      // U+093A - Vowel Sign OE
     { keys: ['ooe~'], value: { independent: 'ॴ', matra: 'ऻ' } },     // U+093B - Vowel Sign OOE
-    { keys: ['eP'], value: { independent: 'ए', matra: 'ॎ' } },       // U+094E - Vowel Sign Prishthamatra E
-    { keys: ['awP'], value: { independent: 'ऑ', matra: 'ॏ' } },      // U+094F - Vowel Sign Aw
-    { keys: ['eL'], value: { independent: 'ऍ', matra: 'ॕ' } },       // U+0955 - Vowel Sign Candra Long E
-    { keys: ['uL'], value: { independent: 'उ', matra: 'ॖ' } },       // U+0956 - Vowel Sign Ue
-    { keys: ['uuL'], value: { independent: 'ऊ', matra: 'ॗ' } },      // U+0957 - Vowel Sign Uue
+    { keys: ['eP'], value: { independent: 'ए', matra: 'ॎ' }, caseSensitive: true },       // U+094E - Vowel Sign Prishthamatra E
+    { keys: ['awP'], value: { independent: 'ऑ', matra: 'ॏ' }, caseSensitive: true },      // U+094F - Vowel Sign Aw
+    { keys: ['eL'], value: { independent: 'ऍ', matra: 'ॕ' }, caseSensitive: true },       // U+0955 - Vowel Sign Candra Long E
+    { keys: ['uL'], value: { independent: 'उ', matra: 'ॖ' }, caseSensitive: true },       // U+0956 - Vowel Sign Ue
+    { keys: ['uuL'], value: { independent: 'ऊ', matra: 'ॗ' }, caseSensitive: true },      // U+0957 - Vowel Sign Uue
     // Kashmiri vowels
     { keys: ['aw.'], value: { independent: 'ॵ', matra: '' } },
     { keys: ['ue'], value: { independent: 'ॶ', matra: '' } },
     { keys: ['uue'], value: { independent: 'ॷ', matra: '' } },
     // Additional archaic vowels (U+0904, U+0960, U+0961)
     { keys: ['a4'], value: { independent: '\u0904', matra: '' } },  // U+0904 - Short A (historical)
-    { keys: ['RR'], value: { independent: '\u0960', matra: 'ॄ' } },  // U+0960 - Vocalic RR (alternate)
-    { keys: ['LL'], value: { independent: '\u0961', matra: 'ॣ' } },  // U+0961 - Vocalic LL (alternate)
+    { keys: ['RR'], value: { independent: '\u0960', matra: 'ॄ' }, caseSensitive: true },  // U+0960 - Vocalic RR (alternate)
+    { keys: ['LL'], value: { independent: '\u0961', matra: 'ॣ' }, caseSensitive: true },  // U+0961 - Vocalic LL (alternate)
     { keys: ['i'], value: { independent: 'इ', matra: 'ि' } },
     { keys: ['u'], value: { independent: 'उ', matra: 'ु' } },
     { keys: ['eei'], value: { independent: 'ए', matra: 'े' } },
@@ -222,10 +229,10 @@ const consonantMapping = buildMapping<string>([
 
     // Archaic/historical consonants
     { keys: ['jj'], value: 'ज्ज' },   // Historical archaic letter JJA
-    { keys: ['GG'], value: 'ॻ' },     // U+097B - Letter GGA (historical)
-    { keys: ['JJ'], value: 'ॼ' },     // U+097C - Letter JA (historical)
-    { keys: ['DD'], value: 'ॾ' },     // U+097E - Letter DDDA (historical)
-    { keys: ['BH'], value: 'ॿ' },     // U+097F - Letter BBA (historical)
+    { keys: ['GG'], value: 'ॻ', caseSensitive: true },     // U+097B - Letter GGA (historical)
+    { keys: ['JJ'], value: 'ॼ', caseSensitive: true },     // U+097C - Letter JA (historical)
+    { keys: ['DD'], value: 'ॾ', caseSensitive: true },     // U+097E - Letter DDDA (historical)
+    { keys: ['BH'], value: 'ॿ', caseSensitive: true },     // U+097F - Letter BBA (historical)
 ])
 
 const diacriticMapping = buildMapping<string>([
@@ -237,9 +244,9 @@ const diacriticMapping = buildMapping<string>([
     { keys: ['h~', '~h'], value: 'ः' },
     { keys: ['.a', "'"], value: 'ऽ' },                     // U+093D - Avagraha
     { keys: ['om'], value: 'ॐ' },                           // U+0950 - Om
-    { keys: ['A~'], value: 'ऀ' },                           // U+0900 - Sign Inverted Candrabindu (Kashmiri)
-    { keys: ['H.'], value: 'ᳲ' },                           // U+1CF2 - Sign Ardhavisarga
-    { keys: ['H:'], value: 'ᳵ' },                           // U+1CF5 - Sign Jihvamuliya
+    { keys: ['A~'], value: 'ऀ', caseSensitive: true },                           // U+0900 - Sign Inverted Candrabindu (Kashmiri)
+    { keys: ['H.'], value: 'ᳲ', caseSensitive: true },                           // U+1CF2 - Sign Ardhavisarga
+    { keys: ['H:'], value: 'ᳵ', caseSensitive: true },                           // U+1CF5 - Sign Jihvamuliya
     { keys: ['h:'], value: 'ᳶ' },                           // U+1CF6 - Sign Upadhmaniya
 ])
 
@@ -251,16 +258,16 @@ const symbolMapping = buildMapping<string>([
     // Priority 2: Additional punctuation and special characters
     { keys: ['..'], value: '॰' },           // U+0970 - Abbreviation mark (requires double dot)
     { keys: ['.^'], value: 'ॱ' },           // U+0971 - High spacing dot
-    { keys: ['A^'], value: 'ऀ' },           // U+0900 - Inverted Candrabindu (Kashmiri)
+    { keys: ['A^'], value: 'ऀ', caseSensitive: true },           // U+0900 - Inverted Candrabindu (Kashmiri)
     { keys: ['^~'], value: 'ँ' },           // U+0901 - Candrabindu (already in diacritics, but can be typed independently)
     { keys: ['^.'], value: '़' },           // U+093C - Nukta (standalone, for manual composition)
     { keys: ['.oe~'], value: 'ऺ' },         // U+093A - Vowel Sign OE (standalone)
     { keys: ['.ooe~'], value: 'ऻ' },        // U+093B - Vowel Sign OOE (standalone)
-    { keys: ['.eP'], value: 'ॎ' },          // U+094E - Vowel Sign Prishthamatra E (standalone)
-    { keys: ['.awP'], value: 'ॏ' },         // U+094F - Vowel Sign Aw (standalone)
-    { keys: ['.eL'], value: 'ॕ' },          // U+0955 - Vowel Sign Candra Long E (standalone)
-    { keys: ['.uL'], value: 'ॖ' },          // U+0956 - Vowel Sign Ue (standalone)
-    { keys: ['.uuL'], value: 'ॗ' },         // U+0957 - Vowel Sign Uue (standalone)
+    { keys: ['.eP'], value: 'ॎ', caseSensitive: true },          // U+094E - Vowel Sign Prishthamatra E (standalone)
+    { keys: ['.awP'], value: 'ॏ', caseSensitive: true },         // U+094F - Vowel Sign Aw (standalone)
+    { keys: ['.eL'], value: 'ॕ', caseSensitive: true },          // U+0955 - Vowel Sign Candra Long E (standalone)
+    { keys: ['.uL'], value: 'ॖ', caseSensitive: true },          // U+0956 - Vowel Sign Ue (standalone)
+    { keys: ['.uuL'], value: 'ॗ', caseSensitive: true },         // U+0957 - Vowel Sign Uue (standalone)
     { keys: ['.av'], value: 'ऽ' },          // U+093D - Avagraha (alternate input)
     { keys: ['om', 'OM'], value: 'ॐ' },    // U+0950 - Om (already handled but added for completeness)
 
@@ -269,11 +276,11 @@ const symbolMapping = buildMapping<string>([
     { keys: ['@zh'], value: 'ॹ' },          // U+0979 - Zha
     { keys: ['@hy'], value: 'ॺ' },          // U+097A - Heavy Ya
     // U+097B-U+097F already covered in consonantMapping as GG, JJ, DD, BH
-    { keys: ['@DD3'], value: 'ॽ' },         // U+097D - Glottal Stop
+    { keys: ['@DD3'], value: 'ॽ', caseSensitive: true },         // U+097D - Glottal Stop
 
     // Zero-width characters for ligature control
-    { keys: ['ZWJ'], value: '‍' },          // U+200D - Zero Width Joiner (for ligature control)
-    { keys: ['ZWNJ'], value: '‌' },         // U+200C - Zero Width Non-Joiner (for ligature breaking)
+    { keys: ['ZWJ'], value: '‍', caseSensitive: true },          // U+200D - Zero Width Joiner (for ligature control)
+    { keys: ['ZWNJ'], value: '‌', caseSensitive: true },         // U+200C - Zero Width Non-Joiner (for ligature breaking)
 ])
 
 // Priority 2: Vedic accent marks - Complete Unicode coverage (40+ marks)
@@ -365,6 +372,9 @@ export interface TransliterationResult {
 export interface TransliterationOptions {
     useDevanagariDigits?: boolean
     halantTriggers?: string[]
+    language?: DevanagariLanguage
+    enableExtendedRomanization?: boolean
+    customWordMap?: Record<string, string>
 }
 
 interface PendingConsonant {
@@ -404,6 +414,10 @@ export const transliterateDetailed = (
     const tokens: TransliterationToken[] = []
     const halantTriggers = options.halantTriggers ?? DEFAULT_HALANT_TRIGGERS
     const useDevanagariDigits = options.useDevanagariDigits ?? true
+    const language = options.language ?? 'generic'
+    const enableExtendedRomanization = options.enableExtendedRomanization ?? false
+    const commonWordMap = getCommonWordMap(language)
+    const customWordMap = options.customWordMap
 
     let pending: PendingConsonant | null = null
     let index = 0
@@ -420,7 +434,11 @@ export const transliterateDetailed = (
         const rawWord = input.slice(start, cursor)
         const normalized = normalizeLexicalKey(rawWord)
         if (!normalized) return null
-        const replacement = lexicalWordMap.get(normalized)
+        const replacement =
+            customWordMap?.[rawWord] ??
+            customWordMap?.[normalized] ??
+            commonWordMap.get(normalized) ??
+            lexicalWordMap.get(normalized)
         if (!replacement) return null
         pending = commitPending(pending, output, tokens)
         output.push(replacement)
@@ -470,12 +488,14 @@ export const transliterateDetailed = (
         }
 
         // Check Vedic accents first (Priority 2 feature)
-        const vedicMatch = matchFromMapping(input, lowerInput, index, vedicAccentMapping)
-        if (vedicMatch) {
-            output.push(vedicMatch.config)
-            tokens.push({ source: vedicMatch.raw, translated: vedicMatch.config, type: 'diacritic' })
-            index += vedicMatch.raw.length
-            continue
+        if (enableExtendedRomanization) {
+            const vedicMatch = matchFromMapping(input, lowerInput, index, vedicAccentMapping)
+            if (vedicMatch) {
+                output.push(vedicMatch.config)
+                tokens.push({ source: vedicMatch.raw, translated: vedicMatch.config, type: 'diacritic' })
+                index += vedicMatch.raw.length
+                continue
+            }
         }
 
         // Check diacritics before consonants to handle case-sensitive M, H correctly
@@ -650,11 +670,131 @@ const nepaliDigitToRoman = new Map<string, string>([
 
 const isDevanagariChar = (char: string) => {
     const code = char.charCodeAt(0)
-    return code >= 0x0900 && code <= 0x097F
+    return code >= 0x0900 && code <= 0x097f
+}
+
+const isDevanagariWordChar = (char: string) =>
+    isDevanagariChar(char) &&
+    !nepaliDigitToRoman.has(char) &&
+    !symbolToRoman.has(char)
+
+const normalizeReverseRoman = (value: string) => value.toLowerCase()
+
+const SCHWA_DELETION_LANGUAGES = new Set<DevanagariLanguage>(['hindi', 'dogri'])
+const LIGHT_SCHWA_DELETION_LANGUAGES = new Set<DevanagariLanguage>(['marathi', 'konkani'])
+const CLUSTER_SCHWA_PATTERN = /([kgcjtdnpbmyrlvshfzTDN])a([rlvy])a(?=[kgcjtdnpbmyrlvshfzTDN])/g
+
+const applyReversePhonology = (
+    rawRoman: string,
+    word: string,
+    language: DevanagariLanguage
+): string => {
+    if (!rawRoman) return rawRoman
+
+    let roman = rawRoman
+
+    if (SCHWA_DELETION_LANGUAGES.has(language)) {
+        roman = roman.replace(CLUSTER_SCHWA_PATTERN, '$1$2a')
+    }
+
+    const usesTerminalSchwaDeletion =
+        SCHWA_DELETION_LANGUAGES.has(language) || LIGHT_SCHWA_DELETION_LANGUAGES.has(language)
+
+    if (usesTerminalSchwaDeletion && roman.endsWith('a')) {
+        const lastChar = word[word.length - 1]
+        if (lastChar && devanagariToRomanConsonant.has(lastChar)) {
+            roman = roman.slice(0, -1)
+        }
+    }
+
+    return roman
+}
+
+const reverseTransliterateWord = (
+    word: string,
+    nepaliToRoman: Map<string, string>,
+    language: DevanagariLanguage
+): string => {
+    const exact = nepaliToRoman.get(word)
+    if (exact) {
+        return exact
+    }
+
+    const output: string[] = []
+    let index = 0
+
+    while (index < word.length) {
+        const char = word[index]
+
+        if (diacriticToRoman.has(char)) {
+            output.push(diacriticToRoman.get(char)!)
+            index += 1
+            continue
+        }
+
+        if (devanagariToRomanVowel.has(char)) {
+            output.push(devanagariToRomanVowel.get(char)!.independent)
+            index += 1
+            continue
+        }
+
+        let clusterMatched = false
+        for (let len = 4; len >= 2; len--) {
+            const cluster = word.slice(index, index + len)
+            if (devanagariToRomanConsonant.has(cluster)) {
+                output.push(devanagariToRomanConsonant.get(cluster)!)
+                index += len
+                clusterMatched = true
+                break
+            }
+        }
+
+        if (clusterMatched) {
+            const nextChar = word[index]
+            if (nextChar && devanagariToRomanVowel.has(nextChar)) {
+                output.push(devanagariToRomanVowel.get(nextChar)!.matra)
+                index += 1
+            } else if (nextChar === HALANT) {
+                index += 1
+            } else {
+                output.push('a')
+            }
+            continue
+        }
+
+        if (devanagariToRomanConsonant.has(char)) {
+            output.push(devanagariToRomanConsonant.get(char)!)
+            index += 1
+
+            const nextChar = word[index]
+            if (nextChar && devanagariToRomanVowel.has(nextChar)) {
+                output.push(devanagariToRomanVowel.get(nextChar)!.matra)
+                index += 1
+            } else if (nextChar === HALANT) {
+                index += 1
+            } else {
+                output.push('a')
+            }
+            continue
+        }
+
+        if (char === 'ॐ') {
+            output.push('om')
+            index += 1
+            continue
+        }
+
+        output.push(char)
+        index += 1
+    }
+
+    return applyReversePhonology(output.join(''), word, language)
 }
 
 export interface ReverseTransliterationOptions {
     useLatinDigits?: boolean
+    language?: DevanagariLanguage
+    customWordMap?: Record<string, string>
 }
 
 export const reverseTransliterate = (
@@ -662,13 +802,28 @@ export const reverseTransliterate = (
     options: ReverseTransliterationOptions = {}
 ): string => {
     const useLatinDigits = options.useLatinDigits ?? true
+    const language = options.language ?? 'generic'
     const output: string[] = []
     let index = 0
 
     // Build reverse lexicon (Nepali → Roman)
     const nepaliToRoman = new Map<string, string>()
+    const commonReverseOverrides = new Map<string, string>()
+    for (const entry of getCommonWordsForLanguage(language)) {
+        commonReverseOverrides.set(entry.devanagari, entry.roman)
+    }
     for (const entry of LEXICON_ENTRIES) {
-        nepaliToRoman.set(entry.nepali, entry.roman)
+        if (!commonReverseOverrides.has(entry.nepali)) {
+            nepaliToRoman.set(entry.nepali, normalizeReverseRoman(entry.roman))
+        }
+    }
+    for (const [devanagari, roman] of commonReverseOverrides) {
+        nepaliToRoman.set(devanagari, roman)
+    }
+    if (options.customWordMap) {
+        for (const [roman, devanagari] of Object.entries(options.customWordMap)) {
+            nepaliToRoman.set(devanagari, roman)
+        }
     }
 
     while (index < input.length) {
@@ -688,6 +843,18 @@ export const reverseTransliterate = (
         }
         if (matched) continue
 
+        if (isDevanagariWordChar(char)) {
+            let end = index + 1
+            while (end < input.length && isDevanagariWordChar(input[end])) {
+                end += 1
+            }
+
+            const word = input.slice(index, end)
+            output.push(reverseTransliterateWord(word, nepaliToRoman, language))
+            index = end
+            continue
+        }
+
         // Nepali digit
         if (nepaliDigitToRoman.has(char) && useLatinDigits) {
             output.push(nepaliDigitToRoman.get(char)!)
@@ -699,70 +866,6 @@ export const reverseTransliterate = (
         if (symbolToRoman.has(char)) {
             output.push(symbolToRoman.get(char)!)
             index += 1
-            continue
-        }
-
-        // Diacritic
-        if (diacriticToRoman.has(char)) {
-            output.push(diacriticToRoman.get(char)!)
-            index += 1
-            continue
-        }
-
-        // Independent vowel
-        if (devanagariToRomanVowel.has(char)) {
-            const vowel = devanagariToRomanVowel.get(char)!
-            output.push(vowel.independent)
-            index += 1
-            continue
-        }
-
-        // Consonant cluster - try multi-char matches first
-        let clusterMatched = false
-        for (let len = 4; len >= 2; len--) {
-            const cluster = input.slice(index, index + len)
-            if (devanagariToRomanConsonant.has(cluster)) {
-                output.push(devanagariToRomanConsonant.get(cluster)!)
-                index += len
-                clusterMatched = true
-                break
-            }
-        }
-        if (clusterMatched) {
-            // Check for matra after consonant
-            const nextChar = input[index]
-            if (nextChar && devanagariToRomanVowel.has(nextChar)) {
-                const vowel = devanagariToRomanVowel.get(nextChar)!
-                output.push(vowel.matra)
-                index += 1
-            } else if (nextChar !== HALANT) {
-                // Add inherent 'a' if no matra and not followed by halant
-                output.push('a')
-            }
-            continue
-        }
-
-        // Single consonant
-        if (devanagariToRomanConsonant.has(char)) {
-            output.push(devanagariToRomanConsonant.get(char)!)
-            index += 1
-
-            // Check for matra
-            const nextChar = input[index]
-            if (nextChar && devanagariToRomanVowel.has(nextChar)) {
-                const vowel = devanagariToRomanVowel.get(nextChar)!
-                output.push(vowel.matra)
-                index += 1
-            } else if (nextChar === HALANT) {
-                // Halant - consume it, no inherent 'a'
-                index += 1
-            } else if (nextChar && isDevanagariChar(nextChar) && !devanagariToRomanConsonant.has(nextChar)) {
-                // Next char is not a consonant, add inherent 'a'
-                output.push('a')
-            } else if (!nextChar || !isDevanagariChar(nextChar)) {
-                // End of Devanagari sequence, add inherent 'a'
-                output.push('a')
-            }
             continue
         }
 

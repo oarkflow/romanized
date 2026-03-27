@@ -265,6 +265,8 @@ export declare const createVelthuisMappings: () => VelthuisMapping;
  */
 export declare const DEVANAGARI_TO_IAST: Record<string, string>;
 
+export declare type DevanagariLanguage = 'generic' | 'nepali' | 'hindi' | 'marathi' | 'sanskrit' | 'maithili' | 'newari' | 'dogri' | 'bodo' | 'konkani' | 'kashmiri' | 'sindhi';
+
 /**
  * Convert text from Devanagari to IAST
  */
@@ -4231,6 +4233,8 @@ export declare class NepaliConverterCore {
     getDirection(): 'toNepali' | 'toRoman';
     setUseDevanagariDigits(value: boolean): void;
     getUseDevanagariDigits(): boolean;
+    setLanguage(language: DevanagariLanguage): void;
+    getLanguage(): DevanagariLanguage;
     clear(): void;
     private convert;
 }
@@ -4241,6 +4245,9 @@ export declare interface NepaliConverterOptions {
     debounceMs?: number;
     onInput?: (romanized: string, converted: string) => void;
     onChange?: (romanized: string, converted: string) => void;
+    language?: DevanagariLanguage;
+    enableExtendedRomanization?: boolean;
+    customWordMap?: Record<string, string>;
 }
 
 export declare interface NepaliConverterState {
@@ -4299,6 +4306,8 @@ export declare class NepaliIMECore {
      * Get digit conversion setting
      */
     getUseDevanagariDigits(): boolean;
+    setLanguage(language: DevanagariLanguage): void;
+    getLanguage(): DevanagariLanguage;
     private commitCurrentWord;
     private deleteCharacter;
     private isPunctuation;
@@ -4335,6 +4344,9 @@ export declare interface NepaliIMEOptions {
     onStateChange?: (state: NepaliIMEState) => void;
     enableHistory?: boolean;
     maxHistory?: number;
+    language?: DevanagariLanguage;
+    enableExtendedRomanization?: boolean;
+    customWordMap?: Record<string, string>;
 }
 
 export declare interface NepaliIMEState {
@@ -4390,6 +4402,9 @@ export declare interface NepaliInputOptions {
     enableCharacterSelector?: boolean;
     onInput?: (value: string) => void;
     onChange?: (value: string) => void;
+    language?: DevanagariLanguage;
+    enableExtendedRomanization?: boolean;
+    customWordMap?: Record<string, string>;
 }
 
 /**
@@ -4404,8 +4419,10 @@ export declare type NepaliTextareaOptions = NepaliInputOptions;
 
 export declare const reverseTransliterate: (input: string, options?: ReverseTransliterationOptions) => string;
 
-declare interface ReverseTransliterationOptions {
+export declare interface ReverseTransliterationOptions {
     useLatinDigits?: boolean;
+    language?: DevanagariLanguage;
+    customWordMap?: Record<string, string>;
 }
 
 /**
@@ -4488,6 +4505,9 @@ export declare const transliterate: (input: string, options?: TransliterationOpt
 export declare interface TransliterationOptions {
     useDevanagariDigits?: boolean;
     halantTriggers?: string[];
+    language?: DevanagariLanguage;
+    enableExtendedRomanization?: boolean;
+    customWordMap?: Record<string, string>;
 }
 
 /**

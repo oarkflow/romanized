@@ -1,11 +1,14 @@
 import { useState, useEffect, useRef, forwardRef, useImperativeHandle, type InputHTMLAttributes } from 'react'
-import { NepaliIMECore } from '@oarkflow/nepali-input'
+import { NepaliIMECore, type DevanagariLanguage } from '@oarkflow/nepali-input'
 
 export interface NepaliInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'onInput' | 'value'> {
 	value?: string
 	onChange?: (value: string) => void
 	onInput?: (value: string) => void
 	useDevanagariDigits?: boolean
+	language?: DevanagariLanguage
+	enableExtendedRomanization?: boolean
+	customWordMap?: Record<string, string>
 }
 
 export interface NepaliInputRef {
@@ -16,7 +19,7 @@ export interface NepaliInputRef {
 }
 
 export const NepaliInput = forwardRef<NepaliInputRef, NepaliInputProps>(
-	({ value, onChange, onInput, useDevanagariDigits = true, className, ...props }, ref) => {
+	({ value, onChange, onInput, useDevanagariDigits = true, language = 'generic', enableExtendedRomanization = false, customWordMap, className, ...props }, ref) => {
 		const [internalValue, setInternalValue] = useState(value || '')
 		const coreRef = useRef<NepaliIMECore | null>(null)
 		const inputRef = useRef<HTMLInputElement>(null)
@@ -24,6 +27,9 @@ export const NepaliInput = forwardRef<NepaliInputRef, NepaliInputProps>(
 		useEffect(() => {
 			coreRef.current = new NepaliIMECore({
 				useDevanagariDigits,
+				language,
+				enableExtendedRomanization,
+				customWordMap,
 				onStateChange: (state) => {
 					setInternalValue(state.output)
 					onInput?.(state.output)
@@ -34,7 +40,7 @@ export const NepaliInput = forwardRef<NepaliInputRef, NepaliInputProps>(
 			return () => {
 				coreRef.current = null
 			}
-		}, [useDevanagariDigits])
+		}, [useDevanagariDigits, language, enableExtendedRomanization, customWordMap])
 
 		// Sync external value changes
 		useEffect(() => {

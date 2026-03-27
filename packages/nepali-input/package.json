@@ -21,6 +21,7 @@
 	"scripts": {
 		"build": "tsc && vite build",
 		"dev": "vite build --watch",
+		"test": "npm run build && node --test test/**/*.test.mjs",
 		"type-check": "tsc --noEmit",
 		"prepublishOnly": "npm run build"
 	},

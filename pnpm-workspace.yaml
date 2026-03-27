@@ -2,6 +2,7 @@ packages:
   - 'packages/*'
   - 'demos/basic'
   - 'demos/react'
+  - 'demos/solid'
   - 'demos/character-palette'
   - 'demos/complete-character'
   - 'demos/iast'

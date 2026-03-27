@@ -1,4 +1,4 @@
-import { transliterate } from './transliterate'
+import { transliterate, type DevanagariLanguage } from './transliterate'
 import { HistoryManager } from './history'
 
 export interface NepaliIMEOptions {
@@ -6,6 +6,9 @@ export interface NepaliIMEOptions {
     onStateChange?: (state: NepaliIMEState) => void
     enableHistory?: boolean
     maxHistory?: number
+    language?: DevanagariLanguage
+    enableExtendedRomanization?: boolean
+    customWordMap?: Record<string, string>
 }
 
 export interface NepaliIMEState {
@@ -38,6 +41,9 @@ export class NepaliIMECore {
             onStateChange: options.onStateChange ?? (() => { }),
             enableHistory: options.enableHistory ?? true,
             maxHistory: options.maxHistory ?? 100,
+            language: options.language ?? 'generic',
+            enableExtendedRomanization: options.enableExtendedRomanization ?? false,
+            customWordMap: options.customWordMap ?? {},
         }
         this.state = {
             romanBuffer: [],
@@ -218,6 +224,16 @@ export class NepaliIMECore {
         return this.options.useDevanagariDigits
     }
 
+    public setLanguage(language: DevanagariLanguage): void {
+        this.options.language = language
+        this.rebuildConvertedBuffer()
+        this.updateOutput()
+    }
+
+    public getLanguage(): DevanagariLanguage {
+        return this.options.language
+    }
+
     // Private helper methods
 
     private commitCurrentWord(): void {
@@ -254,7 +270,12 @@ export class NepaliIMECore {
             return segment
         }
         // Romanized word - convert it
-        return transliterate(segment, { useDevanagariDigits: this.options.useDevanagariDigits })
+        return transliterate(segment, {
+            useDevanagariDigits: this.options.useDevanagariDigits,
+            language: this.options.language,
+            enableExtendedRomanization: this.options.enableExtendedRomanization,
+            customWordMap: this.options.customWordMap
+        })
     }
 
     private updateOutput(): void {
@@ -263,7 +284,10 @@ export class NepaliIMECore {
         // Add current word being typed
         if (this.state.currentWord) {
             output += transliterate(this.state.currentWord, {
-                useDevanagariDigits: this.options.useDevanagariDigits
+                useDevanagariDigits: this.options.useDevanagariDigits,
+                language: this.options.language,
+                enableExtendedRomanization: this.options.enableExtendedRomanization,
+                customWordMap: this.options.customWordMap
             })
         }
 

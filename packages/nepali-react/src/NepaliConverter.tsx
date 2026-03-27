@@ -1,11 +1,14 @@
 import { useState, useEffect, useRef, forwardRef, useImperativeHandle, type HTMLAttributes, type TextareaHTMLAttributes } from 'react'
-import { NepaliConverterCore } from '@oarkflow/nepali-input'
+import { NepaliConverterCore, type DevanagariLanguage } from '@oarkflow/nepali-input'
 
 export interface NepaliConverterProps {
 	value?: string
 	onChange?: (input: string, output: string) => void
 	onInput?: (input: string, output: string) => void
 	useDevanagariDigits?: boolean
+	language?: DevanagariLanguage
+	enableExtendedRomanization?: boolean
+	customWordMap?: Record<string, string>
 	debounceMs?: number
 	showCopyButton?: boolean
 	direction?: 'toNepali' | 'toRoman'
@@ -28,6 +31,9 @@ export const NepaliConverter = forwardRef<NepaliConverterRef, NepaliConverterPro
 		onChange,
 		onInput,
 		useDevanagariDigits = true,
+		language = 'generic',
+		enableExtendedRomanization = false,
+		customWordMap,
 		debounceMs = 300,
 		showCopyButton = true,
 		direction = 'toNepali',
@@ -43,6 +49,9 @@ export const NepaliConverter = forwardRef<NepaliConverterRef, NepaliConverterPro
 		useEffect(() => {
 			coreRef.current = new NepaliConverterCore({
 				useDevanagariDigits,
+				language,
+				enableExtendedRomanization,
+				customWordMap,
 				debounceMs,
 				bidirectional: true,
 				onInput: (inputText, outputText) => {
@@ -59,7 +68,7 @@ export const NepaliConverter = forwardRef<NepaliConverterRef, NepaliConverterPro
 			return () => {
 				coreRef.current = null
 			}
-		}, [useDevanagariDigits, debounceMs])
+		}, [useDevanagariDigits, language, enableExtendedRomanization, customWordMap, debounceMs])
 
 		useEffect(() => {
 			if (value !== undefined && value !== input) {

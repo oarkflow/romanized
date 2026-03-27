@@ -191,6 +191,7 @@ main() {
         "packages/nepali-react"
         "packages/nepali-vue"
         "packages/nepali-svelte"
+        "packages/nepali-solid"
         "packages/nepali-angular"
     )
 

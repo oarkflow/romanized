@@ -1228,6 +1228,339 @@ const LEXICON_ENTRIES = [
   // Note: dot '.' is NOT mapped - it's used for nukta sequences (kh., gh., .r, .l)
   // Use | (pipe) for danda instead
 ];
+const BODO_COMMON_WORDS = [
+  { roman: "bodo", devanagari: "बोडो" }
+];
+const DOGRI_COMMON_WORDS = [
+  { roman: "dogri", devanagari: "डोगरी" },
+  { roman: "dharm", devanagari: "धर्म" },
+  { roman: "karm", devanagari: "कर्म" }
+];
+class TrieNode {
+  children = /* @__PURE__ */ new Map();
+  entries = [];
+  isEndOfWord = false;
+}
+class AutocompleteManager {
+  root = new TrieNode();
+  options;
+  userHistory = /* @__PURE__ */ new Map();
+  constructor(options = {}) {
+    this.options = {
+      maxSuggestions: options.maxSuggestions ?? 5,
+      minPrefixLength: options.minPrefixLength ?? 2,
+      useFrequency: options.useFrequency ?? true,
+      caseSensitive: options.caseSensitive ?? false
+    };
+  }
+  /**
+   * Add word to dictionary
+   */
+  addWord(entry) {
+    const key = this.normalizeKey(entry.roman);
+    let node = this.root;
+    for (const char of key) {
+      if (!node.children.has(char)) {
+        node.children.set(char, new TrieNode());
+      }
+      node = node.children.get(char);
+    }
+    node.isEndOfWord = true;
+    node.entries.push(entry);
+  }
+  /**
+   * Add multiple words
+   */
+  addWords(entries) {
+    for (const entry of entries) {
+      this.addWord(entry);
+    }
+  }
+  /**
+   * Get suggestions for prefix
+   */
+  getSuggestions(prefix) {
+    if (prefix.length < this.options.minPrefixLength) {
+      return [];
+    }
+    const key = this.normalizeKey(prefix);
+    let node = this.root;
+    for (const char of key) {
+      if (!node.children.has(char)) {
+        return [];
+      }
+      node = node.children.get(char);
+    }
+    const suggestions = [];
+    this.collectSuggestions(node, suggestions);
+    suggestions.sort((a, b) => b.score - a.score);
+    return suggestions.slice(0, this.options.maxSuggestions);
+  }
+  /**
+   * Record user selection to improve future suggestions
+   */
+  recordSelection(roman) {
+    const key = this.normalizeKey(roman);
+    const count = this.userHistory.get(key) || 0;
+    this.userHistory.set(key, count + 1);
+  }
+  /**
+   * Clear user history
+   */
+  clearHistory() {
+    this.userHistory.clear();
+  }
+  /**
+   * Get dictionary size
+   */
+  size() {
+    return this.countNodes(this.root);
+  }
+  /**
+   * Export user history for persistence
+   */
+  exportHistory() {
+    return Object.fromEntries(this.userHistory);
+  }
+  /**
+   * Import user history from storage
+   */
+  importHistory(history) {
+    this.userHistory = new Map(Object.entries(history));
+  }
+  // Private methods
+  normalizeKey(text) {
+    return this.options.caseSensitive ? text : text.toLowerCase();
+  }
+  collectSuggestions(node, suggestions) {
+    if (node.isEndOfWord) {
+      for (const entry of node.entries) {
+        const userScore = this.userHistory.get(this.normalizeKey(entry.roman)) || 0;
+        const frequencyScore = this.options.useFrequency ? entry.frequency : 1;
+        const score = frequencyScore + userScore * 10;
+        suggestions.push({
+          roman: entry.roman,
+          nepali: entry.nepali,
+          score
+        });
+      }
+    }
+    for (const child of node.children.values()) {
+      this.collectSuggestions(child, suggestions);
+    }
+  }
+  countNodes(node) {
+    let count = node.isEndOfWord ? node.entries.length : 0;
+    for (const child of node.children.values()) {
+      count += this.countNodes(child);
+    }
+    return count;
+  }
+}
+const COMMON_WORDS = [
+  // Greetings & Common Phrases (High frequency)
+  { roman: "namaste", nepali: "नमस्ते", frequency: 100 },
+  { roman: "namaskar", nepali: "नमस्कार", frequency: 95 },
+  { roman: "dhanyabad", nepali: "धन्यवाद", frequency: 90 },
+  { roman: "shukriya", nepali: "शुक्रिया", frequency: 85 },
+  { roman: "tapai", nepali: "तपाई", frequency: 80 },
+  { roman: "hajur", nepali: "हजुर", frequency: 75 },
+  // Pronouns (High frequency)
+  { roman: "ma", nepali: "म", frequency: 100 },
+  { roman: "hami", nepali: "हामी", frequency: 90 },
+  { roman: "timro", nepali: "तिम्रो", frequency: 85 },
+  { roman: "mero", nepali: "मेरो", frequency: 95 },
+  { roman: "timi", nepali: "तिमी", frequency: 88 },
+  { roman: "yo", nepali: "यो", frequency: 92 },
+  { roman: "tyo", nepali: "त्यो", frequency: 87 },
+  // Common Verbs
+  { roman: "garnu", nepali: "गर्नु", frequency: 85 },
+  { roman: "huncha", nepali: "हुन्छ", frequency: 90 },
+  { roman: "cha", nepali: "छ", frequency: 95 },
+  { roman: "chaina", nepali: "छैन", frequency: 88 },
+  { roman: "janchu", nepali: "जान्छु", frequency: 75 },
+  { roman: "aunu", nepali: "आउनु", frequency: 80 },
+  { roman: "khanu", nepali: "खानु", frequency: 78 },
+  { roman: "bolnu", nepali: "बोल्नु", frequency: 76 },
+  // Common Adjectives
+  { roman: "ramro", nepali: "राम्रो", frequency: 85 },
+  { roman: "thulo", nepali: "ठुलो", frequency: 75 },
+  { roman: "sano", nepali: "सानो", frequency: 74 },
+  { roman: "mitho", nepali: "मिठो", frequency: 72 },
+  { roman: "naya", nepali: "नयाँ", frequency: 78 },
+  // Family Relations
+  { roman: "aama", nepali: "आमा", frequency: 90 },
+  { roman: "buwa", nepali: "बुवा", frequency: 88 },
+  { roman: "didi", nepali: "दिदी", frequency: 82 },
+  { roman: "bhai", nepali: "भाइ", frequency: 84 },
+  { roman: "bahini", nepali: "बहिनी", frequency: 80 },
+  { roman: "daai", nepali: "दाइ", frequency: 81 },
+  // Common Nouns
+  { roman: "ghar", nepali: "घर", frequency: 85 },
+  { roman: "paani", nepali: "पानी", frequency: 80 },
+  { roman: "khana", nepali: "खाना", frequency: 82 },
+  { roman: "kitab", nepali: "किताब", frequency: 70 },
+  { roman: "skul", nepali: "स्कूल", frequency: 75 },
+  { roman: "kaam", nepali: "काम", frequency: 78 },
+  { roman: "samaya", nepali: "समय", frequency: 76 },
+  // Question Words
+  { roman: "kasto", nepali: "कस्तो", frequency: 80 },
+  { roman: "kasari", nepali: "कसरी", frequency: 78 },
+  { roman: "kahile", nepali: "कहिले", frequency: 79 },
+  { roman: "kaha", nepali: "कहाँ", frequency: 81 },
+  { roman: "kun", nepali: "कुन", frequency: 77 },
+  { roman: "ko", nepali: "को", frequency: 90 },
+  // Time & Date
+  { roman: "aaja", nepali: "आज", frequency: 85 },
+  { roman: "bholi", nepali: "भोली", frequency: 82 },
+  { roman: "hijo", nepali: "हिजो", frequency: 80 },
+  { roman: "bihana", nepali: "बिहान", frequency: 75 },
+  { roman: "beluka", nepali: "बेलुका", frequency: 74 },
+  // Common Phrases
+  { roman: "kripaya", nepali: "कृपया", frequency: 70 },
+  { roman: "maaf", nepali: "माफ", frequency: 72 },
+  { roman: "thik", nepali: "ठिक", frequency: 80 },
+  { roman: "asti", nepali: "अस्ति", frequency: 68 },
+  // Cities (Medium frequency)
+  { roman: "Kathmandu", nepali: "काठमाडौं", frequency: 85 },
+  { roman: "Pokhara", nepali: "पोखरा", frequency: 75 },
+  { roman: "Biratnagar", nepali: "विराटनगर", frequency: 60 },
+  { roman: "Lalitpur", nepali: "ललितपुर", frequency: 65 },
+  { roman: "Bhaktapur", nepali: "भक्तपुर", frequency: 63 },
+  // Countries
+  { roman: "Nepal", nepali: "नेपाल", frequency: 95 },
+  { roman: "Bharat", nepali: "भारत", frequency: 70 },
+  { roman: "America", nepali: "अमेरिका", frequency: 65 },
+  { roman: "China", nepali: "चीन", frequency: 62 },
+  // Numbers in words
+  { roman: "ek", nepali: "एक", frequency: 75 },
+  { roman: "dui", nepali: "दुई", frequency: 72 },
+  { roman: "tin", nepali: "तीन", frequency: 70 },
+  { roman: "char", nepali: "चार", frequency: 68 },
+  { roman: "panch", nepali: "पाँच", frequency: 67 }
+];
+const GENERIC_COMMON_WORDS = [
+  ...COMMON_WORDS.map((entry) => ({
+    roman: entry.roman,
+    devanagari: entry.nepali
+  })),
+  { roman: "dhanyavaad", devanagari: "धन्यवाद" },
+  { roman: "nepal", devanagari: "नेपाल" },
+  { roman: "bharat", devanagari: "भारत" },
+  { roman: "maharashtra", devanagari: "महाराष्ट्र" },
+  { roman: "dharma", devanagari: "धर्म" },
+  { roman: "karma", devanagari: "कर्म" },
+  { roman: "kamara", devanagari: "कमरा" },
+  { roman: "vikram", devanagari: "विक्रम" }
+];
+const HINDI_COMMON_WORDS = [
+  { roman: "aap", devanagari: "आप" },
+  { roman: "aapka", devanagari: "आपका" },
+  { roman: "aapki", devanagari: "आपकी" },
+  { roman: "hindi", devanagari: "हिन्दी" },
+  { roman: "main", devanagari: "मैं" },
+  { roman: "mein", devanagari: "में" },
+  { roman: "nahin", devanagari: "नहीं" },
+  { roman: "nahi", devanagari: "नहीं" },
+  { roman: "hai", devanagari: "है" },
+  { roman: "hain", devanagari: "हैं" },
+  { roman: "mera", devanagari: "मेरा" },
+  { roman: "ham", devanagari: "हम" },
+  { roman: "kya", devanagari: "क्या" },
+  { roman: "kaise", devanagari: "कैसे" },
+  { roman: "bharat", devanagari: "भारत" },
+  { roman: "maharashtra", devanagari: "महाराष्ट्र" },
+  { roman: "dharm", devanagari: "धर्म" },
+  { roman: "karm", devanagari: "कर्म" },
+  { roman: "vikaas", devanagari: "विकास" },
+  { roman: "vikram", devanagari: "विक्रम" },
+  { roman: "kamra", devanagari: "कमरा" },
+  { roman: "shabd", devanagari: "शब्द" },
+  { roman: "arth", devanagari: "अर्थ" }
+];
+const KASHMIRI_COMMON_WORDS = [
+  { roman: "kashmiri", devanagari: "कश्मीरी" }
+];
+const KONKANI_COMMON_WORDS = [
+  { roman: "konkani", devanagari: "कोंकणी" }
+];
+const MAITHILI_COMMON_WORDS = [
+  { roman: "maithili", devanagari: "मैथिली" }
+];
+const MARATHI_COMMON_WORDS = [
+  { roman: "marathi", devanagari: "मराठी" },
+  { roman: "tumhi", devanagari: "तुम्ही" },
+  { roman: "ahe", devanagari: "आहे" },
+  { roman: "majha", devanagari: "माझा" },
+  { roman: "maharashtra", devanagari: "महाराष्ट्र" }
+];
+const NEPALI_COMMON_WORDS = [
+  { roman: "nepali", devanagari: "नेपाली" },
+  { roman: "sathi", devanagari: "साथी" },
+  { roman: "chha", devanagari: "छ" },
+  { roman: "chhaina", devanagari: "छैन" },
+  { roman: "tapai", devanagari: "तपाई" },
+  { roman: "hajur", devanagari: "हजुर" },
+  { roman: "dharma", devanagari: "धर्म" },
+  { roman: "karma", devanagari: "कर्म" }
+];
+const NEWARI_COMMON_WORDS = [
+  { roman: "newari", devanagari: "नेवारी" }
+];
+const SANSKRIT_COMMON_WORDS = [
+  { roman: "namah", devanagari: "नमः" },
+  { roman: "sanskritam", devanagari: "संस्कृतम्" },
+  { roman: "samskritam", devanagari: "संस्कृतम्" },
+  { roman: "sanskrit", devanagari: "संस्कृत" },
+  { roman: "shantih", devanagari: "शान्तिः" },
+  { roman: "bharat", devanagari: "भारत" },
+  { roman: "maharashtra", devanagari: "महाराष्ट्र" },
+  { roman: "dharma", devanagari: "धर्म" },
+  { roman: "karma", devanagari: "कर्म" },
+  { roman: "artha", devanagari: "अर्थ" },
+  { roman: "shabda", devanagari: "शब्द" },
+  { roman: "vikram", devanagari: "विक्रम" }
+];
+const SINDHI_COMMON_WORDS = [
+  { roman: "sindhi", devanagari: "सिन्धी" }
+];
+const normalizeLexicalKey = (value) => value.toLowerCase().replace(/[^a-z]/g, "");
+const COMMON_WORDS_BY_LANGUAGE = {
+  generic: GENERIC_COMMON_WORDS,
+  nepali: NEPALI_COMMON_WORDS,
+  hindi: HINDI_COMMON_WORDS,
+  marathi: MARATHI_COMMON_WORDS,
+  sanskrit: SANSKRIT_COMMON_WORDS,
+  maithili: MAITHILI_COMMON_WORDS,
+  newari: NEWARI_COMMON_WORDS,
+  dogri: DOGRI_COMMON_WORDS,
+  bodo: BODO_COMMON_WORDS,
+  konkani: KONKANI_COMMON_WORDS,
+  kashmiri: KASHMIRI_COMMON_WORDS,
+  sindhi: SINDHI_COMMON_WORDS
+};
+const commonWordMaps = /* @__PURE__ */ new Map();
+const getCommonWordsForLanguage = (language) => {
+  if (language === "generic") {
+    return COMMON_WORDS_BY_LANGUAGE.generic;
+  }
+  return [
+    ...COMMON_WORDS_BY_LANGUAGE.generic,
+    ...COMMON_WORDS_BY_LANGUAGE[language]
+  ];
+};
+const getCommonWordMap = (language) => {
+  const cached = commonWordMaps.get(language);
+  if (cached) return cached;
+  const map = /* @__PURE__ */ new Map();
+  for (const entry of getCommonWordsForLanguage(language)) {
+    const key = normalizeLexicalKey(entry.roman);
+    if (!key) continue;
+    map.set(key, entry.devanagari);
+  }
+  commonWordMaps.set(language, map);
+  return map;
+};
 const buildMapping$1 = (entries) => {
   const sensitive = [];
   const insensitive = [];
@@ -1268,7 +1601,6 @@ const matchFromMapping = (source, lowerSource, index, mapping) => {
 };
 const HALANT$1 = "्";
 const DEFAULT_HALANT_TRIGGERS = ["^"];
-const normalizeLexicalKey = (value) => value.toLowerCase().replace(/[^a-z]/g, "");
 const shouldIndexLexiconEntry = (roman) => {
   const trimmed = roman.trim();
   if (trimmed.length >= 5) return true;
@@ -1310,7 +1642,8 @@ const vowelMapping = buildMapping$1([
   { keys: ["lri"], value: { independent: "ऌ", matra: "ॢ" } },
   { keys: ["lree"], value: { independent: "ॡ", matra: "ॣ" } },
   { keys: ["L"], value: { independent: "ॡ", matra: "ॣ" }, caseSensitive: true },
-  { keys: ["e^", "eN"], value: { independent: "ऍ", matra: "ॅ" } },
+  { keys: ["e^"], value: { independent: "ऍ", matra: "ॅ" } },
+  { keys: ["eN"], value: { independent: "ऍ", matra: "ॅ" }, caseSensitive: true },
   // Dravidian short vowels
   { keys: ["e."], value: { independent: "ऎ", matra: "ॆ" } },
   { keys: ["o."], value: { independent: "ऒ", matra: "ॊ" } },
@@ -1325,15 +1658,15 @@ const vowelMapping = buildMapping$1([
   // U+093A - Vowel Sign OE
   { keys: ["ooe~"], value: { independent: "ॴ", matra: "ऻ" } },
   // U+093B - Vowel Sign OOE
-  { keys: ["eP"], value: { independent: "ए", matra: "ॎ" } },
+  { keys: ["eP"], value: { independent: "ए", matra: "ॎ" }, caseSensitive: true },
   // U+094E - Vowel Sign Prishthamatra E
-  { keys: ["awP"], value: { independent: "ऑ", matra: "ॏ" } },
+  { keys: ["awP"], value: { independent: "ऑ", matra: "ॏ" }, caseSensitive: true },
   // U+094F - Vowel Sign Aw
-  { keys: ["eL"], value: { independent: "ऍ", matra: "ॕ" } },
+  { keys: ["eL"], value: { independent: "ऍ", matra: "ॕ" }, caseSensitive: true },
   // U+0955 - Vowel Sign Candra Long E
-  { keys: ["uL"], value: { independent: "उ", matra: "ॖ" } },
+  { keys: ["uL"], value: { independent: "उ", matra: "ॖ" }, caseSensitive: true },
   // U+0956 - Vowel Sign Ue
-  { keys: ["uuL"], value: { independent: "ऊ", matra: "ॗ" } },
+  { keys: ["uuL"], value: { independent: "ऊ", matra: "ॗ" }, caseSensitive: true },
   // U+0957 - Vowel Sign Uue
   // Kashmiri vowels
   { keys: ["aw."], value: { independent: "ॵ", matra: "" } },
@@ -1342,9 +1675,9 @@ const vowelMapping = buildMapping$1([
   // Additional archaic vowels (U+0904, U+0960, U+0961)
   { keys: ["a4"], value: { independent: "ऄ", matra: "" } },
   // U+0904 - Short A (historical)
-  { keys: ["RR"], value: { independent: "ॠ", matra: "ॄ" } },
+  { keys: ["RR"], value: { independent: "ॠ", matra: "ॄ" }, caseSensitive: true },
   // U+0960 - Vocalic RR (alternate)
-  { keys: ["LL"], value: { independent: "ॡ", matra: "ॣ" } },
+  { keys: ["LL"], value: { independent: "ॡ", matra: "ॣ" }, caseSensitive: true },
   // U+0961 - Vocalic LL (alternate)
   { keys: ["i"], value: { independent: "इ", matra: "ि" } },
   { keys: ["u"], value: { independent: "उ", matra: "ु" } },
@@ -1434,13 +1767,13 @@ const consonantMapping = buildMapping$1([
   // Archaic/historical consonants
   { keys: ["jj"], value: "ज्ज" },
   // Historical archaic letter JJA
-  { keys: ["GG"], value: "ॻ" },
+  { keys: ["GG"], value: "ॻ", caseSensitive: true },
   // U+097B - Letter GGA (historical)
-  { keys: ["JJ"], value: "ॼ" },
+  { keys: ["JJ"], value: "ॼ", caseSensitive: true },
   // U+097C - Letter JA (historical)
-  { keys: ["DD"], value: "ॾ" },
+  { keys: ["DD"], value: "ॾ", caseSensitive: true },
   // U+097E - Letter DDDA (historical)
-  { keys: ["BH"], value: "ॿ" }
+  { keys: ["BH"], value: "ॿ", caseSensitive: true }
   // U+097F - Letter BBA (historical)
 ]);
 const diacriticMapping = buildMapping$1([
@@ -1457,11 +1790,11 @@ const diacriticMapping = buildMapping$1([
   // U+093D - Avagraha
   { keys: ["om"], value: "ॐ" },
   // U+0950 - Om
-  { keys: ["A~"], value: "ऀ" },
+  { keys: ["A~"], value: "ऀ", caseSensitive: true },
   // U+0900 - Sign Inverted Candrabindu (Kashmiri)
-  { keys: ["H."], value: "ᳲ" },
+  { keys: ["H."], value: "ᳲ", caseSensitive: true },
   // U+1CF2 - Sign Ardhavisarga
-  { keys: ["H:"], value: "ᳵ" },
+  { keys: ["H:"], value: "ᳵ", caseSensitive: true },
   // U+1CF5 - Sign Jihvamuliya
   { keys: ["h:"], value: "ᳶ" }
   // U+1CF6 - Sign Upadhmaniya
@@ -1477,7 +1810,7 @@ const symbolMapping = buildMapping$1([
   // U+0970 - Abbreviation mark (requires double dot)
   { keys: [".^"], value: "ॱ" },
   // U+0971 - High spacing dot
-  { keys: ["A^"], value: "ऀ" },
+  { keys: ["A^"], value: "ऀ", caseSensitive: true },
   // U+0900 - Inverted Candrabindu (Kashmiri)
   { keys: ["^~"], value: "ँ" },
   // U+0901 - Candrabindu (already in diacritics, but can be typed independently)
@@ -1487,15 +1820,15 @@ const symbolMapping = buildMapping$1([
   // U+093A - Vowel Sign OE (standalone)
   { keys: [".ooe~"], value: "ऻ" },
   // U+093B - Vowel Sign OOE (standalone)
-  { keys: [".eP"], value: "ॎ" },
+  { keys: [".eP"], value: "ॎ", caseSensitive: true },
   // U+094E - Vowel Sign Prishthamatra E (standalone)
-  { keys: [".awP"], value: "ॏ" },
+  { keys: [".awP"], value: "ॏ", caseSensitive: true },
   // U+094F - Vowel Sign Aw (standalone)
-  { keys: [".eL"], value: "ॕ" },
+  { keys: [".eL"], value: "ॕ", caseSensitive: true },
   // U+0955 - Vowel Sign Candra Long E (standalone)
-  { keys: [".uL"], value: "ॖ" },
+  { keys: [".uL"], value: "ॖ", caseSensitive: true },
   // U+0956 - Vowel Sign Ue (standalone)
-  { keys: [".uuL"], value: "ॗ" },
+  { keys: [".uuL"], value: "ॗ", caseSensitive: true },
   // U+0957 - Vowel Sign Uue (standalone)
   { keys: [".av"], value: "ऽ" },
   // U+093D - Avagraha (alternate input)
@@ -1509,12 +1842,12 @@ const symbolMapping = buildMapping$1([
   { keys: ["@hy"], value: "ॺ" },
   // U+097A - Heavy Ya
   // U+097B-U+097F already covered in consonantMapping as GG, JJ, DD, BH
-  { keys: ["@DD3"], value: "ॽ" },
+  { keys: ["@DD3"], value: "ॽ", caseSensitive: true },
   // U+097D - Glottal Stop
   // Zero-width characters for ligature control
-  { keys: ["ZWJ"], value: "‍" },
+  { keys: ["ZWJ"], value: "‍", caseSensitive: true },
   // U+200D - Zero Width Joiner (for ligature control)
-  { keys: ["ZWNJ"], value: "‌" }
+  { keys: ["ZWNJ"], value: "‌", caseSensitive: true }
   // U+200C - Zero Width Non-Joiner (for ligature breaking)
 ]);
 const vedicAccentMapping = buildMapping$1([
@@ -1641,6 +1974,10 @@ const transliterateDetailed = (rawInput, options = {}) => {
   const tokens = [];
   const halantTriggers = options.halantTriggers ?? DEFAULT_HALANT_TRIGGERS;
   const useDevanagariDigits = options.useDevanagariDigits ?? true;
+  const language = options.language ?? "generic";
+  const enableExtendedRomanization = options.enableExtendedRomanization ?? false;
+  const commonWordMap = getCommonWordMap(language);
+  const customWordMap = options.customWordMap;
   let pending = null;
   let index = 0;
   const tryConsumeLexicalWord = (start) => {
@@ -1655,7 +1992,7 @@ const transliterateDetailed = (rawInput, options = {}) => {
     const rawWord = input.slice(start, cursor);
     const normalized = normalizeLexicalKey(rawWord);
     if (!normalized) return null;
-    const replacement = lexicalWordMap.get(normalized);
+    const replacement = customWordMap?.[rawWord] ?? customWordMap?.[normalized] ?? commonWordMap.get(normalized) ?? lexicalWordMap.get(normalized);
     if (!replacement) return null;
     pending = commitPending(pending, output, tokens);
     output.push(replacement);
@@ -1695,12 +2032,14 @@ const transliterateDetailed = (rawInput, options = {}) => {
       index += 2;
       continue;
     }
-    const vedicMatch = matchFromMapping(input, lowerInput, index, vedicAccentMapping);
-    if (vedicMatch) {
-      output.push(vedicMatch.config);
-      tokens.push({ source: vedicMatch.raw, translated: vedicMatch.config, type: "diacritic" });
-      index += vedicMatch.raw.length;
-      continue;
+    if (enableExtendedRomanization) {
+      const vedicMatch = matchFromMapping(input, lowerInput, index, vedicAccentMapping);
+      if (vedicMatch) {
+        output.push(vedicMatch.config);
+        tokens.push({ source: vedicMatch.raw, translated: vedicMatch.config, type: "diacritic" });
+        index += vedicMatch.raw.length;
+        continue;
+      }
     }
     const diacriticMatch = matchFromMapping(input, lowerInput, index, diacriticMapping);
     if (diacriticMatch) {
@@ -1885,13 +2224,113 @@ const isDevanagariChar = (char) => {
   const code = char.charCodeAt(0);
   return code >= 2304 && code <= 2431;
 };
+const isDevanagariWordChar = (char) => isDevanagariChar(char) && !nepaliDigitToRoman.has(char) && !symbolToRoman.has(char);
+const normalizeReverseRoman = (value) => value.toLowerCase();
+const SCHWA_DELETION_LANGUAGES = /* @__PURE__ */ new Set(["hindi", "dogri"]);
+const LIGHT_SCHWA_DELETION_LANGUAGES = /* @__PURE__ */ new Set(["marathi", "konkani"]);
+const CLUSTER_SCHWA_PATTERN = /([kgcjtdnpbmyrlvshfzTDN])a([rlvy])a(?=[kgcjtdnpbmyrlvshfzTDN])/g;
+const applyReversePhonology = (rawRoman, word, language) => {
+  if (!rawRoman) return rawRoman;
+  let roman = rawRoman;
+  if (SCHWA_DELETION_LANGUAGES.has(language)) {
+    roman = roman.replace(CLUSTER_SCHWA_PATTERN, "$1$2a");
+  }
+  const usesTerminalSchwaDeletion = SCHWA_DELETION_LANGUAGES.has(language) || LIGHT_SCHWA_DELETION_LANGUAGES.has(language);
+  if (usesTerminalSchwaDeletion && roman.endsWith("a")) {
+    const lastChar = word[word.length - 1];
+    if (lastChar && devanagariToRomanConsonant.has(lastChar)) {
+      roman = roman.slice(0, -1);
+    }
+  }
+  return roman;
+};
+const reverseTransliterateWord = (word, nepaliToRoman, language) => {
+  const exact = nepaliToRoman.get(word);
+  if (exact) {
+    return exact;
+  }
+  const output = [];
+  let index = 0;
+  while (index < word.length) {
+    const char = word[index];
+    if (diacriticToRoman.has(char)) {
+      output.push(diacriticToRoman.get(char));
+      index += 1;
+      continue;
+    }
+    if (devanagariToRomanVowel.has(char)) {
+      output.push(devanagariToRomanVowel.get(char).independent);
+      index += 1;
+      continue;
+    }
+    let clusterMatched = false;
+    for (let len = 4; len >= 2; len--) {
+      const cluster = word.slice(index, index + len);
+      if (devanagariToRomanConsonant.has(cluster)) {
+        output.push(devanagariToRomanConsonant.get(cluster));
+        index += len;
+        clusterMatched = true;
+        break;
+      }
+    }
+    if (clusterMatched) {
+      const nextChar = word[index];
+      if (nextChar && devanagariToRomanVowel.has(nextChar)) {
+        output.push(devanagariToRomanVowel.get(nextChar).matra);
+        index += 1;
+      } else if (nextChar === HALANT$1) {
+        index += 1;
+      } else {
+        output.push("a");
+      }
+      continue;
+    }
+    if (devanagariToRomanConsonant.has(char)) {
+      output.push(devanagariToRomanConsonant.get(char));
+      index += 1;
+      const nextChar = word[index];
+      if (nextChar && devanagariToRomanVowel.has(nextChar)) {
+        output.push(devanagariToRomanVowel.get(nextChar).matra);
+        index += 1;
+      } else if (nextChar === HALANT$1) {
+        index += 1;
+      } else {
+        output.push("a");
+      }
+      continue;
+    }
+    if (char === "ॐ") {
+      output.push("om");
+      index += 1;
+      continue;
+    }
+    output.push(char);
+    index += 1;
+  }
+  return applyReversePhonology(output.join(""), word, language);
+};
 const reverseTransliterate = (input, options = {}) => {
   const useLatinDigits = options.useLatinDigits ?? true;
+  const language = options.language ?? "generic";
   const output = [];
   let index = 0;
   const nepaliToRoman = /* @__PURE__ */ new Map();
+  const commonReverseOverrides = /* @__PURE__ */ new Map();
+  for (const entry of getCommonWordsForLanguage(language)) {
+    commonReverseOverrides.set(entry.devanagari, entry.roman);
+  }
   for (const entry of LEXICON_ENTRIES) {
-    nepaliToRoman.set(entry.nepali, entry.roman);
+    if (!commonReverseOverrides.has(entry.nepali)) {
+      nepaliToRoman.set(entry.nepali, normalizeReverseRoman(entry.roman));
+    }
+  }
+  for (const [devanagari, roman] of commonReverseOverrides) {
+    nepaliToRoman.set(devanagari, roman);
+  }
+  if (options.customWordMap) {
+    for (const [roman, devanagari] of Object.entries(options.customWordMap)) {
+      nepaliToRoman.set(devanagari, roman);
+    }
   }
   while (index < input.length) {
     const char = input[index];
@@ -1907,6 +2346,16 @@ const reverseTransliterate = (input, options = {}) => {
       }
     }
     if (matched) continue;
+    if (isDevanagariWordChar(char)) {
+      let end = index + 1;
+      while (end < input.length && isDevanagariWordChar(input[end])) {
+        end += 1;
+      }
+      const word = input.slice(index, end);
+      output.push(reverseTransliterateWord(word, nepaliToRoman, language));
+      index = end;
+      continue;
+    }
     if (nepaliDigitToRoman.has(char) && useLatinDigits) {
       output.push(nepaliDigitToRoman.get(char));
       index += 1;
@@ -1915,55 +2364,6 @@ const reverseTransliterate = (input, options = {}) => {
     if (symbolToRoman.has(char)) {
       output.push(symbolToRoman.get(char));
       index += 1;
-      continue;
-    }
-    if (diacriticToRoman.has(char)) {
-      output.push(diacriticToRoman.get(char));
-      index += 1;
-      continue;
-    }
-    if (devanagariToRomanVowel.has(char)) {
-      const vowel = devanagariToRomanVowel.get(char);
-      output.push(vowel.independent);
-      index += 1;
-      continue;
-    }
-    let clusterMatched = false;
-    for (let len = 4; len >= 2; len--) {
-      const cluster = input.slice(index, index + len);
-      if (devanagariToRomanConsonant.has(cluster)) {
-        output.push(devanagariToRomanConsonant.get(cluster));
-        index += len;
-        clusterMatched = true;
-        break;
-      }
-    }
-    if (clusterMatched) {
-      const nextChar = input[index];
-      if (nextChar && devanagariToRomanVowel.has(nextChar)) {
-        const vowel = devanagariToRomanVowel.get(nextChar);
-        output.push(vowel.matra);
-        index += 1;
-      } else if (nextChar !== HALANT$1) {
-        output.push("a");
-      }
-      continue;
-    }
-    if (devanagariToRomanConsonant.has(char)) {
-      output.push(devanagariToRomanConsonant.get(char));
-      index += 1;
-      const nextChar = input[index];
-      if (nextChar && devanagariToRomanVowel.has(nextChar)) {
-        const vowel = devanagariToRomanVowel.get(nextChar);
-        output.push(vowel.matra);
-        index += 1;
-      } else if (nextChar === HALANT$1) {
-        index += 1;
-      } else if (nextChar && isDevanagariChar(nextChar) && !devanagariToRomanConsonant.has(nextChar)) {
-        output.push("a");
-      } else if (!nextChar || !isDevanagariChar(nextChar)) {
-        output.push("a");
-      }
       continue;
     }
     if (char === "ॐ") {
@@ -2105,7 +2505,10 @@ class NepaliIMECore {
       onStateChange: options.onStateChange ?? (() => {
       }),
       enableHistory: options.enableHistory ?? true,
-      maxHistory: options.maxHistory ?? 100
+      maxHistory: options.maxHistory ?? 100,
+      language: options.language ?? "generic",
+      enableExtendedRomanization: options.enableExtendedRomanization ?? false,
+      customWordMap: options.customWordMap ?? {}
     };
     this.state = {
       romanBuffer: [],
@@ -2280,6 +2683,14 @@ class NepaliIMECore {
   getUseDevanagariDigits() {
     return this.options.useDevanagariDigits;
   }
+  setLanguage(language) {
+    this.options.language = language;
+    this.rebuildConvertedBuffer();
+    this.updateOutput();
+  }
+  getLanguage() {
+    return this.options.language;
+  }
   // Private helper methods
   commitCurrentWord() {
     if (this.state.currentWord) {
@@ -2308,13 +2719,21 @@ class NepaliIMECore {
     if (/^[०-९]+$/.test(segment)) {
       return segment;
     }
-    return transliterate(segment, { useDevanagariDigits: this.options.useDevanagariDigits });
+    return transliterate(segment, {
+      useDevanagariDigits: this.options.useDevanagariDigits,
+      language: this.options.language,
+      enableExtendedRomanization: this.options.enableExtendedRomanization,
+      customWordMap: this.options.customWordMap
+    });
   }
   updateOutput() {
     let output = this.committedOutput;
     if (this.state.currentWord) {
       output += transliterate(this.state.currentWord, {
-        useDevanagariDigits: this.options.useDevanagariDigits
+        useDevanagariDigits: this.options.useDevanagariDigits,
+        language: this.options.language,
+        enableExtendedRomanization: this.options.enableExtendedRomanization,
+        customWordMap: this.options.customWordMap
       });
     }
     this.state.output = output;
@@ -2642,209 +3061,6 @@ const createDefaultShortcuts = () => [
       return true;
     }
   }
-];
-class TrieNode {
-  children = /* @__PURE__ */ new Map();
-  entries = [];
-  isEndOfWord = false;
-}
-class AutocompleteManager {
-  root = new TrieNode();
-  options;
-  userHistory = /* @__PURE__ */ new Map();
-  constructor(options = {}) {
-    this.options = {
-      maxSuggestions: options.maxSuggestions ?? 5,
-      minPrefixLength: options.minPrefixLength ?? 2,
-      useFrequency: options.useFrequency ?? true,
-      caseSensitive: options.caseSensitive ?? false
-    };
-  }
-  /**
-   * Add word to dictionary
-   */
-  addWord(entry) {
-    const key = this.normalizeKey(entry.roman);
-    let node = this.root;
-    for (const char of key) {
-      if (!node.children.has(char)) {
-        node.children.set(char, new TrieNode());
-      }
-      node = node.children.get(char);
-    }
-    node.isEndOfWord = true;
-    node.entries.push(entry);
-  }
-  /**
-   * Add multiple words
-   */
-  addWords(entries) {
-    for (const entry of entries) {
-      this.addWord(entry);
-    }
-  }
-  /**
-   * Get suggestions for prefix
-   */
-  getSuggestions(prefix) {
-    if (prefix.length < this.options.minPrefixLength) {
-      return [];
-    }
-    const key = this.normalizeKey(prefix);
-    let node = this.root;
-    for (const char of key) {
-      if (!node.children.has(char)) {
-        return [];
-      }
-      node = node.children.get(char);
-    }
-    const suggestions = [];
-    this.collectSuggestions(node, suggestions);
-    suggestions.sort((a, b) => b.score - a.score);
-    return suggestions.slice(0, this.options.maxSuggestions);
-  }
-  /**
-   * Record user selection to improve future suggestions
-   */
-  recordSelection(roman) {
-    const key = this.normalizeKey(roman);
-    const count = this.userHistory.get(key) || 0;
-    this.userHistory.set(key, count + 1);
-  }
-  /**
-   * Clear user history
-   */
-  clearHistory() {
-    this.userHistory.clear();
-  }
-  /**
-   * Get dictionary size
-   */
-  size() {
-    return this.countNodes(this.root);
-  }
-  /**
-   * Export user history for persistence
-   */
-  exportHistory() {
-    return Object.fromEntries(this.userHistory);
-  }
-  /**
-   * Import user history from storage
-   */
-  importHistory(history) {
-    this.userHistory = new Map(Object.entries(history));
-  }
-  // Private methods
-  normalizeKey(text) {
-    return this.options.caseSensitive ? text : text.toLowerCase();
-  }
-  collectSuggestions(node, suggestions) {
-    if (node.isEndOfWord) {
-      for (const entry of node.entries) {
-        const userScore = this.userHistory.get(this.normalizeKey(entry.roman)) || 0;
-        const frequencyScore = this.options.useFrequency ? entry.frequency : 1;
-        const score = frequencyScore + userScore * 10;
-        suggestions.push({
-          roman: entry.roman,
-          nepali: entry.nepali,
-          score
-        });
-      }
-    }
-    for (const child of node.children.values()) {
-      this.collectSuggestions(child, suggestions);
-    }
-  }
-  countNodes(node) {
-    let count = node.isEndOfWord ? node.entries.length : 0;
-    for (const child of node.children.values()) {
-      count += this.countNodes(child);
-    }
-    return count;
-  }
-}
-const COMMON_WORDS = [
-  // Greetings & Common Phrases (High frequency)
-  { roman: "namaste", nepali: "नमस्ते", frequency: 100 },
-  { roman: "namaskar", nepali: "नमस्कार", frequency: 95 },
-  { roman: "dhanyabad", nepali: "धन्यवाद", frequency: 90 },
-  { roman: "shukriya", nepali: "शुक्रिया", frequency: 85 },
-  { roman: "tapai", nepali: "तपाई", frequency: 80 },
-  { roman: "hajur", nepali: "हजुर", frequency: 75 },
-  // Pronouns (High frequency)
-  { roman: "ma", nepali: "म", frequency: 100 },
-  { roman: "hami", nepali: "हामी", frequency: 90 },
-  { roman: "timro", nepali: "तिम्रो", frequency: 85 },
-  { roman: "mero", nepali: "मेरो", frequency: 95 },
-  { roman: "timi", nepali: "तिमी", frequency: 88 },
-  { roman: "yo", nepali: "यो", frequency: 92 },
-  { roman: "tyo", nepali: "त्यो", frequency: 87 },
-  // Common Verbs
-  { roman: "garnu", nepali: "गर्नु", frequency: 85 },
-  { roman: "huncha", nepali: "हुन्छ", frequency: 90 },
-  { roman: "cha", nepali: "छ", frequency: 95 },
-  { roman: "chaina", nepali: "छैन", frequency: 88 },
-  { roman: "janchu", nepali: "जान्छु", frequency: 75 },
-  { roman: "aunu", nepali: "आउनु", frequency: 80 },
-  { roman: "khanu", nepali: "खानु", frequency: 78 },
-  { roman: "bolnu", nepali: "बोल्नु", frequency: 76 },
-  // Common Adjectives
-  { roman: "ramro", nepali: "राम्रो", frequency: 85 },
-  { roman: "thulo", nepali: "ठुलो", frequency: 75 },
-  { roman: "sano", nepali: "सानो", frequency: 74 },
-  { roman: "mitho", nepali: "मिठो", frequency: 72 },
-  { roman: "naya", nepali: "नयाँ", frequency: 78 },
-  // Family Relations
-  { roman: "aama", nepali: "आमा", frequency: 90 },
-  { roman: "buwa", nepali: "बुवा", frequency: 88 },
-  { roman: "didi", nepali: "दिदी", frequency: 82 },
-  { roman: "bhai", nepali: "भाइ", frequency: 84 },
-  { roman: "bahini", nepali: "बहिनी", frequency: 80 },
-  { roman: "daai", nepali: "दाइ", frequency: 81 },
-  // Common Nouns
-  { roman: "ghar", nepali: "घर", frequency: 85 },
-  { roman: "paani", nepali: "पानी", frequency: 80 },
-  { roman: "khana", nepali: "खाना", frequency: 82 },
-  { roman: "kitab", nepali: "किताब", frequency: 70 },
-  { roman: "skul", nepali: "स्कूल", frequency: 75 },
-  { roman: "kaam", nepali: "काम", frequency: 78 },
-  { roman: "samaya", nepali: "समय", frequency: 76 },
-  // Question Words
-  { roman: "kasto", nepali: "कस्तो", frequency: 80 },
-  { roman: "kasari", nepali: "कसरी", frequency: 78 },
-  { roman: "kahile", nepali: "कहिले", frequency: 79 },
-  { roman: "kaha", nepali: "कहाँ", frequency: 81 },
-  { roman: "kun", nepali: "कुन", frequency: 77 },
-  { roman: "ko", nepali: "को", frequency: 90 },
-  // Time & Date
-  { roman: "aaja", nepali: "आज", frequency: 85 },
-  { roman: "bholi", nepali: "भोली", frequency: 82 },
-  { roman: "hijo", nepali: "हिजो", frequency: 80 },
-  { roman: "bihana", nepali: "बिहान", frequency: 75 },
-  { roman: "beluka", nepali: "बेलुका", frequency: 74 },
-  // Common Phrases
-  { roman: "kripaya", nepali: "कृपया", frequency: 70 },
-  { roman: "maaf", nepali: "माफ", frequency: 72 },
-  { roman: "thik", nepali: "ठिक", frequency: 80 },
-  { roman: "asti", nepali: "अस्ति", frequency: 68 },
-  // Cities (Medium frequency)
-  { roman: "Kathmandu", nepali: "काठमाडौं", frequency: 85 },
-  { roman: "Pokhara", nepali: "पोखरा", frequency: 75 },
-  { roman: "Biratnagar", nepali: "विराटनगर", frequency: 60 },
-  { roman: "Lalitpur", nepali: "ललितपुर", frequency: 65 },
-  { roman: "Bhaktapur", nepali: "भक्तपुर", frequency: 63 },
-  // Countries
-  { roman: "Nepal", nepali: "नेपाल", frequency: 95 },
-  { roman: "Bharat", nepali: "भारत", frequency: 70 },
-  { roman: "America", nepali: "अमेरिका", frequency: 65 },
-  { roman: "China", nepali: "चीन", frequency: 62 },
-  // Numbers in words
-  { roman: "ek", nepali: "एक", frequency: 75 },
-  { roman: "dui", nepali: "दुई", frequency: 72 },
-  { roman: "tin", nepali: "तीन", frequency: 70 },
-  { roman: "char", nepali: "चार", frequency: 68 },
-  { roman: "panch", nepali: "पाँच", frequency: 67 }
 ];
 class CharacterSelector {
   element;
@@ -4795,7 +5011,10 @@ class NepaliConverterCore {
       onInput: options.onInput ?? (() => {
       }),
       onChange: options.onChange ?? (() => {
-      })
+      }),
+      language: options.language ?? "generic",
+      enableExtendedRomanization: options.enableExtendedRomanization ?? false,
+      customWordMap: options.customWordMap ?? {}
     };
     this.state = {
       input: "",
@@ -4840,6 +5059,13 @@ class NepaliConverterCore {
   getUseDevanagariDigits() {
     return this.options.useDevanagariDigits;
   }
+  setLanguage(language) {
+    this.options.language = language;
+    this.convert();
+  }
+  getLanguage() {
+    return this.options.language;
+  }
   clear() {
     this.state.input = "";
     this.state.output = "";
@@ -4851,11 +5077,16 @@ class NepaliConverterCore {
       this.state.output = "";
     } else if (this.state.direction === "toNepali") {
       this.state.output = transliterate(this.state.input, {
-        useDevanagariDigits: this.options.useDevanagariDigits
+        useDevanagariDigits: this.options.useDevanagariDigits,
+        language: this.options.language,
+        enableExtendedRomanization: this.options.enableExtendedRomanization,
+        customWordMap: this.options.customWordMap
       });
     } else {
       this.state.output = reverseTransliterate(this.state.input, {
-        useLatinDigits: !this.options.useDevanagariDigits
+        useLatinDigits: !this.options.useDevanagariDigits,
+        language: this.options.language,
+        customWordMap: this.options.customWordMap
       });
     }
     this.options.onInput(this.state.input, this.state.output);
@@ -4996,11 +5227,17 @@ class NepaliInputBase {
       onInput: options.onInput ?? (() => {
       }),
       onChange: options.onChange ?? (() => {
-      })
+      }),
+      language: options.language ?? "generic",
+      enableExtendedRomanization: options.enableExtendedRomanization ?? false,
+      customWordMap: options.customWordMap ?? {}
     };
     this.core = new NepaliIMECore({
       useDevanagariDigits: this.options.useDevanagariDigits,
-      onStateChange: (state) => this.onCoreStateChange(state)
+      onStateChange: (state) => this.onCoreStateChange(state),
+      language: this.options.language,
+      enableExtendedRomanization: this.options.enableExtendedRomanization,
+      customWordMap: this.options.customWordMap
     });
     if (this.options.enableCharacterSelector) {
       this.characterSelector = new CharacterSelector({
@@ -5118,6 +5355,9 @@ class NepaliInputBase {
     this.options = { ...this.options, ...options };
     if (options.useDevanagariDigits !== void 0) {
       this.core.setUseDevanagariDigits(options.useDevanagariDigits);
+    }
+    if (options.language !== void 0) {
+      this.core.setLanguage(options.language);
     }
   }
   getCore() {

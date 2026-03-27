@@ -1,4 +1,4 @@
-import { transliterate, reverseTransliterate } from './transliterate'
+import { transliterate, reverseTransliterate, type DevanagariLanguage } from './transliterate'
 
 export interface NepaliConverterOptions {
 	useDevanagariDigits?: boolean
@@ -6,6 +6,9 @@ export interface NepaliConverterOptions {
 	debounceMs?: number
 	onInput?: (romanized: string, converted: string) => void
 	onChange?: (romanized: string, converted: string) => void
+	language?: DevanagariLanguage
+	enableExtendedRomanization?: boolean
+	customWordMap?: Record<string, string>
 }
 
 export interface NepaliConverterState {
@@ -30,6 +33,9 @@ export class NepaliConverterCore {
 			debounceMs: options.debounceMs ?? 300,
 			onInput: options.onInput ?? (() => { }),
 			onChange: options.onChange ?? (() => { }),
+			language: options.language ?? 'generic',
+			enableExtendedRomanization: options.enableExtendedRomanization ?? false,
+			customWordMap: options.customWordMap ?? {},
 		}
 		this.state = {
 			input: '',
@@ -86,6 +92,15 @@ export class NepaliConverterCore {
 		return this.options.useDevanagariDigits
 	}
 
+	public setLanguage(language: DevanagariLanguage): void {
+		this.options.language = language
+		this.convert()
+	}
+
+	public getLanguage(): DevanagariLanguage {
+		return this.options.language
+	}
+
 	public clear(): void {
 		this.state.input = ''
 		this.state.output = ''
@@ -98,11 +113,16 @@ export class NepaliConverterCore {
 			this.state.output = ''
 		} else if (this.state.direction === 'toNepali') {
 			this.state.output = transliterate(this.state.input, {
-				useDevanagariDigits: this.options.useDevanagariDigits
+				useDevanagariDigits: this.options.useDevanagariDigits,
+				language: this.options.language,
+				enableExtendedRomanization: this.options.enableExtendedRomanization,
+				customWordMap: this.options.customWordMap
 			})
 		} else {
 			this.state.output = reverseTransliterate(this.state.input, {
-				useLatinDigits: !this.options.useDevanagariDigits
+				useLatinDigits: !this.options.useDevanagariDigits,
+				language: this.options.language,
+				customWordMap: this.options.customWordMap
 			})
 		}
 
